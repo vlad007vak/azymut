@@ -91,6 +91,9 @@ export function NowyProcesDialog({ oceny }: { oceny: Ocena[] }) {
     setBledy(b);
     if (Object.values(b).some(Boolean) || !pracownikId) {
       toast.error("Popraw zaznaczone pola formularza.");
+      // Fokus na pierwszym błędnym polu – czytnik ekranu od razu odczyta komunikat (aria-describedby).
+      const pierwszeBledne = b.pracownik ? "hr-pracownik" : b.okres ? (od ? "hr-do" : "hr-od") : "hr-termin";
+      document.getElementById(pierwszeBledne)?.focus();
       return;
     }
     const teraz = new Date().toISOString();

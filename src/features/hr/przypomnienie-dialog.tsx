@@ -1,7 +1,7 @@
 "use client";
 
 import { SendIcon } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -41,12 +41,14 @@ function FormularzPrzypomnienia({
   const prac = pracownik(ocena.pracownikId);
   const [tresc, setTresc] = useState(() => szablonPrzypomnienia(ocena, prac, dzis));
   const [blad, setBlad] = useState<string | null>(null);
+  const poleRef = useRef<HTMLTextAreaElement>(null);
   const o = ocena.oceniajacy;
 
   function wyslij(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!tresc.trim()) {
       setBlad("Treść przypomnienia nie może być pusta.");
+      poleRef.current?.focus();
       return;
     }
     wyslijPrzypomnienie(ocena, tresc.trim());
@@ -65,6 +67,7 @@ function FormularzPrzypomnienia({
       <form id="hr-przypomnienie" onSubmit={wyslij} className="grid gap-1.5">
         <Label htmlFor="hr-przypomnienie-tresc">Treść przypomnienia</Label>
         <Textarea
+          ref={poleRef}
           id="hr-przypomnienie-tresc"
           value={tresc}
           onChange={(e) => {
@@ -77,7 +80,7 @@ function FormularzPrzypomnienia({
           aria-describedby={blad ? "hr-przypomnienie-blad" : undefined}
         />
         {blad && (
-          <p id="hr-przypomnienie-blad" className="text-xs text-destructive">
+          <p id="hr-przypomnienie-blad" role="alert" className="text-xs text-destructive">
             {blad}
           </p>
         )}
