@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MobileNav, type NavItem } from "@/components/mobile-nav";
 import { Badge } from "@/components/ui/badge";
 import { APP_CONFIG } from "@/config/app";
+import { RolaWNaglowku } from "@/features/role";
 
 // Te same pozycje trafiają do menu na węższym ekranie (MobileNav) – dodajesz w jednym miejscu.
 const NAV: NavItem[] = [
@@ -33,7 +34,10 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <MobileNav items={NAV} />
+        <div className="flex items-center gap-2">
+          <RolaWNaglowku />
+          <MobileNav items={NAV} />
+        </div>
       </div>
     </header>
   );
