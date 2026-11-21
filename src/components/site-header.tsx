@@ -9,6 +9,7 @@ import { APP_CONFIG } from "@/config/app";
 const NAV: NavItem[] = [
   { href: "/#jak-to-dziala", label: "Jak to działa" },
   { href: "/#asystent", label: "Asystent AI" },
+  { href: "/hr", label: "Panel HR" },
 ];
 
 export function SiteHeader() {
