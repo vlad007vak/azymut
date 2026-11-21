@@ -228,8 +228,9 @@ do EZD arkusz PDF i plik `azymut.ocena`; proponowane endpointy `/api/v1` są opi
 Działa: obie ścieżki oceny z regułami z rozporządzeń, sugestia poziomu, cztery funkcje AI, arkusz do druku / PDF, eksport JSON,
 dokumentacja API (`/dokumentacja-api`), panel HR i ochrona panelu rolą. Prototypowe: role bez hasła (wybór roli zapisany w cookie),
 oceny tylko w przeglądarce, przypomnienia symulowane, integracje z EZD i systemem kadrowym tylko opisane.
-Czy role demonstracyjne z opisem docelowego logowania (SSO) i symulowane przypomnienia wystarczą – mentorka MC poprosiła
-o doprecyzowanie pytania; **czekamy na odpowiedź (#3)**.
+Role demonstracyjne i symulowane przypomnienia to świadomy wybór na prototyp: jury testuje aplikację bez zakładania kont.
+Docelowo logowanie przez system tożsamości urzędu (SSO, OpenID Connect / SAML) bez własnych haseł i powiadomienia e-mail –
+opisane w `docs/ROLE.md` i `README.md`.
 Źródło: `README.md` → „Rozwiązanie”; `docs/ROLE.md` → „Jak to działa w prototypie”; `docs/API.md` §3 (zastrzeżenie);
 issue #3 (odpowiedzi mentorki, pyt. 8 i 9).
 
@@ -291,6 +292,5 @@ gdy na scenie po kontroli jakości zegar pokazuje więcej niż 3:10, pomijamy sl
 6. **Ustalone:** internet na scenie będzie; slajdy (PDF) i wideo (mp4) pokazujemy z pendrive'a na komputerze na scenie;
    demo lokalnego z Ollamą nie robimy (decyzja zespołu).
 7. Linki do wideo i prezentacji (w `README.md` jeszcze „https://…”).
-8. Logowanie (role demonstracyjne + opis docelowego SSO) i symulowane przypomnienia HR – mentorka poprosiła o doprecyzowanie;
-   **czekamy na odpowiedź (#3)**. Do tego czasu na scenie mówimy jak w scenariuszu: role demonstracyjne, docelowo logowanie
-   przez system urzędu; przypomnienia symulowane, docelowo e-mail lub EZD.
+8. **Ustalone (decyzja zespołu):** logowanie – role demonstracyjne, docelowo system tożsamości urzędu (SSO); przypomnienia HR
+   symulowane, docelowo powiadomienia e-mail. Mentorka prosiła o doprecyzowanie pytania (#3) – jeśli odpowie inaczej, wracamy do tematu.
