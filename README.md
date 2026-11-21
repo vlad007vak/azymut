@@ -1,11 +1,11 @@
-# Nazwa projektu
+# Azymut
 
-> Krótkie hasło: jaki problem rozwiązujemy i dla kogo.
+> Kompas kompetencji – przełożony krok po kroku przez pierwszą ocenę i ocenę okresową w służbie cywilnej.
 
-Projekt zespołu **Nazwa zespołu** przygotowany podczas **HackNation 2026** (Bydgoszcz, 21–22.11.2026)
-w ramach zadania **Nazwa zadania**.
+Projekt zespołu **Bubylda** przygotowany podczas **HackNation 2026** (Bydgoszcz, 21–22.11.2026)
+w ramach zadania **Kompas kompetencji** (Ministerstwo Cyfryzacji).
 
-- 🌐 **Demo:** https://… (link do wersji na Vercelu)
+- 🌐 **Demo:** https://azymut-bubylda.vercel.app
 - 🎬 **Wideo (do 2 min):** https://…
 - 📊 **Prezentacja:** https://…
 
@@ -45,7 +45,11 @@ Zgodnie z zasadami HackNation informujemy o zasobach przygotowanych lub użytych
 - **Biblioteki open source:** Next.js, React, Tailwind CSS, shadcn/ui, Base UI, lucide-react, sonner, zod,
   openai (klient API), react-markdown, remark-gfm.
 - **Narzędzia AI:** kod powstawał z pomocą asystenta Claude Code.
-- **Źródła danych:** … (uzupełnić – np. oficjalne strony urzędów, zbiory danych od partnera)
+- **Źródła danych i wiedzy:** model kompetencji (14 kompetencji, 49 wskaźników behawioralnych) oraz wzory arkuszy,
+  poradniki KPRM i przykładowe opisy stanowisk – materiały organizatora zadania (Ministerstwo Cyfryzacji);
+  rozporządzenie Prezesa Rady Ministrów z 4.04.2016 w sprawie ocen okresowych (Dz.U. 2016 poz. 470);
+  rozporządzenie Prezesa Rady Ministrów z 23.07.2015 w sprawie pierwszej oceny (Dz.U. 2015 poz. 1144);
+  ustawa o służbie cywilnej (t.j. Dz.U. 2026 poz. 590). Dane pracowników w wersji demo są fikcyjne.
 
 ## Zespół
 - Imię Nazwisko – rola
