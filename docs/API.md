@@ -217,7 +217,8 @@ anonimowymi zapytaniami do AI). Przed wdrożeniem w urzędzie potrzebne są:
 
 **Autoryzacja**
 - role: przełożony – tylko oceny swoich podwładnych; HR – procesy w urzędzie; oceniany – wgląd we własną ocenę;
-- uprawnienia sprawdzane na serwerze przy każdym żądaniu; zasada najmniejszych uprawnień (także dla adapterów).
+- uprawnienia sprawdzane na serwerze przy każdym żądaniu; zasada najmniejszych uprawnień (także dla adapterów);
+- role demonstracyjne prototypu i macierz uprawnień: [`docs/ROLE.md`](ROLE.md).
 
 **Szyfrowanie**
 - cała komunikacja po HTTPS (TLS 1.2+, HSTS);
