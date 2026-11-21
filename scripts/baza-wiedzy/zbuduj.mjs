@@ -167,8 +167,12 @@ function rozporzadzenie(dok) {
       if (!group.length) return;
       const a = group[0].nr;
       const b = group.at(-1).nr;
-      const miejsce = a === b ? `§ ${nr} ust. ${a}` : `§ ${nr} ust. ${a}–${b}`;
-      fragmenty.push(frag(dok, miejsce, `§ ${nr}. ${group.map((u) => `${u.nr}. ${u.tekst}`).join(" ")}`));
+      if (a === b && group[0].tekst.length > MAX) {
+        fragmenty.push(...punkty(dok, nr, group[0]));
+      } else {
+        const miejsce = a === b ? `§ ${nr} ust. ${a}` : `§ ${nr} ust. ${a}–${b}`;
+        fragmenty.push(frag(dok, miejsce, `§ ${nr}. ${group.map((u) => `${u.nr}. ${u.tekst}`).join(" ")}`));
+      }
       group = [];
     };
     for (const u of ust) {
@@ -180,8 +184,67 @@ function rozporzadzenie(dok) {
   }
 
   fragmenty.push(...zalacznik1(dok, body.slice(end)));
+  // Słowa kluczowe pomagają wyszukiwarce (nie są pokazywane użytkownikowi ani modelowi).
+  for (const f of fragmenty) {
+    const nrP = f.miejsce.match(/^§ (\d+)/)?.[1];
+    const slowa = nrP && TEMATY[dok.id]?.[nrP];
+    if (slowa) f.slowa = slowa;
+  }
   return fragmenty;
 }
+
+/** Bardzo długi ustęp (np. § 11 ust. 1) dzielimy po punktach „1) … 5)”, powtarzając wstęp. */
+function punkty(dok, nrP, u) {
+  const czesci = u.tekst.split(/\s(?=\d+\) )/);
+  const wstep = czesci[0];
+  const pkt = czesci.slice(1).map((t) => ({ nr: Number(t.match(/^(\d+)\)/)[1]), tekst: t }));
+  const out = [];
+  let grupa = [];
+  const flush = () => {
+    if (!grupa.length) return;
+    const a = grupa[0].nr;
+    const b = grupa.at(-1).nr;
+    const miejsce = `§ ${nrP} ust. ${u.nr} ${a === b ? `pkt ${a}` : `pkt ${a}–${b}`}`;
+    out.push(frag(dok, miejsce, `§ ${nrP}. ${u.nr}. ${wstep} ${grupa.map((p) => p.tekst).join(" ")}`));
+    grupa = [];
+  };
+  for (const p of pkt) {
+    const len = grupa.reduce((s, g) => s + g.tekst.length, 0);
+    if (grupa.length && len + p.tekst.length > MAX * 0.6) flush();
+    grupa.push(p);
+  }
+  flush();
+  return out;
+}
+
+/** Słowa kluczowe do indeksu dla paragrafów rozporządzeń (tematy, o które pytają przełożeni). */
+const TEMATY = {
+  "rozp-pierwsza": {
+    2: "elementy pierwszej oceny co bierze się pod uwagę egzamin służba przygotowawcza sprawozdanie",
+    3: "rozmowa wstępna termin 21 dni nowy pracownik zastępstwo",
+    4: "termin złożenia sprawozdania 8 miesięcy arkusz pierwszej oceny kopia",
+    5: "nowy termin sprawozdania nieobecność przedłużenie umowy",
+    6: "sprawozdanie zawartość okres 7 miesięcy co opisuje formularz",
+    7: "na czym polega pierwsza ocena rozmowa oceniająca oceny cząstkowe ocena łączna średnia",
+    8: "rozmowa oceniająca kiedy kto uczestniczy",
+    9: "skala punktowa punkty 3 5 7 poniżej na poziomie powyżej oczekiwań",
+    10: "warunki pozytywna negatywna pierwsza ocena uzasadnienie wnioski rozwój zawodowy egzamin KSAP",
+    11: "zapoznanie z oceną akta osobowe kopia arkusza",
+  },
+  "rozp-okresowa": {
+    2: "kryteria obowiązkowe dodatkowe kto ocenia bezpośredni przełożony oceniający",
+    3: "arkusz A arkusz B arkusz C który arkusz kierownik urzędu kierowanie pracownikami",
+    4: "kryteria obowiązkowe arkusz A arkusz B arkusz C kierownik urzędu kierujący pracownikami pozostali pracownicy",
+    5: "rozmowa rozpoczynająca ustalenie kryteriów kryteria dodatkowe maksymalnie 3 cele oczekiwania",
+    6: "zapoznanie z kryteriami podpis kopia części I arkusza akta osobowe",
+    7: "termin 30 dni 7 dni po ocenie negatywnej ustalenie kryteriów zatrudnienie na czas nieokreślony",
+    8: "zmiana terminu oceny zawiadomienie pisemne",
+    9: "zmiana stanowiska zmiana oceniającego przełożonego 6 miesięcy",
+    10: "rozmowa oceniająca co omówić rozwój zawodowy",
+    11: "skala ocen punkty 1 3 5 7 9 średnia ogólny poziom ocena pozytywna negatywna IPRZ uzasadnienie stopień służbowy",
+    12: "zapoznanie z oceną akta osobowe kopia arkusza",
+  },
+};
 
 /**
  * Załącznik nr 1: opisy elementów oceny (2015) / wykaz kryteriów oceny (2016).
