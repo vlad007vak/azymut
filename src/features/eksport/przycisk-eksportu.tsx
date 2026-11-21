@@ -12,7 +12,7 @@ const ETAPY_GOTOWE = new Set<Ocena["etap"]>(["sporzadzona", "zakonczona"]);
 
 export interface PrzyciskEksportuProps {
   ocena: Ocena;
-  /** Nazwa urzędu na arkuszu (domyślnie urząd demonstracyjny). */
+  /** Nazwa urzędu na arkuszu (domyślnie `APP_CONFIG.urzad`). */
   urzad?: OpcjeEksportu["urzad"];
   className?: string;
 }
