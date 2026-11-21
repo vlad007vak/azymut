@@ -85,6 +85,20 @@
       "odpowiedz": "Model kompetencji opisuje 5 poziomów: znacznie poniżej oczekiwań, poniżej oczekiwań, na poziomie oczekiwań, powyżej oczekiwań i znacznie powyżej oczekiwań. Jeśli nie było okazji do zaobserwowania zachowania, odnotowuje się brak podstaw do oceny danego wskaźnika.",
       "zrodlo": "model kompetencji (materiał organizatora – Ministerstwo Cyfryzacji), poziomy i wskazówki",
       "rodzaj": "wspolne"
+    },
+    {
+      "id": "qa-013",
+      "pytanie": "Co jeśli nowy pracownik zachorował, jest długo na zwolnieniu lekarskim (L4) albo nieobecny i nie zdąży oddać sprawozdania w terminie (na czas)?",
+      "odpowiedz": "W uzasadnionych przypadkach bezpośredni przełożony wyznacza nowy termin na złożenie sprawozdania w związku z usprawiedliwioną nieobecnością ocenianego w pracy (np. zwolnienie lekarskie z powodu choroby) albo wykonywaniem przez niego obowiązków służbowych poza miejscem pracy – przedłuża dotychczasowy termin o okres tej nieobecności. Nowy termin wyznacza się tak, aby pierwsza ocena mogła nastąpić nie później niż miesiąc przed zakończeniem stosunku pracy. O nowym terminie przełożony niezwłocznie zawiadamia ocenianego pisemnie, a kopię pisma dołącza do arkusza.",
+      "zrodlo": "§ 5 ust. 1, 3 i 4 rozporządzenia w sprawie pierwszej oceny (Dz.U. 2015 poz. 1144); poradnik KPRM „Pierwsza ocena w służbie cywilnej”, s. 10 (przykład ze zwolnieniem lekarskim)",
+      "rodzaj": "pierwsza"
+    },
+    {
+      "id": "qa-014",
+      "pytanie": "Zmienił się bezpośredni przełożony (oceniający, np. nowy naczelnik) w trakcie okresu oceny okresowej – według jakich kryteriów i kiedy ocenia pracownika nowy szef?",
+      "odpowiedz": "Dotyczy oceny okresowej. W przypadku zmiany na stanowisku oceniającego w trakcie okresu, w którym oceniany podlega ocenie, ocena jest sporządzana na podstawie wybranych wcześniej kryteriów. Jeżeli dotychczasowy przełożony nie sporządził oceny, sporządza ją nowy oceniający w niezmienionym terminie. Zmiana na stanowisku oceniającego pozwala też oceniającemu zmienić termin oceny – wtedy niezwłocznie zawiadamia on ocenianego pisemnie o nowym terminie, a kopię pisma dołącza do arkusza. Poradnik KPRM zaleca, by przy zbliżającym się terminie ocenę sporządził jeszcze dotychczasowy przełożony, a gdy tego nie zrobi – by nowy oceniający przeprowadził z ocenianym rozmowę i ponownie omówił główne obowiązki, kryteria oceny i oczekiwania.",
+      "zrodlo": "§ 9 ust. 3 i § 8 rozporządzenia w sprawie ocen okresowych (Dz.U. 2016 poz. 470); art. 81 ust. 8 pkt 1 ustawy o służbie cywilnej; poradnik KPRM „Oceny okresowe w służbie cywilnej”, s. 15 i 17",
+      "rodzaj": "wspolne"
     }
   ]
 }

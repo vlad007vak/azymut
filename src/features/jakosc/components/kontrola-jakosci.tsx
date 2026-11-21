@@ -46,8 +46,21 @@ export function KontrolaJakosci({ ocena, className }: KontrolaJakosciProps) {
   const [wynik, setWynik] = useState<{ dane: WynikKontroli; klucz: string } | null>(null);
   const [laduje, setLaduje] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const kartaRef = useRef<HTMLDivElement>(null);
+  const przyciskRef = useRef<HTMLButtonElement>(null);
+  const poprzednioLaduje = useRef(false);
 
   useEffect(() => () => abortRef.current?.abort(), []);
+
+  // Przycisk jest zablokowany w trakcie sprawdzania, więc przeglądarka gubi fokus (trafia na <body>).
+  // Po wyniku oddajemy go przyciskowi – chyba że użytkownik w tym czasie przeszedł do innego pola.
+  useEffect(() => {
+    if (poprzednioLaduje.current && !laduje) {
+      const aktywny = document.activeElement;
+      if (!aktywny || aktywny === document.body || kartaRef.current?.contains(aktywny)) przyciskRef.current?.focus();
+    }
+    poprzednioLaduje.current = laduje;
+  }, [laduje]);
 
   async function sprawdz() {
     if (laduje) return;
@@ -88,7 +101,7 @@ export function KontrolaJakosci({ ocena, className }: KontrolaJakosciProps) {
   const nieaktualny = !!wynik && wynik.klucz !== klucz;
 
   return (
-    <Card className={className}>
+    <Card ref={kartaRef} className={className}>
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-4">
         <div className="flex max-w-2xl items-start gap-3">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden>
@@ -102,7 +115,7 @@ export function KontrolaJakosci({ ocena, className }: KontrolaJakosciProps) {
             </CardDescription>
           </div>
         </div>
-        <Button onClick={sprawdz} disabled={laduje} variant={wynik && !nieaktualny ? "outline" : "default"}>
+        <Button ref={przyciskRef} onClick={sprawdz} disabled={laduje} variant={wynik && !nieaktualny ? "outline" : "default"}>
           {laduje ? (
             <Loader2Icon className="animate-spin" data-icon="inline-start" aria-hidden />
           ) : wynik ? (
