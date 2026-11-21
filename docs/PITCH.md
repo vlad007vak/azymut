@@ -189,14 +189,18 @@ Odpowiedzi AI są buforowane, żeby nie zużywać limitów.
 **15. Jak sprawdzaliście poprawność asystenta?** *(Maks / Diana)*
 Mamy zestaw 30 pytań z oczekiwanymi odpowiedziami i źródłami – w tym 2 spoza bazy i 6 tych samych faktów zadanych innymi słowami,
 tak jak pyta jury (po zgłoszeniu #26) – oraz skrypt, który zadaje je automatycznie.
-Ostatni przebieg z prawdziwym AI (Groq / Gemini): **30/30**, a pytania spoza bazy nadal kończą się „brak informacji” (Maks, PR #33).
-Źródło: `docs/test-asystenta.md`; `scripts/baza-wiedzy/test-asystenta.mjs`; opis PR #33 (wynik testu).
+Przebieg z prawdziwym AI (Groq / Gemini): **30/30**, a pytania spoza bazy nadal kończą się „brak informacji” (Maks, PR #33).
+Po dodaniu bazy pytań i odpowiedzi zestaw ma 35 pytań: **34/35** w pełnym przebiegu – jedyny błąd to limit darmowych modeli
+(brak odpowiedzi, nie zła odpowiedź), po ponowieniu pytanie zaliczone (Maks, PR #45).
+Źródło: `docs/test-asystenta.md`; `scripts/baza-wiedzy/test-asystenta.mjs`; opisy PR #33 i PR #45 (wyniki testu).
 
 **16. Co jest w bazie wiedzy?** *(Maks)*
 Pięć dokumentów: ustawa o służbie cywilnej (art. 38 i 81–83), rozporządzenia o pierwszej ocenie i o ocenach okresowych, dwa poradniki
 KPRM – razem 200 fragmentów z PDF – oraz model kompetencji (64 fragmenty), czyli **264 fragmenty**. Wyszukiwanie BM25 napisaliśmy sami,
-bez zewnętrznych bibliotek.
-Źródło: `src/data/baza-wiedzy/fragmenty.json`, `src/features/asystent/baza.ts` (`FRAGMENTY`); `README.md` → „Wykorzystane zasoby”.
+bez zewnętrznych bibliotek. Do tego **baza pytań i odpowiedzi** – 12 przykładowych pozycji z podstawą prawną, którą urząd może
+podmienić na własną (plik JSON albo CSV z Excela). O taką możliwość prosiła mentorka MC (#3, odpowiedzi mentorki, pyt. 2).
+Źródło: `src/data/baza-wiedzy/fragmenty.json`, `src/data/baza-wiedzy/pytania-odpowiedzi.json`, `src/features/asystent/baza.ts`;
+`docs/BAZA-WIEDZY.md`; `README.md` → „Wykorzystane zasoby”.
 
 ### Innowacyjność i jakość rozwiązania (20%)
 
