@@ -10,7 +10,7 @@ import {
   ShieldAlertIcon,
   SparklesIcon,
 } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -55,6 +55,10 @@ const OPIS_ARKUSZA: Record<ArkuszBC, { nazwa: string; podstawa: string; obowiazk
 
 const ROZPORZADZENIE = "rozporządzenia PRM z 4.04.2016 r. (Dz.U. 2016 poz. 470)";
 
+/** Ten sam identyfikator – kolejny komunikat zastępuje poprzedni zamiast piętrzyć toasty. */
+const TOAST_AI = "osp-ai";
+const BLAD_OGOLNY = "Nie udało się przeanalizować opisu stanowiska. Spróbuj ponownie.";
+
 /**
  * Analiza opisu stanowiska pracy (OSP): sugerowany arkusz, max 3 kryteria dodatkowe i najistotniejsze
  * wskaźniki. Przełożony przyjmuje lub odrzuca każdą sugestię; „Zastosuj” przekazuje wynik dalej.
@@ -68,6 +72,9 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
   const [decyzjeKryteria, setDecyzjeKryteria] = useState<Record<string, boolean>>({});
   const [decyzjeWskazniki, setDecyzjeWskazniki] = useState<Record<string, boolean>>({});
   const [wczytywanyPrzyklad, setWczytywanyPrzyklad] = useState<string | null>(null);
+  const poleRef = useRef<HTMLTextAreaElement>(null);
+  // Blokada podwójnego kliknięcia – stan Reacta zmienia się dopiero po ponownym renderze.
+  const trwa = useRef(false);
 
   const ladowanie = stan.typ === "ladowanie";
 
@@ -85,6 +92,7 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
   }
 
   async function analizuj() {
+    if (trwa.current) return;
     // Dane osobowe usuwamy w przeglądarce – nie opuszczają komputera.
     const { tekst: czysty, usuniete } = wyczyscOsp(tekst);
     if (czysty.length < MIN_DLUGOSC_OSP) {
@@ -99,6 +107,7 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
       return;
     }
     const odczyt = odczytajArkusz(czysty);
+    trwa.current = true;
     setStan({ typ: "ladowanie" });
     try {
       const res = await fetch("/api/osp", {
@@ -111,7 +120,7 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
         const komunikat =
           dane && typeof dane === "object" && "error" in dane && typeof dane.error === "string"
             ? dane.error
-            : "Nie udało się przeanalizować opisu stanowiska.";
+            : BLAD_OGOLNY;
         throw new Error(komunikat);
       }
       const sugestia = dane as OspSugestia;
@@ -122,17 +131,22 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
       setDecyzjeKryteria({});
       setDecyzjeWskazniki({});
       setStan({ typ: "bezczynny" });
-      if (statusAi === "ok") toast.success("Analiza gotowa. Przejrzyj sugestie i zdecyduj, które przyjmujesz.");
-      else toast.warning("AI nie przygotowało pełnych sugestii – sprawdź komunikat.");
+      if (statusAi === "ok") {
+        toast.success("Analiza gotowa. Przejrzyj sugestie i zdecyduj, które przyjmujesz.", { id: TOAST_AI });
+      } else {
+        toast.warning("AI nie przygotowało pełnych sugestii – sprawdź komunikat.", { id: TOAST_AI });
+      }
     } catch (err) {
       const komunikat =
         err instanceof TypeError
           ? "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie."
-          : err instanceof Error
+          : err instanceof Error && err.message
             ? err.message
-            : "Nie udało się przeanalizować opisu stanowiska.";
+            : BLAD_OGOLNY;
       setStan({ typ: "blad", komunikat });
-      toast.error(komunikat);
+      toast.error(komunikat, { id: TOAST_AI });
+    } finally {
+      trwa.current = false;
     }
   }
 
@@ -216,6 +230,7 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
           <div className="flex flex-col gap-2">
             <Label htmlFor={idPola}>Treść opisu stanowiska pracy</Label>
             <Textarea
+              ref={poleRef}
               id={idPola}
               value={tekst}
               onChange={(e) => setTekst(e.target.value)}
@@ -251,6 +266,8 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
                 setTekst("");
                 setWynik(null);
                 setStan({ typ: "bezczynny" });
+                // Przycisk znika po wyczyszczeniu – fokus wraca do pola, żeby nie zgubić go z klawiatury.
+                poleRef.current?.focus();
               }}
             >
               Wyczyść

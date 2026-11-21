@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { komunikatNiedostepnosci, sekundyDoPonowienia } from "@/features/osp/prompt";
 import { normalizujPlan, odpowiedzSchema, SYSTEM_PROMPT, zbudujPrompt } from "@/features/rozmowa/prompt";
 import { AiUnavailableError, generateJson } from "@/lib/ai/client";
 import { MODEL } from "@/lib/ocena/model";
@@ -71,7 +72,10 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     if (err instanceof AiUnavailableError) {
-      return Response.json({ error: err.message }, { status: 503 });
+      // Limit darmowego planu: podpowiadamy, za ile sekund ponowić (jak w /api/osp).
+      const sekundy = sekundyDoPonowienia(err.attempts);
+      const ponow: Record<string, string> = sekundy ? { "X-AI-Retry-After": String(sekundy) } : {};
+      return Response.json({ error: komunikatNiedostepnosci(err.message, sekundy) }, { status: 503, headers: ponow });
     }
     console.error("[rozmowa]", err);
     return Response.json(

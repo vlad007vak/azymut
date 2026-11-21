@@ -29,7 +29,7 @@ Zasady wspólne:
 
 | Metoda i ścieżka | Do czego służy | Kody błędów |
 |---|---|---|
-| `POST /api/asystent` | Asystent formalny: odpowiedź z bazy wiedzy (rozporządzenia, poradniki KPRM, model kompetencji) ze źródłami i dosłownym cytatem; `brakInformacji: true`, gdy baza nie zawiera odpowiedzi | 400, 500, 503 |
+| `POST /api/asystent` | Asystent formalny: odpowiedź z bazy wiedzy (ustawa o służbie cywilnej (art. 38, 81–83), rozporządzenia, poradniki KPRM, model kompetencji) ze źródłami i dosłownym cytatem; `brakInformacji: true`, gdy baza nie zawiera odpowiedzi | 400, 500, 503 |
 | `POST /api/osp` | Analiza opisu stanowiska pracy: sugerowany arkusz (B/C), do 3 kryteriów dodatkowych, najważniejsze wskaźniki; gdy AI niedostępne – sam arkusz odczytany z OSP (`X-AI-Status: niedostepne`) | 400, 500, 503 |
 | `POST /api/rozmowa` | Asystent rozmowy: pytania do pracownika, tematy do omówienia, argumenty per kryterium, propozycje do wniosków rozwojowych | 400, 500, 502, 503 |
 | `POST /api/jakosc` | Kontrola jakości uzasadnienia: kryteria bez przykładu, niespójności, ogólniki, ocena osoby zamiast zachowania, ryzyko stronniczości. AI nie zwraca poziomów; uwaga AI tylko z dosłownym cytatem sprawdzonym przez serwer. Gdy AI niedostępne – `200` z `aiNiedostepne: true` i samymi uwagami z reguł | 400, 500 |
@@ -37,7 +37,8 @@ Zasady wspólne:
 | `POST /api/ai/status` | Test połączenia z każdym dostawcą AI | – |
 
 Znaczenie kodów: `400` – nieprawidłowe dane wejściowe; `502` – model AI zwrócił pustą odpowiedź; `503` – żaden
-dostawca AI nie odpowiedział (limit darmowych modeli albo brak kluczy); `500` – nieoczekiwany błąd serwera.
+dostawca AI nie odpowiedział (limit darmowych modeli albo brak kluczy; w `/api/osp` i `/api/rozmowa` nagłówek
+`X-AI-Retry-After` podaje, po ilu sekundach ponowić); `500` – nieoczekiwany błąd serwera.
 Komunikaty i przykłady – w `openapi.json`. Nowe endpointy dopisujemy do specyfikacji razem z kodem.
 
 ## 2. Eksport oceny – format `azymut.ocena`, wersja 1

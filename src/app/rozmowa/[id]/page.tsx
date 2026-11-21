@@ -16,7 +16,7 @@ export default function RozmowaPage({ params }: PageProps<"/rozmowa/[id]">) {
       <div className="flex flex-col gap-2">
         <Link
           href="/rozmowa"
-          className="flex items-center gap-1 self-start text-sm text-muted-foreground hover:text-foreground print:hidden"
+          className="flex items-center gap-1 self-start rounded-sm text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 print:hidden"
         >
           <ArrowLeftIcon className="size-4" aria-hidden /> Wszystkie oceny
         </Link>

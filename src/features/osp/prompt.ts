@@ -133,6 +133,11 @@ export function sekundyDoPonowienia(proby: string[]): number | null {
   return sekundy.length ? Math.min(...sekundy) : null;
 }
 
+/** Komunikat 503 dla UI: przy limicie darmowego planu – za ile sekund ponowić (bez powtarzania „za chwilę”). */
+export function komunikatNiedostepnosci(komunikatBledu: string, sekundy: number | null): string {
+  return sekundy ? `Wyczerpano chwilowo limit darmowego planu AI. Spróbuj ponownie za ok. ${sekundy} s.` : komunikatBledu;
+}
+
 /**
  * Walidacja po stronie serwera: arkusz z OSP ma pierwszeństwo przed AI; kryteria dodatkowe bez
  * obowiązkowych, bez duplikatów, max 3, z uzasadnieniem; wskaźniki tylko istniejące w modelu
