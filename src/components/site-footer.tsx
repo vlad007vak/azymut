@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { APP_CONFIG } from "@/config/app";
 
 export function SiteFooter() {
@@ -5,7 +7,10 @@ export function SiteFooter() {
     <footer className="border-t print:hidden">
       <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:justify-between">
         <p>
-          © {APP_CONFIG.year} {APP_CONFIG.teamName}
+          © {APP_CONFIG.year} {APP_CONFIG.teamName} ·{" "}
+          <Link href="/dokumentacja-api" className="underline-offset-4 hover:text-foreground hover:underline">
+            Dokumentacja API
+          </Link>
         </p>
         <p>
           Projekt przygotowany na HackNation {APP_CONFIG.year} · Zadanie:{" "}

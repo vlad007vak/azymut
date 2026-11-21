@@ -111,7 +111,7 @@ Vlad embeds them in the wizard and adds header links. Don't import another perso
 
 ## Commands
 - `npm run dev` – http://localhost:3000 · `npm run build` · `npm run lint`
-- AI check: open the home page → "Status AI" → "Testuj połączenie" (or `POST /api/ai/status`).
+- AI check: `POST /api/ai/status` (tests every configured provider). API docs: `/dokumentacja-api`, `public/openapi.json`.
 
 ## Pre-made resources (hackathon rule)
 This repo started from a starter prepared before the event. HackNation requires citing pre-made code,

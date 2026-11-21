@@ -2,6 +2,7 @@
  * Logika kreatora oceny (bez UI): tworzenie oceny, kryteria startowe, kroki, sugestie.
  * Zasady punktacji są TYLKO w src/lib/ocena/zasady.ts – tu je wywołujemy.
  */
+import { APP_CONFIG } from "@/config/app";
 import { kompetencja, poziom } from "@/lib/ocena/model";
 import { nowyId } from "@/lib/ocena/store";
 import {
@@ -23,7 +24,7 @@ import type {
   RodzajOceny,
 } from "@/types/ocena";
 
-export const NAZWA_URZEDU_DEMO = "Ministerstwo Cyfryzacji";
+export const NAZWA_URZEDU_DEMO = APP_CONFIG.urzad;
 
 export function dzisIso(): string {
   const d = new Date();

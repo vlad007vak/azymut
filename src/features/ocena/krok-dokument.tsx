@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { EksportOceny } from "@/features/eksport";
 import { kompetencja, poziom } from "@/lib/ocena/model";
 import { pracownik as znajdzPracownika } from "@/lib/ocena/store";
 import type { Osoba } from "@/types/ocena";
@@ -36,6 +37,7 @@ export function KrokDokument({ ocena, zmien }: KrokProps) {
           <Button variant="outline" onClick={() => window.print()}>
             <PrinterIcon data-icon="inline-start" /> Drukuj / zapisz PDF
           </Button>
+          <EksportOceny ocena={ocena} urzad={NAZWA_URZEDU_DEMO} />
           {ocena.etap === "sporzadzona" && (
             <Button onClick={zapoznany}>
               <CheckIcon data-icon="inline-start" /> Pracownik zapoznał się z oceną
