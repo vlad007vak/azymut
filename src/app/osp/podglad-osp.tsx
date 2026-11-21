@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCheckIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,8 @@ export function PodgladOsp() {
       {zastosowane && (
         <Card aria-live="polite">
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+              <CheckCheckIcon className="size-5 shrink-0 text-primary" strokeWidth={1.5} aria-hidden />
               <h2>Zastosowano – dane dla kreatora oceny</h2>
             </CardTitle>
             <CardDescription>Podgląd tego, co komponent przekazuje dalej (onZastosuj).</CardDescription>

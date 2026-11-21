@@ -1,4 +1,7 @@
+import { FileSearchIcon } from "lucide-react";
 import type { Metadata } from "next";
+
+import { NaglowekStrony } from "@/components/naglowek-strony";
 
 import { PodgladOsp } from "./podglad-osp";
 
@@ -9,15 +12,16 @@ export const metadata: Metadata = {
 
 export default function OspPage() {
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Analiza opisu stanowiska pracy</h1>
-        <p className="max-w-3xl text-muted-foreground">
-          Pierwszy krok oceny okresowej: na podstawie OSP podpowiemy arkusz oceny, do trzech kryteriów dodatkowych
-          i wskaźniki najważniejsze dla zadań na stanowisku. Każdą sugestię możesz przyjąć albo odrzucić.
-        </p>
+    <>
+      <NaglowekStrony
+        ikona={FileSearchIcon}
+        nadtytul="Ocena okresowa · opis stanowiska pracy"
+        tytul="Analiza opisu stanowiska pracy"
+        opis="Pierwszy krok oceny okresowej: na podstawie OSP podpowiemy arkusz oceny, do trzech kryteriów dodatkowych i wskaźniki najważniejsze dla zadań na stanowisku. Każdą sugestię możesz przyjąć albo odrzucić."
+      />
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <PodgladOsp />
       </div>
-      <PodgladOsp />
-    </div>
+    </>
   );
 }

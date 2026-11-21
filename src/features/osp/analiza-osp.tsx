@@ -183,7 +183,8 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <FileTextIcon className="size-5 shrink-0 text-primary" strokeWidth={1.5} aria-hidden />
             <h2>Opis stanowiska pracy</h2>
           </CardTitle>
           <CardDescription>
@@ -301,7 +302,8 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
       {wynik && !ladowanie && (
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+              <SparklesIcon className="size-5 shrink-0 text-primary" strokeWidth={1.5} aria-hidden />
               <h2>Sugestie dla oceny okresowej</h2>
             </CardTitle>
             <CardDescription>

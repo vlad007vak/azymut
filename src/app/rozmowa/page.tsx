@@ -1,5 +1,7 @@
+import { MessagesSquareIcon } from "lucide-react";
 import type { Metadata } from "next";
 
+import { NaglowekStrony } from "@/components/naglowek-strony";
 import { WyborOcenyRozmowy } from "@/features/rozmowa";
 
 export const metadata: Metadata = {
@@ -9,14 +11,16 @@ export const metadata: Metadata = {
 
 export default function RozmowaListaPage() {
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Asystent rozmowy</h1>
-        <p className="max-w-3xl text-muted-foreground">
-          Wybierz ocenę, dla której chcesz przygotować rozmowę oceniającą.
-        </p>
+    <>
+      <NaglowekStrony
+        ikona={MessagesSquareIcon}
+        nadtytul="Rozmowa oceniająca"
+        tytul="Asystent rozmowy"
+        opis="Wybierz ocenę, dla której chcesz przygotować rozmowę oceniającą."
+      />
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <WyborOcenyRozmowy />
       </div>
-      <WyborOcenyRozmowy />
-    </div>
+    </>
   );
 }
