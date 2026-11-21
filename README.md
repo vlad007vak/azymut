@@ -136,7 +136,7 @@ Zgodnie z zasadami HackNation informujemy o zasobach przygotowanych lub użytych
 
 ## Zespół Bubylda
 - Vladyslav Vakula – lead programmer, integracja, kreator oceny, Vercel
-- Maks – asystent formalny i baza wiedzy, kontakt z mentorami
-- Andrey – panel HR, role, prezentacja (pitch)
-- Dima – asystent rozmowy, analiza opisu stanowiska, eksport i API
-- Diana – testy i raporty z testów
+- Maksym Kerimov – asystent formalny i baza wiedzy, kontakt z mentorami
+- Andrii Zhyhailo – panel HR, role, prezentacja (pitch)
+- Dmytro Zhuravel – asystent rozmowy, analiza opisu stanowiska, eksport i API
+- Diana Makhnyboroda – testy i raporty z testów
