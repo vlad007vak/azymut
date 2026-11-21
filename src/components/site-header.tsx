@@ -14,7 +14,7 @@ const NAV: NavItem[] = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur print:hidden">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
         <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold">
           <span className="truncate">{APP_CONFIG.name}</span>

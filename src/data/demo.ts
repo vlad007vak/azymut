@@ -52,6 +52,16 @@ export const PRACOWNICY: Pracownik[] = [
     urzednikSC: false,
     dataZatrudnienia: "2026-06-01",
   },
+  {
+    id: "p5",
+    imie: "Paweł",
+    nazwisko: "Grabowski",
+    stanowisko: "specjalista",
+    komorka: "Departament Cyberbezpieczeństwa, Wydział Zarządzania Kryzysowego, Spraw Obronnych i Cyberbezpieczeństwa",
+    kierujeZespolem: false,
+    urzednikSC: false,
+    dataZatrudnienia: "2026-09-01",
+  },
 ];
 
 const T = "2026-11-21T10:00:00.000Z";
@@ -191,16 +201,95 @@ export const OCENY_DEMO: Ocena[] = [
     rodzaj: "pierwsza",
     pracownikId: "p4",
     oceniajacy: PRZELOZONY_DEMO,
-    etap: "kryteria",
+    etap: "obserwacje",
     okres: { od: "2026-06-01", do: "2026-11-30" },
     terminOceny: "2026-12-10",
+    kryteria: [
+      {
+        kompetencjaId: "rzetelnosc",
+        dodatkowe: false,
+        wskazniki: ["rzetelnosc-1", "rzetelnosc-2"],
+        obserwacje: {
+          "rzetelnosc-1": {
+            poziom: 3,
+            przyklad: "Przygotowując zestawienia wniosków do programu, sprawdzała kompletność danych przed przekazaniem.",
+          },
+          "rzetelnosc-2": { poziom: 3 },
+        },
+      },
+      {
+        kompetencjaId: "wykorzystywanie-wiedzy",
+        dodatkowe: false,
+        wskazniki: ["wykorzystywanie-wiedzy-1", "wykorzystywanie-wiedzy-2"],
+        obserwacje: {
+          "wykorzystywanie-wiedzy-1": {
+            poziom: 2,
+            przyklad: "Przy pierwszej analizie ofert potrzebowała wskazania właściwej metody porównania.",
+          },
+          "wykorzystywanie-wiedzy-2": {
+            poziom: 4,
+            przyklad: "Z własnej inicjatywy ukończyła kurs z zamówień publicznych i zastosowała go przy kolejnym naborze.",
+          },
+        },
+      },
+      {
+        kompetencjaId: "organizacja-pracy",
+        dodatkowe: false,
+        wskazniki: ["organizacja-pracy-1", "organizacja-pracy-2"],
+        obserwacje: {
+          "organizacja-pracy-1": { poziom: 3 },
+          "organizacja-pracy-2": {
+            poziom: 3,
+            przyklad: "W tygodniu zamknięcia naboru ustaliła kolejność zadań według terminów i wpływu na innych.",
+          },
+        },
+      },
+      {
+        kompetencjaId: "komunikacja",
+        dodatkowe: false,
+        wskazniki: ["komunikacja-1", "komunikacja-3"],
+        obserwacje: {
+          "komunikacja-1": { poziom: 3 },
+          "komunikacja-3": { poziom: null },
+        },
+      },
+      {
+        kompetencjaId: "wspolpraca",
+        dodatkowe: false,
+        wskazniki: ["wspolpraca-1", "wspolpraca-2"],
+        obserwacje: {
+          "wspolpraca-1": {
+            poziom: 4,
+            przyklad: "Zgłosiła się do zespołu przygotowującego konferencję i przejęła kontakt z prelegentami.",
+          },
+          "wspolpraca-2": { poziom: 3 },
+        },
+      },
+    ],
+    pierwsza: {
+      egzaminSluzbyPrzygotowawczej: "tak",
+      sprawozdanieWTerminie: true,
+      terminSprawozdania: "2026-11-15",
+    },
+    daty: { rozmowaWstepna: "2026-06-05" },
+    utworzono: T,
+    zmieniono: T,
+  },
+  {
+    id: "o5",
+    rodzaj: "pierwsza",
+    pracownikId: "p5",
+    oceniajacy: PRZELOZONY_DEMO,
+    etap: "kryteria",
+    okres: { od: "2026-09-01", do: "2027-02-28" },
+    terminOceny: "2027-03-10",
     kryteria: [],
     pierwsza: {
       egzaminSluzbyPrzygotowawczej: "tak",
       sprawozdanieWTerminie: null,
-      terminSprawozdania: "2026-11-25",
+      terminSprawozdania: "2027-02-20",
     },
-    daty: { rozmowaWstepna: "2026-06-05" },
+    daty: { rozmowaWstepna: "2026-09-04" },
     utworzono: T,
     zmieniono: T,
   },
