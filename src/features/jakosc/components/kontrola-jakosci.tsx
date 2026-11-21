@@ -71,7 +71,14 @@ export function KontrolaJakosci({ ocena, className }: KontrolaJakosciProps) {
       setWynik({ dane: { ...dane, zanonimizowano: dane.zanonimizowano || zmieniono }, klucz });
     } catch (err) {
       if (controller.signal.aborted) return;
-      toast.error(err instanceof Error ? err.message : "Wystąpił nieznany błąd.");
+      // Bez sieci fetch rzuca TypeError z angielskim komunikatem przeglądarki („Failed to fetch”).
+      toast.error(
+        err instanceof TypeError
+          ? "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie."
+          : err instanceof Error
+            ? err.message
+            : "Wystąpił nieznany błąd.",
+      );
     } finally {
       setLaduje(false);
       abortRef.current = null;
