@@ -4,7 +4,7 @@ Szkic do **soboty 20:00** (po 20:00 nie można utworzyć projektu ani zmienić z
 
 ## Pola szkicu
 - **Nazwa projektu:** Azymut
-- **Zespół:** Bubylda
+- **Zespół:** Azymut
 - **Zadanie:** Kompas kompetencji (Ministerstwo Cyfryzacji)
 - **Repozytorium:** https://github.com/vlad007vak/azymut
 - **Demo:** https://azymut-bubylda.vercel.app

@@ -6,7 +6,7 @@ export const APP_CONFIG = {
   tagline: "Kompas kompetencji – przełożony krok po kroku przez pierwszą ocenę i ocenę okresową.",
   description:
     "Azymut prowadzi przełożonego w służbie cywilnej przez proces oceny pracownika: dobór kryteriów, ocenę na podstawie obserwowalnych zachowań, przygotowanie do rozmowy i dokumentację. Asystent AI wyjaśnia przepisy i wskazuje źródła – decyzję zawsze podejmuje przełożony.",
-  teamName: "Bubylda",
+  teamName: "Azymut",
   /** Urząd w danych demonstracyjnych (arkusz, eksport). */
   urzad: "Ministerstwo Cyfryzacji",
   taskName: "Kompas kompetencji (Ministerstwo Cyfryzacji)",

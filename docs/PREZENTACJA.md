@@ -8,7 +8,7 @@ Pitch finałowy: maks. 5 min + 5 min pytań. Punkty oznaczone **[po merge]** wpi
 ## Slajd 1 – Tytuł
 **Azymut – Kompas kompetencji**
 Przełożony krok po kroku przez pierwszą ocenę i ocenę okresową w służbie cywilnej.
-Zespół Bubylda · HackNation 2026 · azymut-bubylda.vercel.app (kod QR do demo)
+Zespół Azymut · HackNation 2026 · azymut-bubylda.vercel.app (kod QR do demo)
 
 *Notatka do pitchu:* „Zbudowaliśmy narzędzie, które prowadzi przełożonego przez całą ocenę pracownika – i nie zabiera mu decyzji.”
 
@@ -73,7 +73,7 @@ Schemat (jak na grafice organizatora):
 - Integracja z systemem kadrowym (dane pracownika, OSP) i EZD (arkusz do akt).
 - Raporty dla urzędu, powiadomienia e-mail, kolejne urzędy – konfigurowalny model i baza wiedzy.
 - **Wartość:** spójniejsze i bardziej obiektywne oceny, mniej błędów formalnych, lepsze rozmowy z pracownikami.
-- Demo: azymut-bubylda.vercel.app · Kod: github.com/vlad007vak/azymut · Zespół Bubylda
+- Demo: azymut-bubylda.vercel.app · Kod: github.com/vlad007vak/azymut · Zespół Azymut
 
 *Notatka:* zakończyć zdaniem z slajdu 3 – „AI doradza, decyzję podejmuje przełożony”.
 
