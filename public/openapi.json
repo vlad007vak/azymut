@@ -251,7 +251,7 @@
             }
           },
           "503": {
-            "description": "AI niedostępne i nie udało się odczytać arkusza z tekstu OSP.",
+            "description": "AI niedostępne i nie udało się odczytać arkusza z tekstu OSP. Gdy dostawca podał limit, komunikat zawiera też liczbę sekund do ponowienia (nagłówek X-AI-Retry-After).",
             "headers": {
               "X-AI-Retry-After": {
                 "$ref": "#/components/headers/XAiRetryAfter"
@@ -263,7 +263,7 @@
                   "$ref": "#/components/schemas/Blad"
                 },
                 "example": {
-                  "error": "Żaden dostawca AI nie odpowiedział. Spróbuj ponownie za ok. 20 s."
+                  "error": "Żaden dostawca AI nie odpowiedział. Spróbuj ponownie za chwilę."
                 }
               }
             }
