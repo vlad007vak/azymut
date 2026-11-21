@@ -1,5 +1,7 @@
+import { LayoutDashboardIcon } from "lucide-react";
 import type { Metadata } from "next";
 
+import { NaglowekStrony } from "@/components/naglowek-strony";
 import { PanelHr } from "@/features/hr";
 
 export const metadata: Metadata = {
@@ -9,15 +11,16 @@ export const metadata: Metadata = {
 
 export default function HrPage() {
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8">
-      <header className="grid gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Panel HR</h1>
-        <p className="text-muted-foreground">
-          Wszystkie procesy ocen – pierwsze i okresowe – w jednym miejscu: etap, termin i przypomnienia dla
-          oceniających.
-        </p>
-      </header>
-      <PanelHr />
-    </div>
+    <>
+      <NaglowekStrony
+        ikona={LayoutDashboardIcon}
+        nadtytul="HR / administrator procesu"
+        tytul="Panel HR"
+        opis="Wszystkie procesy ocen – pierwsze i okresowe – w jednym miejscu: etap, termin i przypomnienia dla oceniających."
+      />
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <PanelHr />
+      </div>
+    </>
   );
 }

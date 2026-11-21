@@ -1,21 +1,21 @@
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { nazwaEtapu } from "@/lib/ocena/zasady";
 import type { EtapOceny, Ocena } from "@/types/ocena";
 
 import { opisTerminu, statusTerminu, type StatusTerminu } from "./terminy";
 
+// Etapy w toku – odcienie granatu z motywu, coraz ciemniejsze z postępem; sporządzona (żółty) i zakończona (zielony) – kolory stanów.
 const KOLOR_ETAPU: Record<EtapOceny, string> = {
-  zaplanowana: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100",
-  kryteria: "bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100",
-  obserwacje: "bg-indigo-100 text-indigo-900 dark:bg-indigo-950 dark:text-indigo-100",
-  rozmowa: "bg-violet-100 text-violet-900 dark:bg-violet-950 dark:text-violet-100",
-  sporzadzona: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-100",
-  zakonczona: "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100",
+  zaplanowana: "border-border bg-muted text-muted-foreground",
+  kryteria: "border-primary/30 bg-card text-primary",
+  obserwacje: "border-transparent bg-chart-3/30 text-primary",
+  rozmowa: "border-transparent bg-primary text-primary-foreground",
+  sporzadzona: "border-transparent bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-100",
+  zakonczona: "border-transparent bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100",
 };
 
 export function EtapBadge({ etap }: { etap: EtapOceny }) {
-  return <Badge className={cn("border-transparent", KOLOR_ETAPU[etap])}>{nazwaEtapu(etap)}</Badge>;
+  return <Badge className={KOLOR_ETAPU[etap]}>{nazwaEtapu(etap)}</Badge>;
 }
 
 const KOLOR_TERMINU: Record<StatusTerminu, string> = {

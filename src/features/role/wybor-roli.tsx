@@ -49,6 +49,8 @@ export function WyborRoli() {
   }
 
   const brakDostepu = chroniona && gotowe && obecna !== chroniona.rola;
+  // Najwyżej jeden czerwony przycisk: rola wymagana przez chronioną stronę, a bez niej – obecna rola.
+  const wyrozniona = chroniona?.rola ?? (gotowe ? obecna : null);
 
   return (
     <div className="flex flex-col gap-6">
@@ -64,13 +66,14 @@ export function WyborRoli() {
         </Alert>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {ROLE.map((r) => (
           <KartaRoli
             key={r.id}
             rola={r}
             aktywna={gotowe && obecna === r.id}
             wymagana={chroniona?.rola === r.id ? chroniona.nazwa : null}
+            wyrozniona={wyrozniona === r.id}
             wybierana={wybierana}
             onWybierz={() => wybierz(r.id)}
           />
@@ -78,7 +81,7 @@ export function WyborRoli() {
       </div>
 
       {gotowe && obecnyOpis && (
-        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm text-muted-foreground shadow-xs">
           <span>
             Obecnie jesteś w roli: <strong className="text-foreground">{obecnyOpis.nazwa}</strong>.
           </span>
@@ -96,12 +99,14 @@ function KartaRoli({
   rola,
   aktywna,
   wymagana,
+  wyrozniona,
   wybierana,
   onWybierz,
 }: {
   rola: OpisRoli;
   aktywna: boolean;
   wymagana: string | null;
+  wyrozniona: boolean;
   wybierana: RolaId | null;
   onWybierz: () => void;
 }) {
@@ -111,37 +116,45 @@ function KartaRoli({
   return (
     <Card
       aria-labelledby={idTytulu}
-      className={cn(aktywna && "ring-2 ring-primary", !aktywna && wymagana && "ring-2 ring-primary/50")}
+      className={cn(
+        "gap-5 shadow-xs [--card-spacing:--spacing(6)]",
+        aktywna && "ring-2 ring-primary",
+        !aktywna && wymagana && "ring-2 ring-primary/50",
+      )}
     >
-      <CardHeader>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="flex size-9 items-center justify-center rounded-lg bg-muted">
-            <IkonaRoli rola={rola.id} className="size-5" />
+      <CardHeader className="gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-accent text-primary">
+            <IkonaRoli rola={rola.id} className="size-6" strokeWidth={1.5} />
           </span>
-          <CardTitle id={idTytulu} className="text-lg">
+          <CardTitle id={idTytulu} className="text-xl font-bold">
             {rola.nazwa}
           </CardTitle>
-          {aktywna && <Badge>Aktywna rola</Badge>}
-          {!aktywna && wymagana && <Badge variant="secondary">Wymagana: {wymagana}</Badge>}
+          {aktywna && <Badge className="ml-auto">Aktywna rola</Badge>}
+          {!aktywna && wymagana && (
+            <Badge variant="secondary" className="ml-auto">
+              Wymagana: {wymagana}
+            </Badge>
+          )}
         </div>
-        <CardDescription>{rola.opis}</CardDescription>
+        <CardDescription className="text-base">{rola.opis}</CardDescription>
       </CardHeader>
 
-      <CardContent className="flex flex-1 flex-col gap-4">
+      <CardContent className="flex flex-1 flex-col gap-5">
         {rola.osoba ? (
-          <div className="rounded-lg border bg-muted/40 px-3 py-2 text-sm">
-            <p className="font-medium">{imieINazwisko(rola.osoba)}</p>
+          <div className="rounded-lg bg-muted px-4 py-3 text-sm">
+            <p className="font-semibold">{imieINazwisko(rola.osoba)}</p>
             <p className="text-muted-foreground">{rola.osoba.stanowisko}</p>
             {rola.osoba.komorka && <p className="text-xs text-muted-foreground">{rola.osoba.komorka}</p>}
           </div>
         ) : (
-          <div className="rounded-lg border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
+          <div className="rounded-lg bg-muted px-4 py-3 text-sm text-muted-foreground">
             Pracownik komórki kadrowej odpowiedzialny za organizację ocen w urzędzie.
           </div>
         )}
 
         <div className="grid gap-1.5 text-sm">
-          <p className="font-medium">Może:</p>
+          <p className="font-semibold">Może:</p>
           <ul className="grid gap-1">
             {rola.uprawnienia.map((u) => (
               <li key={u} className="flex gap-2">
@@ -150,7 +163,7 @@ function KartaRoli({
               </li>
             ))}
           </ul>
-          <p className="mt-1 font-medium">Nie może:</p>
+          <p className="mt-1 font-semibold">Nie może:</p>
           <ul className="grid gap-1">
             {rola.ograniczenia.map((o) => (
               <li key={o} className="flex gap-2 text-muted-foreground">
@@ -164,8 +177,9 @@ function KartaRoli({
 
       <CardFooter>
         <Button
+          size="lg"
           className="w-full"
-          variant={aktywna || wymagana ? "default" : "outline"}
+          variant={wyrozniona ? "brand" : "default"}
           onClick={onWybierz}
           disabled={wybierana !== null}
           aria-describedby={idTytulu}
@@ -186,7 +200,7 @@ function KartaRoli({
 
 export function WyborRoliSzkielet() {
   return (
-    <div className="grid gap-4 md:grid-cols-2" aria-busy="true" aria-label="Wczytywanie ról">
+    <div className="grid gap-6 md:grid-cols-2" aria-busy="true" aria-label="Wczytywanie ról">
       <Skeleton className="h-96 rounded-xl" />
       <Skeleton className="h-96 rounded-xl" />
     </div>
