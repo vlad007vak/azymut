@@ -4,7 +4,7 @@
     "title": "Azymut – API prototypu „Kompas kompetencji”",
     "version": "1.0.0",
     "summary": "Interfejsy aplikacji Azymut i format wymiany danych oceny (azymut.ocena).",
-    "description": "API prototypu Azymut (HackNation 2026, zadanie „Kompas kompetencji” Ministerstwa Cyfryzacji).\n\n- Wszystkie endpointy przyjmują i zwracają JSON w UTF-8 (wyjątek: strumień tekstu z /api/ai/chat).\n- Błąd zawsze ma postać obiektu {\"error\": \"komunikat po polsku\"}.\n- Minimalizacja danych: do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy i przykłady zachowań.\n- Odpowiedzi AI są sugestiami. Ostateczny poziom każdego kryterium zawsze wybiera przełożony.\n- Oceny są przechowywane w przeglądarce użytkownika. Wymiana z systemami zewnętrznymi (system kadrowy, EZD) odbywa się przez plik eksportu w formacie azymut.ocena – schemat EksportOceny.\n- Prototyp nie ma uwierzytelniania – wymagania przed wdrożeniem opisuje docs/API.md (sekcja „Bezpieczeństwo przed wdrożeniem”)."
+    "description": "API prototypu Azymut (HackNation 2026, zadanie „Kompas kompetencji” Ministerstwa Cyfryzacji).\n\n- Wszystkie endpointy przyjmują i zwracają JSON w UTF-8.\n- Błąd zawsze ma postać obiektu {\"error\": \"komunikat po polsku\"}.\n- Minimalizacja danych: do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy i przykłady zachowań.\n- Odpowiedzi AI są sugestiami. Ostateczny poziom każdego kryterium zawsze wybiera przełożony.\n- Oceny są przechowywane w przeglądarce użytkownika. Wymiana z systemami zewnętrznymi (system kadrowy, EZD) odbywa się przez plik eksportu w formacie azymut.ocena – schemat EksportOceny.\n- Prototyp nie ma uwierzytelniania – wymagania przed wdrożeniem opisuje docs/API.md (sekcja „Bezpieczeństwo przed wdrożeniem”)."
   },
   "servers": [
     {
@@ -27,7 +27,7 @@
     },
     {
       "name": "Diagnostyka AI",
-      "description": "Stan dostawców modeli AI i endpoint techniczny czatu."
+      "description": "Stan i test połączenia z dostawcami modeli AI."
     },
     {
       "name": "Eksport oceny",
@@ -482,74 +482,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/ai/chat": {
-      "post": {
-        "tags": [
-          "Diagnostyka AI"
-        ],
-        "operationId": "czatOgolny",
-        "summary": "Czat ogólny (strumień tekstu)",
-        "description": "Endpoint techniczny z szablonu startowego – nie jest częścią procesu oceny. Zwraca odpowiedź modelu jako strumień zwykłego tekstu.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CzatZapytanie"
-              },
-              "example": {
-                "messages": [
-                  {
-                    "role": "user",
-                    "content": "Czy działasz?"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Strumień tekstu odpowiedzi.",
-            "headers": {
-              "X-AI-Provider": {
-                "$ref": "#/components/headers/XAiProvider"
-              },
-              "X-AI-Model": {
-                "$ref": "#/components/headers/XAiModel"
-              }
-            },
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Tak, działam. W czym mogę pomóc?"
-              }
-            }
-          },
-          "400": {
-            "description": "Nieprawidłowe dane wejściowe.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Blad"
-                },
-                "example": {
-                  "error": "Nieprawidłowe zapytanie."
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Nieoczekiwany błąd serwera (odpowiedź bez gwarantowanego formatu JSON)."
-          },
-          "503": {
-            "$ref": "#/components/responses/AiNiedostepne"
           }
         }
       }
@@ -1099,41 +1031,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "CzatZapytanie": {
-        "type": "object",
-        "required": [
-          "messages"
-        ],
-        "properties": {
-          "messages": {
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 40,
-            "items": {
-              "type": "object",
-              "required": [
-                "role",
-                "content"
-              ],
-              "properties": {
-                "role": {
-                  "type": "string",
-                  "enum": [
-                    "user",
-                    "assistant"
-                  ]
-                },
-                "content": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 8000
-                }
-              }
-            },
-            "description": "Wiadomości rozmowy w kolejności chronologicznej."
           }
         }
       },

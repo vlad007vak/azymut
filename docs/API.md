@@ -17,7 +17,7 @@ integracji z EZD i systemami kadrowymi. Ten dokument opisuje:
 ## 1. Endpointy prototypu
 
 Zasady wspólne:
-- żądania i odpowiedzi w JSON (UTF-8); wyjątek – `/api/ai/chat` zwraca strumień tekstu;
+- żądania i odpowiedzi w JSON (UTF-8);
 - błąd ma zawsze postać `{ "error": "komunikat po polsku" }`;
 - treść każdego żądania jest walidowana (zod) – nieprawidłowe dane → `400`;
 - **minimalizacja danych:** do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy
@@ -33,7 +33,6 @@ Zasady wspólne:
 | `POST /api/rozmowa` | Asystent rozmowy: pytania do pracownika, tematy do omówienia, argumenty per kryterium, propozycje do wniosków rozwojowych | 400, 500, 502, 503 |
 | `GET /api/ai/status` | Lista skonfigurowanych dostawców AI (bez kluczy) | – |
 | `POST /api/ai/status` | Test połączenia z każdym dostawcą AI | – |
-| `POST /api/ai/chat` | Czat ogólny (endpoint techniczny z szablonu startowego, poza procesem oceny) | 400, 500, 503 |
 
 Znaczenie kodów: `400` – nieprawidłowe dane wejściowe; `502` – model AI zwrócił pustą odpowiedź; `503` – żaden
 dostawca AI nie odpowiedział (limit darmowych modeli albo brak kluczy); `500` – nieoczekiwany błąd serwera.
