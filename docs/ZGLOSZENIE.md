@@ -26,8 +26,9 @@ z pracownikiem. Azymut łączy to w jednym narzędziu dla przełożonego (i pane
   zachowania, które obserwował, i zapisuje przykład; system pokazuje sugerowany poziom z wyjaśnieniem.
 - **Decyzja przełożonego:** ostateczny poziom wybiera człowiek; aplikacja liczy średnią lub ocenę łączną i wynik
   dokładnie według przepisów oraz wymaga uzasadnienia przy ocenie negatywnej.
-- **Asystent formalny AI** z bazą wiedzy (rozporządzenia, poradniki KPRM, model kompetencji): każda odpowiedź
-  ze źródłem i cytatem, a gdy w bazie nie ma odpowiedzi – jasny komunikat zamiast zgadywania.
+- **Asystent formalny AI** z bazą wiedzy (ustawa, rozporządzenia, poradniki KPRM, model kompetencji oraz baza
+  pytań i odpowiedzi, którą urząd może podmienić – np. z arkusza Excel): każda odpowiedź ze źródłem i cytatem,
+  a gdy w bazie nie ma odpowiedzi – jasny komunikat zamiast zgadywania.
 - **Analiza opisu stanowiska** (podpowiedź arkusza, kryteriów dodatkowych i wskaźników) oraz **asystent rozmowy**
   (pytania, kwestie do omówienia, argumenty, propozycje rozwoju).
 - **Kontrola jakości uzasadnienia:** przed sporządzeniem oceny wskazuje ogólniki, ocenę osoby zamiast zachowania,

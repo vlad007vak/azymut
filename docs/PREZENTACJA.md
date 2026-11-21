@@ -50,7 +50,7 @@ Schemat (jak na grafice organizatora):
 - Uzasadnienie wymagane przy ocenie negatywnej; arkusz do wydruku / PDF.
 
 ## Slajd 7 – Asystent formalny AI (zrzut ekranu odpowiedzi ze źródłem)
-- Odpowiada **wyłącznie z bazy wiedzy**: ustawa, rozporządzenia, poradniki KPRM, model kompetencji (264 fragmenty).
+- Odpowiada **wyłącznie z bazy wiedzy**: ustawa, rozporządzenia, poradniki KPRM, model kompetencji (264 fragmenty) oraz baza pytań i odpowiedzi urzędu – plik do podmiany (np. z Excela).
 - Przy każdej odpowiedzi: dokument, paragraf / strona i **dosłowny cytat**.
 - Gdy w bazie brak odpowiedzi – **„Brak informacji”** zamiast zgadywania.
 - Źródła buduje serwer – model nie może „wymyślić” cytatu.
@@ -71,7 +71,7 @@ Schemat (jak na grafice organizatora):
 
 ## Slajd 10 – Kierunki rozwoju i podsumowanie
 - Integracja z systemem kadrowym (dane pracownika, OSP) i EZD (arkusz do akt).
-- Raporty dla urzędu, powiadomienia e-mail, kolejne urzędy – konfigurowalny model i baza wiedzy.
+- Raporty dla urzędu, powiadomienia e-mail, wgrywanie bazy pytań i odpowiedzi w panelu administratora, kolejne urzędy – konfigurowalny model i baza wiedzy.
 - **Wartość:** spójniejsze i bardziej obiektywne oceny, mniej błędów formalnych, lepsze rozmowy z pracownikami.
 - Demo: azymut-bubylda.vercel.app · Kod: github.com/vlad007vak/azymut · Zespół Azymut
 
