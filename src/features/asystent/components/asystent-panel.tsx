@@ -69,7 +69,14 @@ export function AsystentPanel({ rodzaj, className }: AsystentPanelProps) {
       setWiadomosci((prev) => [...prev, { role: "assistant", content: odp.odpowiedz, odp }]);
     } catch (err) {
       if (controller.signal.aborted) return;
-      toast.error(err instanceof Error ? err.message : "Wystąpił nieznany błąd.");
+      // Bez sieci fetch rzuca TypeError z angielskim komunikatem przeglądarki („Failed to fetch”).
+      toast.error(
+        err instanceof TypeError
+          ? "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie."
+          : err instanceof Error
+            ? err.message
+            : "Wystąpił nieznany błąd.",
+      );
       // Cofamy pytanie do pola, żeby można było spróbować ponownie.
       setWiadomosci((prev) => prev.slice(0, -1));
       setInput(pytanie);
