@@ -523,6 +523,35 @@
                       "zanonimizowano": false,
                       "dostawca": "groq#1"
                     }
+                  },
+                  "bezAi": {
+                    "summary": "AI niedostępne – tylko sprawdzenia automatyczne (aiNiedostepne: true)",
+                    "value": {
+                      "uwagi": [
+                        {
+                          "typ": "niespojnosc",
+                          "kompetencjaId": "rzetelnosc",
+                          "sugestia": "Wybrany poziom „powyżej oczekiwań” jest wyższy niż wszystkie zaznaczone zachowania (najwyższe: „na poziomie oczekiwań”). Dopisz przykład, który uzasadnia ten poziom (np. z rozmowy oceniającej), albo sprawdź wybór – decyzja należy do Ciebie.",
+                          "zrodlo": "regula"
+                        },
+                        {
+                          "typ": "brak-przykladu",
+                          "kompetencjaId": "wspolpraca",
+                          "sugestia": "Przy kryterium „Współpraca” nie ma żadnego przykładu (zaznaczone zachowania: 1). Dopisz co najmniej jeden konkretny przykład z okresu oceny: sytuacja – działanie – rezultat.",
+                          "zrodlo": "regula"
+                        },
+                        {
+                          "typ": "ogolnik",
+                          "pole": "uzasadnienie",
+                          "cytat": "Pracownica dobrze sobie radzi",
+                          "sugestia": "Ogólne sformułowanie bez konkretu. Opisz zachowanie na przykładzie z okresu oceny: jaka była sytuacja, co pracownik zrobił i z jakim rezultatem.",
+                          "zrodlo": "regula"
+                        }
+                      ],
+                      "podsumowanie": "Do doprecyzowania: 1 kryterium bez przykładu, 1 niespójność, 1 ogólnik. Poprawki dotyczą tylko opisu – poziomy wybierasz Ty.",
+                      "aiNiedostepne": true,
+                      "zanonimizowano": false
+                    }
                   }
                 }
               }
