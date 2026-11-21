@@ -27,8 +27,9 @@ Azymut prowadzi przełożonego przez cały proces w jednym miejscu, a decyzja za
    średnią / ocenę łączną i wynik (pozytywna/negatywna) dokładnie według rozporządzeń i wymaga uzasadnienia
    przy ocenie negatywnej.
 4. **Asystent formalny (AI)** – odpowiada na pytania o zasady oceny **wyłącznie na podstawie bazy wiedzy**
-   (rozporządzenia, poradniki KPRM, model kompetencji), przy każdej odpowiedzi pokazuje źródło (dokument,
-   paragraf lub strona, dosłowny cytat), a gdy w bazie nie ma odpowiedzi – mówi to wprost.
+   (ustawa, rozporządzenia, poradniki KPRM, model kompetencji oraz baza pytań i odpowiedzi urzędu, którą urząd
+   podmienia bez programowania), przy każdej odpowiedzi pokazuje źródło (dokument, paragraf lub strona, dosłowny
+   cytat), a gdy w bazie nie ma odpowiedzi – mówi to wprost.
 5. **Analiza opisu stanowiska (AI)** – z OSP podpowiada arkusz, kryteria dodatkowe i najważniejsze wskaźniki;
    każdą podpowiedź przełożony przyjmuje albo odrzuca.
 6. **Asystent rozmowy (AI)** – plan rozmowy oceniającej: pytania do pracownika, kwestie do omówienia,
@@ -62,14 +63,15 @@ i zapisują się tylko w Twojej przeglądarce (przycisk „Resetuj dane demo” 
    stanowiska „Naczelnik wydziału” → **Analizuj** (arkusz B, kryteria dodatkowe z uzasadnieniem) → **Zastosuj**.
 8. Pierwsza ocena: **Julia Mazur** – skala 3/5/7 pkt i warunki z § 10 rozporządzenia o pierwszej ocenie.
 9. **Asystent formalny** (`/asystent`): pytania o terminy, kryteria i skalę; pytanie spoza tematu
-   (np. o urlop) → komunikat „Brak informacji”.
+   (np. o urlop) → komunikat „Brak informacji”. Pytanie z bazy pytań i odpowiedzi, np. „Co się dzieje z oryginałem
+   arkusza oceny okresowej?” – w źródłach „Baza pytań i odpowiedzi – …” obok przepisu (§ 12 rozporządzenia).
 10. **Panel HR** (`/hr`): wybierz rolę **„HR / administrator procesu”** (role demonstracyjne, bez hasła) → etapy
    i terminy procesów, nowy proces, przypomnienie. Rolę zmienisz w nagłówku („Zmień rolę”).
 
 ## Wykorzystanie sztucznej inteligencji
 | Element | Co robi AI | Zabezpieczenia |
 |---|---|---|
-| Asystent formalny (`/asystent`, `POST /api/asystent`) | Formułuje odpowiedź na podstawie fragmentów bazy wiedzy znalezionych wyszukiwarką BM25 (264 fragmenty: ustawa o służbie cywilnej – art. 38 i 81–83, oba rozporządzenia, poradniki KPRM, model kompetencji) | Model wskazuje tylko numery fragmentów – źródła i cytaty buduje serwer; gdy pytanie wykracza poza bazę → „Brak informacji”; imiona i nazwiska usuwane z pytania |
+| Asystent formalny (`/asystent`, `POST /api/asystent`) | Formułuje odpowiedź na podstawie fragmentów bazy wiedzy znalezionych wyszukiwarką BM25 (264 fragmenty: ustawa o służbie cywilnej – art. 38 i 81–83, oba rozporządzenia, poradniki KPRM, model kompetencji) oraz bazy pytań i odpowiedzi urzędu (plik do podmiany, 12 przykładowych pozycji) | Model wskazuje tylko numery fragmentów – źródła i cytaty buduje serwer; pozycje Q&A są dokładane obok przepisów, nie zamiast nich; gdy pytanie wykracza poza bazę → „Brak informacji”; imiona i nazwiska usuwane z pytania |
 | Analiza opisu stanowiska (`POST /api/osp`) | Podpowiada kryteria dodatkowe i wskaźniki z uzasadnieniem z zadań na stanowisku | Arkusz B/C ustalany regułą (bez AI); serwer odrzuca kryteria obowiązkowe, nadmiarowe i nieistniejące wskaźniki; części OSP z danymi osobowymi usuwane przed wysłaniem |
 | Asystent rozmowy (`POST /api/rozmowa`) | Plan rozmowy oceniającej oparty na zapisanych przykładach zachowań | Do AI trafia tylko stanowisko, kryteria i przykłady (anonimizowane); prompt zabrania oceniania i dodawania faktów |
 | Kontrola jakości uzasadnienia (`POST /api/jakosc`) | Wskazuje ogólniki, ocenę osoby zamiast zachowania, przykład sprzeczny z poziomem i ryzyko stronniczości w tekście przełożonego | Uwaga AI bez dosłownego cytatu jest odrzucana przez serwer; brak przykładu i niespójność poziomów sprawdzają reguły (działają też przy limicie AI); odpowiedź nie zawiera poziomów; imiona i nazwiska zamieniane na „[osoba]” |
@@ -90,7 +92,7 @@ flowchart LR
   UI --> R[Zasady z rozporządzeń<br/>src/lib/ocena/zasady.ts]
   UI --> M[Model kompetencji<br/>src/data/model-kompetencji.json]
   UI --> API[API: /api/asystent, /api/osp,<br/>/api/rozmowa, /api/jakosc]
-  API --> KB[(Baza wiedzy<br/>264 fragmenty + BM25)]
+  API --> KB[(Baza wiedzy<br/>264 fragmenty + baza Q&A urzędu + BM25)]
   API --> AI[Warstwa AI<br/>Groq → Gemini]
 ```
 
@@ -98,7 +100,9 @@ flowchart LR
   hosting Vercel. Każda funkcja w osobnym module (`src/features/*`), wspólny kontrakt typów (`src/types`).
 - **Dane:** model kompetencji generowany z pliku organizatora skryptem `scripts/model-z-xlsx.py`;
   baza wiedzy generowana z PDF skryptem `scripts/baza-wiedzy/zbuduj.mjs` – po zmianie przepisów wystarczy
-  przebudować pliki.
+  przebudować pliki. Baza pytań i odpowiedzi urzędu to osobny plik `src/data/baza-wiedzy/pytania-odpowiedzi.json`,
+  który urząd podmienia bez programowania – np. z arkusza Excel (CSV → `scripts/baza-wiedzy/qa-z-csv.mjs`);
+  błędny plik zatrzymuje build komunikatem po polsku. Instrukcja: `docs/BAZA-WIEDZY.md`.
 - **Walidacja:** każde żądanie API sprawdzane schematem zod; klucze AI tylko po stronie serwera.
 - **Udokumentowane API:** specyfikacja OpenAPI 3.1 (`public/openapi.json`) i strona `/dokumentacja-api`;
   opis integracji i wymagań bezpieczeństwa w `docs/API.md`.
