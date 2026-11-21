@@ -4,7 +4,7 @@
     "title": "Azymut – API prototypu „Kompas kompetencji”",
     "version": "1.0.0",
     "summary": "Interfejsy aplikacji Azymut i format wymiany danych oceny (azymut.ocena).",
-    "description": "API prototypu Azymut (HackNation 2026, zadanie „Kompas kompetencji” Ministerstwa Cyfryzacji).\n\n- Wszystkie endpointy przyjmują i zwracają JSON w UTF-8 (wyjątek: strumień tekstu z /api/ai/chat).\n- Błąd zawsze ma postać obiektu {\"error\": \"komunikat po polsku\"}.\n- Minimalizacja danych: do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy i przykłady zachowań.\n- Odpowiedzi AI są sugestiami. Ostateczny poziom każdego kryterium zawsze wybiera przełożony.\n- Oceny są przechowywane w przeglądarce użytkownika. Wymiana z systemami zewnętrznymi (system kadrowy, EZD) odbywa się przez plik eksportu w formacie azymut.ocena – schemat EksportOceny.\n- Prototyp nie ma uwierzytelniania – wymagania przed wdrożeniem opisuje docs/API.md (sekcja „Bezpieczeństwo przed wdrożeniem”)."
+    "description": "API prototypu Azymut (HackNation 2026, zadanie „Kompas kompetencji” Ministerstwa Cyfryzacji).\n\n- Wszystkie endpointy przyjmują i zwracają JSON w UTF-8.\n- Błąd zawsze ma postać obiektu {\"error\": \"komunikat po polsku\"}.\n- Minimalizacja danych: do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy i przykłady zachowań.\n- Odpowiedzi AI są sugestiami. Ostateczny poziom każdego kryterium zawsze wybiera przełożony.\n- Oceny są przechowywane w przeglądarce użytkownika. Wymiana z systemami zewnętrznymi (system kadrowy, EZD) odbywa się przez plik eksportu w formacie azymut.ocena – schemat EksportOceny.\n- Prototyp nie ma uwierzytelniania – wymagania przed wdrożeniem opisuje docs/API.md (sekcja „Bezpieczeństwo przed wdrożeniem”)."
   },
   "servers": [
     {
@@ -26,8 +26,12 @@
       "description": "Przygotowanie do rozmowy oceniającej."
     },
     {
+      "name": "Kontrola jakości",
+      "description": "Sprawdzenie uzasadnienia oceny: ogólniki, brak przykładów, niespójności – bez zmiany poziomów."
+    },
+    {
       "name": "Diagnostyka AI",
-      "description": "Stan dostawców modeli AI i endpoint techniczny czatu."
+      "description": "Stan dostawców modeli AI."
     },
     {
       "name": "Eksport oceny",
@@ -412,6 +416,160 @@
         }
       }
     },
+    "/api/jakosc": {
+      "post": {
+        "tags": [
+          "Kontrola jakości"
+        ],
+        "operationId": "sprawdzJakoscUzasadnienia",
+        "summary": "Kontrola jakości uzasadnienia oceny",
+        "description": "Wskazuje fragmenty uzasadnienia, wniosków i przykładów do doprecyzowania: ogólniki, ocenę osoby zamiast zachowań, brak przykładów, niespójność poziomu z zaznaczonymi zachowaniami, ryzyko stronniczości. Część sprawdzeń działa regułami bez AI (zrodlo: regula); uwagi modelu są zwracane tylko z cytatem potwierdzonym w tekście przełożonego (zrodlo: ai). Nie zmienia poziomów. Nie przyjmuje imion ani nazwisk – gdy pojawią się w tekście, są usuwane przed wysłaniem do AI (zanonimizowano: true). Gdy AI jest niedostępne, zwraca 200 z samymi sprawdzeniami automatycznymi (aiNiedostepne: true).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JakoscZapytanie"
+              },
+              "examples": {
+                "ocena": {
+                  "summary": "Ocena okresowa, dwa kryteria",
+                  "value": {
+                    "rodzaj": "okresowa",
+                    "stanowisko": "radca",
+                    "kryteria": [
+                      {
+                        "kompetencjaId": "rzetelnosc",
+                        "decyzja": 2,
+                        "wskazniki": [
+                          {
+                            "id": "rzetelnosc-1",
+                            "poziom": 3,
+                            "przyklad": "Pisma do partnerów przygotowywała zgodnie z instrukcją kancelaryjną; przed wysyłką weryfikowała załączniki."
+                          },
+                          {
+                            "id": "rzetelnosc-2",
+                            "poziom": 2
+                          }
+                        ]
+                      },
+                      {
+                        "kompetencjaId": "wspolpraca",
+                        "decyzja": 4,
+                        "wskazniki": [
+                          {
+                            "id": "wspolpraca-2",
+                            "poziom": 4,
+                            "przyklad": "Prowadziła wspólny rejestr ustaleń z departamentem prawnym, dzięki czemu nie powtarzano uzgodnień."
+                          }
+                        ]
+                      }
+                    ],
+                    "uzasadnienie": "Pracownica jest bardzo sumienna i ogólnie dobrze współpracuje z zespołem.",
+                    "wnioskiRozwojowe": "Szkolenie z planowania pracy."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uwagi do doprecyzowania i podsumowanie.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WynikKontroli"
+                },
+                "examples": {
+                  "uwagi": {
+                    "summary": "Uwagi do uzasadnienia i wniosków",
+                    "value": {
+                      "uwagi": [
+                        {
+                          "typ": "ogolnik",
+                          "pole": "uzasadnienie",
+                          "cytat": "jest bardzo sumienna",
+                          "sugestia": "Zamiast ogólnej cechy, opisz konkretne zachowanie, np. „w 100% terminowo realizowała zadania z zakresu X” lub „bezbłędnie przygotowywała dokumenty Y”.",
+                          "zrodlo": "ai"
+                        },
+                        {
+                          "typ": "ogolnik",
+                          "pole": "uzasadnienie",
+                          "cytat": "ogólnie dobrze współpracuje z zespołem",
+                          "sugestia": "Podaj przykład konkretnej sytuacji, w której pracownica wspierała innych, np. „udzielała wsparcia kolegom w zakresie Z” lub „aktywnie uczestniczyła w spotkaniach zespołowych, proponując rozwiązania”.",
+                          "zrodlo": "ai"
+                        },
+                        {
+                          "typ": "ogolnik",
+                          "pole": "wnioski",
+                          "cytat": "Szkolenie z planowania pracy",
+                          "sugestia": "Uzasadnij wniosek, wskazując na konkretny problem, np. „ze względu na opóźnienia w realizacji zadań z zakresu X, wskazane jest szkolenie z zarządzania czasem”.",
+                          "zrodlo": "ai"
+                        }
+                      ],
+                      "podsumowanie": "Do doprecyzowania: 3 ogólniki. Poprawki dotyczą tylko opisu – poziomy wybierasz Ty.",
+                      "aiNiedostepne": false,
+                      "zanonimizowano": false,
+                      "dostawca": "groq"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Nieprawidłowe dane oceny (komunikat z walidacji).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "examples": {
+                  "brakKryteriow": {
+                    "summary": "Brak kryteriów",
+                    "value": {
+                      "error": "Ocena nie ma jeszcze kryteriów do sprawdzenia."
+                    }
+                  },
+                  "kompetencja": {
+                    "summary": "Nieznana kompetencja",
+                    "value": {
+                      "error": "Nieznana kompetencja."
+                    }
+                  },
+                  "dlugi": {
+                    "summary": "Za długi tekst",
+                    "value": {
+                      "error": "Tekst jest za długi (max 4000 znaków)."
+                    }
+                  },
+                  "inne": {
+                    "summary": "Inny błąd walidacji",
+                    "value": {
+                      "error": "Nieprawidłowe dane oceny do sprawdzenia."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Nieoczekiwany błąd serwera.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Nie udało się sprawdzić uzasadnienia. Spróbuj ponownie."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/ai/status": {
       "get": {
         "tags": [
@@ -482,74 +640,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/ai/chat": {
-      "post": {
-        "tags": [
-          "Diagnostyka AI"
-        ],
-        "operationId": "czatOgolny",
-        "summary": "Czat ogólny (strumień tekstu)",
-        "description": "Endpoint techniczny z szablonu startowego – nie jest częścią procesu oceny. Zwraca odpowiedź modelu jako strumień zwykłego tekstu.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CzatZapytanie"
-              },
-              "example": {
-                "messages": [
-                  {
-                    "role": "user",
-                    "content": "Czy działasz?"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Strumień tekstu odpowiedzi.",
-            "headers": {
-              "X-AI-Provider": {
-                "$ref": "#/components/headers/XAiProvider"
-              },
-              "X-AI-Model": {
-                "$ref": "#/components/headers/XAiModel"
-              }
-            },
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Tak, działam. W czym mogę pomóc?"
-              }
-            }
-          },
-          "400": {
-            "description": "Nieprawidłowe dane wejściowe.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Blad"
-                },
-                "example": {
-                  "error": "Nieprawidłowe zapytanie."
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Nieoczekiwany błąd serwera (odpowiedź bez gwarantowanego formatu JSON)."
-          },
-          "503": {
-            "$ref": "#/components/responses/AiNiedostepne"
           }
         }
       }
@@ -1026,6 +1116,186 @@
           }
         }
       },
+      "JakoscZapytanie": {
+        "type": "object",
+        "description": "Dane oceny do sprawdzenia – bez imion i nazwisk.",
+        "required": [
+          "rodzaj",
+          "kryteria"
+        ],
+        "properties": {
+          "rodzaj": {
+            "$ref": "#/components/schemas/RodzajOceny"
+          },
+          "stanowisko": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Nazwa stanowiska (bez imienia i nazwiska)."
+          },
+          "kryteria": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "Kryteria z decyzją lub sugestią i wskaźnikami.",
+            "items": {
+              "type": "object",
+              "required": [
+                "kompetencjaId",
+                "wskazniki"
+              ],
+              "properties": {
+                "kompetencjaId": {
+                  "$ref": "#/components/schemas/KompetencjaId"
+                },
+                "decyzja": {
+                  "$ref": "#/components/schemas/PoziomId",
+                  "description": "Ostateczny poziom wybrany przez przełożonego (jeśli już jest)."
+                },
+                "sugestia": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PoziomId"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "Sugestia systemu (gdy brak decyzji)."
+                },
+                "wskazniki": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "description": "Wskaźniki z wybranym zachowaniem i przykładem.",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "poziom"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "description": "Identyfikator wskaźnika, np. „rzetelnosc-2”."
+                      },
+                      "poziom": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/components/schemas/PoziomId"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ],
+                        "description": "Wybrane zachowanie; null – brak podstaw do oceny."
+                      },
+                      "przyklad": {
+                        "type": "string",
+                        "maxLength": 1500,
+                        "description": "Przykład z okresu oceny."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "uzasadnienie": {
+            "type": "string",
+            "maxLength": 4000,
+            "description": "Uzasadnienie oceny."
+          },
+          "wnioskiRozwojowe": {
+            "type": "string",
+            "maxLength": 4000,
+            "description": "Wnioski rozwojowe."
+          }
+        }
+      },
+      "UwagaJakosci": {
+        "type": "object",
+        "required": [
+          "typ",
+          "sugestia",
+          "zrodlo"
+        ],
+        "properties": {
+          "typ": {
+            "type": "string",
+            "enum": [
+              "brak-przykladu",
+              "niespojnosc",
+              "ogolnik",
+              "ocena-osoby",
+              "ryzyko-stronniczosci"
+            ],
+            "description": "Rodzaj uwagi."
+          },
+          "kompetencjaId": {
+            "$ref": "#/components/schemas/KompetencjaId",
+            "description": "Kryterium, którego dotyczy uwaga (brak – uzasadnienie lub wnioski ogólnie)."
+          },
+          "cytat": {
+            "type": "string",
+            "description": "Dosłowny fragment tekstu przełożonego – sprawdzony na serwerze."
+          },
+          "sugestia": {
+            "type": "string",
+            "description": "Co doprecyzować – podpowiedź, nie ocena."
+          },
+          "pole": {
+            "type": "string",
+            "enum": [
+              "przyklad",
+              "uzasadnienie",
+              "wnioski"
+            ],
+            "description": "Gdzie w ocenie jest fragment."
+          },
+          "zrodlo": {
+            "type": "string",
+            "enum": [
+              "regula",
+              "ai"
+            ],
+            "description": "regula – sprawdzenie automatyczne bez AI; ai – uwaga modelu z potwierdzonym cytatem."
+          }
+        }
+      },
+      "WynikKontroli": {
+        "type": "object",
+        "required": [
+          "uwagi",
+          "podsumowanie",
+          "aiNiedostepne",
+          "zanonimizowano"
+        ],
+        "properties": {
+          "uwagi": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UwagaJakosci"
+            },
+            "description": "Uwagi do doprecyzowania."
+          },
+          "podsumowanie": {
+            "type": "string",
+            "description": "Krótkie podsumowanie dla przełożonego."
+          },
+          "aiNiedostepne": {
+            "type": "boolean",
+            "description": "true – AI było niedostępne, zwrócono tylko sprawdzenia automatyczne."
+          },
+          "zanonimizowano": {
+            "type": "boolean",
+            "description": "true – przed wysłaniem do AI usunięto imiona lub nazwiska z tekstu."
+          },
+          "dostawca": {
+            "type": "string",
+            "description": "Dostawca AI, który odpowiedział."
+          }
+        }
+      },
       "StatusDostawcow": {
         "type": "object",
         "required": [
@@ -1099,41 +1369,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "CzatZapytanie": {
-        "type": "object",
-        "required": [
-          "messages"
-        ],
-        "properties": {
-          "messages": {
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 40,
-            "items": {
-              "type": "object",
-              "required": [
-                "role",
-                "content"
-              ],
-              "properties": {
-                "role": {
-                  "type": "string",
-                  "enum": [
-                    "user",
-                    "assistant"
-                  ]
-                },
-                "content": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 8000
-                }
-              }
-            },
-            "description": "Wiadomości rozmowy w kolejności chronologicznej."
           }
         }
       },
