@@ -5,25 +5,36 @@
    "id": "rozp-pierwsza",
    "nazwa": "Rozporządzenie PRM w sprawie pierwszej oceny w służbie cywilnej (Dz.U. 2015 poz. 1144)",
    "krotko": "Rozporządzenie o pierwszej ocenie",
-   "rodzaj": "pierwsza"
+   "rodzaj": "pierwsza",
+   "typ": "rozporzadzenie"
   },
   {
    "id": "rozp-okresowa",
    "nazwa": "Rozporządzenie PRM w sprawie ocen okresowych w służbie cywilnej (Dz.U. 2016 poz. 470)",
    "krotko": "Rozporządzenie o ocenach okresowych",
-   "rodzaj": "okresowa"
+   "rodzaj": "okresowa",
+   "typ": "rozporzadzenie"
   },
   {
    "id": "poradnik-pierwsza",
    "nazwa": "Poradnik KPRM „Pierwsza ocena w służbie cywilnej” (2016)",
    "krotko": "Poradnik „Pierwsza ocena”",
-   "rodzaj": "pierwsza"
+   "rodzaj": "pierwsza",
+   "typ": "poradnik"
   },
   {
    "id": "poradnik-okresowa",
    "nazwa": "Poradnik KPRM „Oceny okresowe w służbie cywilnej” (2016)",
    "krotko": "Poradnik „Oceny okresowe”",
-   "rodzaj": "okresowa"
+   "rodzaj": "okresowa",
+   "typ": "poradnik"
+  },
+  {
+   "id": "ustawa-sc",
+   "nazwa": "Ustawa z dnia 21 listopada 2008 r. o służbie cywilnej (t.j. Dz.U. 2026 poz. 590)",
+   "krotko": "Ustawa o służbie cywilnej",
+   "rodzaj": "wspolne",
+   "typ": "ustawa"
   }
  ],
  "fragmenty": [
@@ -1279,6 +1290,142 @@
    "miejsce": "s. 35 (rozdz. 9. Przyznawanie kolejnych stopni służbowych)",
    "sekcja": "9. Przyznawanie kolejnych stopni służbowych",
    "tekst": "6 ustawy, czyli nastąpiła zmiany stanowiska pracy wiążąca się z istotną zmianą zakresu obowiązków, a od dnia sporządzenia ostatniej oceny okresowej upłynęło więcej niż 6 miesięcy."
+  },
+  {
+   "id": "ustawa-sc-001",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 38 ust. 1",
+   "tekst": "Art. 38 ust. 1. Pierwsza ocena w służbie cywilnej jest dokonywana nie wcześniej niż po upływie 8 miesięcy od nawiązania stosunku pracy i nie później niż miesiąc przed upływem okresu, na który została zawarta umowa o pracę ocenianego.",
+   "rodzaj": "pierwsza",
+   "slowa": "termin pierwszej oceny najwcześniej najpóźniej kiedy dokonać 8 miesięcy miesiąc przed końcem umowy na czas określony nowy pracownik"
+  },
+  {
+   "id": "ustawa-sc-002",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 38 ust. 2",
+   "tekst": "Art. 38 ust. 2. Bezpośredni przełożony ocenianego w porozumieniu z kierującym komórką organizacyjną, w której pracownik jest zatrudniony, dokonuje pierwszej oceny w służbie cywilnej, biorąc pod uwagę: 1) postawę pracownika, jego zaangażowanie i postępy w pracy, relacje ze współpracownikami oraz terminowość wykonywania zadań; 2) wynik egzaminu ze służby przygotowawczej; 3) sporządzone przez ocenianego pracownika sprawozdanie dotyczące zadań realizowanych przez niego w trakcie przepracowanego okresu.",
+   "rodzaj": "pierwsza",
+   "slowa": "kto dokonuje pierwszej oceny bezpośredni przełożony kierujący komórką co bierze się pod uwagę egzamin sprawozdanie"
+  },
+  {
+   "id": "ustawa-sc-003",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 38 ust. 3",
+   "tekst": "Art. 38 ust. 3. Po dokonaniu oceny kierujący komórką organizacyjną wnioskuje do dyrektora generalnego urzędu w przypadku: 1) przyznania oceny pozytywnej – o zawarcie z ocenionym umowy o pracę na czas nieokreślony albo 2) przyznania oceny negatywnej – o niezawieranie z ocenionym umowy o pracę na czas nieokreślony albo o rozwiązanie umowy o pracę na czas określony.",
+   "rodzaj": "pierwsza",
+   "slowa": "skutki pierwszej oceny pozytywna negatywna umowa na czas nieokreślony rozwiązanie umowy wniosek dyrektor generalny"
+  },
+  {
+   "id": "ustawa-sc-004",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 38 ust. 4",
+   "tekst": "Art. 38 ust. 4. Prezes Rady Ministrów określi, w drodze rozporządzenia, szczegółowe warunki i sposób dokonywania pierwszej oceny w służbie cywilnej, w tym: 1) sposób i tryb dokonywania pierwszej oceny w służbie cywilnej, 2) wzór arkusza pierwszej oceny w służbie cywilnej, 3) zakres i wzór formularza sprawozdania dotyczącego zadań realizowanych przez ocenianego pracownika w trakcie przepracowanego okresu, 4) warunki przyznawania oceny pozytywnej lub negatywnej – kierując się potrzebą tworzenia profesjonalnego korpusu służby cywilnej oraz zapewnienia obiektywizmu dokonywanych ocen.",
+   "rodzaj": "pierwsza",
+   "slowa": "rozporządzenie podstawa prawna pierwszej oceny obiektywizm ocen"
+  },
+  {
+   "id": "ustawa-sc-005",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 1",
+   "tekst": "Art. 81 ust. 1. Urzędnik służby cywilnej oraz pracownik służby cywilnej zatrudniony na podstawie umowy o pracę na czas nieokreślony podlega ocenie okresowej dokonywanej przez bezpośredniego przełożonego.",
+   "rodzaj": "okresowa",
+   "slowa": "kto podlega ocenie okresowej urzędnik pracownik umowa na czas nieokreślony kto ocenia bezpośredni przełożony"
+  },
+  {
+   "id": "ustawa-sc-006",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 3",
+   "tekst": "Art. 81 ust. 3. Ocena okresowa dotyczy wykonywania obowiązków wynikających z opisu zajmowanego stanowiska pracy. Ocenę okresową sporządza się na piśmie i niezwłocznie zapoznaje z nią ocenionego.",
+   "rodzaj": "okresowa",
+   "slowa": "czego dotyczy ocena okresowa obowiązki z opisu stanowiska pracy na piśmie zapoznanie"
+  },
+  {
+   "id": "ustawa-sc-007",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 4",
+   "tekst": "Art. 81 ust. 4. Ocenę okresową sporządza się co 24 miesiące.",
+   "rodzaj": "okresowa",
+   "slowa": "jak często co ile miesięcy termin oceny okresowej 24 miesiące dwa lata"
+  },
+  {
+   "id": "ustawa-sc-008",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 5",
+   "tekst": "Art. 81 ust. 5. Ocena okresowa zawiera wnioski dotyczące indywidualnego programu rozwoju zawodowego.",
+   "rodzaj": "okresowa",
+   "slowa": "IPRZ indywidualny program rozwoju zawodowego wnioski"
+  },
+  {
+   "id": "ustawa-sc-009",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 6",
+   "tekst": "Art. 81 ust. 6. Ocena okresowa jest sporządzana w razie zmiany stanowiska pracy, wiążącej się z istotną zmianą zakresu obowiązków, jeżeli od dnia sporządzenia ostatniej oceny okresowej upłynęło więcej niż 6 miesięcy. W przypadku osób ocenianych po raz pierwszy, ocenę sporządza się, jeżeli okres podlegający ocenie jest dłuższy niż 6 miesięcy.",
+   "rodzaj": "okresowa",
+   "slowa": "zmiana stanowiska zakres obowiązków 6 miesięcy ocena po raz pierwszy"
+  },
+  {
+   "id": "ustawa-sc-010",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 7",
+   "tekst": "Art. 81 ust. 7. W razie usprawiedliwionej nieobecności ocenianego w pracy, trwającej dłużej niż miesiąc, termin, o którym mowa w ust. 4, ulega przedłużeniu o czas tej nieobecności.",
+   "rodzaj": "okresowa",
+   "slowa": "nieobecność choroba urlop przedłużenie terminu oceny"
+  },
+  {
+   "id": "ustawa-sc-011",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 8",
+   "tekst": "Art. 81 ust. 8. Oceniający może zmienić termin oceny, o którym mowa w ust. 4, w przypadku: 1) zmiany na stanowisku oceniającego w trakcie okresu, w którym oceniany podlega ocenie, 2) przewidywanej, dłuższej, usprawiedliwionej nieobecności w pracy ocenianego, która może uniemożliwić przeprowadzenie oceny, 3) przewidywanej, dłuższej, usprawiedliwionej nieobecności w pracy oceniającego, która może utrudnić przeprowadzenie oceny, 4) złożenia przez ocenianego wniosku o zmianę terminu przeprowadzenia oceny – jeżeli od dnia sporządzenia ostatniej oceny okresowej upłynęło więcej niż 6 miesięcy, a w przypadku osób ocenianych po raz pierwszy, jeżeli okres podlegający ocenie jest dłuższy niż 6 miesięcy.",
+   "rodzaj": "okresowa",
+   "slowa": "zmiana terminu oceny zmiana oceniającego nieobecność wniosek ocenianego"
+  },
+  {
+   "id": "ustawa-sc-012",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 81 ust. 9",
+   "tekst": "Art. 81 ust. 9. W razie uzyskania negatywnej oceny okresowej oceniany podlega ponownej ocenie po upływie 6 miesięcy od dnia zapoznania się z oceną.",
+   "rodzaj": "okresowa",
+   "slowa": "ocena negatywna ponowna ocena 6 miesięcy"
+  },
+  {
+   "id": "ustawa-sc-013",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 82",
+   "tekst": "Art. 82. Prezes Rady Ministrów określi, w drodze rozporządzenia, warunki i sposób przeprowadzania ocen okresowych, w tym kryteria, wzór arkusza, skalę ocen i tryb sporządzanej przez bezpośredniego przełożonego oceny okresowej, kierując się potrzebą stałego doskonalenia jakości wykonywania obowiązków przez ocenianego oraz zapewnienia obiektywizmu dokonywanych ocen okresowych.",
+   "rodzaj": "okresowa",
+   "slowa": "rozporządzenie podstawa prawna oceny okresowej kryteria arkusz skala obiektywizm"
+  },
+  {
+   "id": "ustawa-sc-014",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 83 ust. 1",
+   "tekst": "Art. 83 ust. 1. Od oceny okresowej służy, w terminie 7 dni od dnia zapoznania się z oceną, sprzeciw do dyrektora generalnego urzędu.",
+   "rodzaj": "okresowa",
+   "slowa": "sprzeciw odwołanie od oceny okresowej 7 dni dyrektor generalny"
+  },
+  {
+   "id": "ustawa-sc-015",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 83 ust. 3",
+   "tekst": "Art. 83 ust. 3. Sprzeciw rozpatruje się w terminie 14 dni od dnia wniesienia.",
+   "rodzaj": "okresowa",
+   "slowa": "rozpatrzenie sprzeciwu termin 14 dni"
+  },
+  {
+   "id": "ustawa-sc-016",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 83 ust. 4",
+   "tekst": "Art. 83 ust. 4. W razie uwzględnienia sprzeciwu ocenę okresową zmienia się albo sporządza po raz drugi. Od oceny okresowej sporządzonej po raz drugi przysługuje sprzeciw na zasadach określonych w ust. 1 i 3.",
+   "rodzaj": "okresowa",
+   "slowa": "uwzględnienie sprzeciwu zmiana oceny ocena po raz drugi"
+  },
+  {
+   "id": "ustawa-sc-017",
+   "dokumentId": "ustawa-sc",
+   "miejsce": "art. 83 ust. 5",
+   "tekst": "Art. 83 ust. 5. W razie nierozpatrzenia sprzeciwu w terminie albo nieuwzględnienia sprzeciwu od oceny okresowej, oceniany może, w terminie 14 dni od dnia doręczenia decyzji albo od dnia upływu terminu, o którym mowa w ust. 3, odwołać się do sądu pracy.",
+   "rodzaj": "okresowa",
+   "slowa": "sąd pracy odwołanie 14 dni nieuwzględnienie sprzeciwu"
   }
  ]
 }

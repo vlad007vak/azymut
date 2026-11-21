@@ -1,9 +1,9 @@
 # Zestaw testowy – asystent formalny (`/asystent`)
 
 Pytania, jakie może zadać jury, z oczekiwaną odpowiedzią i źródłem w bazie wiedzy.
-Baza: rozporządzenie o pierwszej ocenie (Dz.U. 2015 poz. 1144), rozporządzenie o ocenach okresowych
-(Dz.U. 2016 poz. 470), poradniki KPRM „Pierwsza ocena w służbie cywilnej” i „Oceny okresowe w służbie cywilnej” (2016),
-model kompetencji organizatora.
+Baza: ustawa o służbie cywilnej (t.j. Dz.U. 2026 poz. 590) – art. 38 i 81–83, rozporządzenie o pierwszej ocenie
+(Dz.U. 2015 poz. 1144), rozporządzenie o ocenach okresowych (Dz.U. 2016 poz. 470), poradniki KPRM „Pierwsza ocena
+w służbie cywilnej” i „Oceny okresowe w służbie cywilnej” (2016), model kompetencji organizatora.
 
 ## Jak testować
 
@@ -30,19 +30,24 @@ Skrypt robi 4 s przerwy między pytaniami (darmowe limity AI) i wypisuje ✓/✗
 | 4 | pierwsza | Jaki okres obejmuje sprawozdanie nowego pracownika? | Przepracowany okres nie krótszy niż **7 miesięcy**. | Rozporządzenie 2015 `§ 6`, poradnik `s. 22` |
 | 5 | pierwsza | Jakie elementy ocenia się w pierwszej ocenie? | **Rzetelnoś**ć, **wykorzystywani**e wiedzy i doskonalenie zawodowe, **organizacj**a pracy i orientacja na osiąganie celów, **komunikacj**a, **współprac**a; pod uwagę bierze się też wynik egzaminu ze służby przygotowawczej i sprawozdanie. | Rozporządzenie 2015 `§ 2` lub `zał. nr 1` |
 | 6 | pierwsza | Czy negatywną pierwszą ocenę trzeba uzasadnić? | Tak – przy negatywnej pierwszej ocenie bezpośredni przełożony sporządza **uzasadnienie**; przy pozytywnej może je sporządzić. | Rozporządzenie 2015 `§ 10`, poradnik `s. 32` |
-| 7 | pierwsza | Kiedy powinien przypadać termin na złożenie sprawozdania? | Po upływie **8 miesięcy** od dnia nawiązania stosunku pracy, tak aby pierwsza ocena mogła zostać dokonana w terminie z ustawy. | Rozporządzenie 2015 `§ 4`, poradnik `s. 8` |
+| 7 | pierwsza | Kiedy powinien przypadać termin na złożenie sprawozdania? | Po upływie **8 miesięcy** od dnia nawiązania stosunku pracy, tak aby pierwsza ocena mogła zostać dokonana w terminie z ustawy. | Rozporządzenie 2015 `§ 4`, poradnik `s. 8`, ustawa `art. 38` |
 | 8 | okresowa | Ile kryteriów dodatkowych można wybrać w ocenie okresowej? | Nie więcej niż **3 kryteria** dodatkowe, najistotniejsze ze względu na obowiązki z opisu stanowiska pracy. | Rozporządzenie 2016 `§ 5`, poradnik „Oceny okresowe” `s. 21` |
 | 9 | okresowa | Jakie kryteria obowiązkowe ma arkusz C? | **Wykorzystywani**e wiedzy i doskonalenie zawodowe, **rzetelnoś**ć, organizacja pracy i orientacja na osiąganie celów, **współprac**a, **komunikacj**a. | Rozporządzenie 2016 `§ 4` |
 | 10 | okresowa | Kiedy ocena okresowa jest negatywna? | Gdy ogólny poziom spełniania kryteriów jest **poniżej oczekiwań** albo znacznie poniżej oczekiwań, a także gdy choć jedna ocena cząstkowa jest na poziomie **znacznie poniżej oczekiwań**. | Rozporządzenie 2016 `§ 11` |
 | 11 | okresowa | Jaka jest skala ocen cząstkowych w ocenie okresowej? | **1 punkt** – znacznie poniżej, 3 – poniżej, 5 – na poziomie, 7 – powyżej, **9 punktów** – znacznie powyżej oczekiwań. | Rozporządzenie 2016 `§ 11` |
-| 12 | okresowa | Jak pracownik może odwołać się od oceny okresowej? | Wnosi **sprzeciw** do **dyrektora generalnego** urzędu w terminie **7 dni** od dnia zapoznania się z oceną; sprzeciw rozpatruje się w 14 dni. | Poradnik „Oceny okresowe” `s. 32` |
-| 13 | okresowa | Co ile miesięcy sporządza się ocenę okresową? | Co **24 miesiące** – od dnia sporządzenia poprzedniej oceny albo od zatrudnienia na czas nieokreślony. | Poradnik „Oceny okresowe” `s. 8` lub `s. 10` |
+| 12 | okresowa | Jak pracownik może odwołać się od oceny okresowej? | Wnosi **sprzeciw** do **dyrektora generalnego** urzędu w terminie **7 dni** od dnia zapoznania się z oceną; sprzeciw rozpatruje się w 14 dni. | Ustawa `art. 83`, poradnik „Oceny okresowe” `s. 32` |
+| 13 | okresowa | Co ile miesięcy sporządza się ocenę okresową? | Co **24 miesiące** – od dnia sporządzenia poprzedniej oceny albo od zatrudnienia na czas nieokreślony. | Ustawa `art. 81 ust. 4`, poradnik „Oceny okresowe” `s. 8` lub `s. 10` |
 | 14 | okresowa | W jakim terminie trzeba ustalić z pracownikiem kryteria oceny okresowej? | W ciągu **30 dni** od sporządzenia poprzedniej oceny albo od zatrudnienia na czas nieokreślony; 7 dni od sporządzenia oceny negatywnej. | Rozporządzenie 2016 `§ 7`, poradnik `s. 20` |
-| 15 | okresowa | Kiedy sporządza się kolejną ocenę po ocenie negatywnej? | Po upływie **6 miesięcy** od dnia zapoznania się z negatywną oceną. | Poradnik „Oceny okresowe” `s. 13` lub `s. 34` |
+| 15 | okresowa | Kiedy sporządza się kolejną ocenę po ocenie negatywnej? | Po upływie **6 miesięcy** od dnia zapoznania się z negatywną oceną. | Ustawa `art. 81 ust. 9`, poradnik „Oceny okresowe” `s. 13` lub `s. 34` |
 | 16 | okresowa | Na którym arkuszu ocenia się naczelnika wydziału, który kieruje pracownikami? | Na arkuszu **B** – stanowisko polegające na bezpośrednim **kierowaniu pracownikami**. | Rozporządzenie 2016 `§ 3`, poradnik `s. 19` |
 | 17 | – | Jakie wskaźniki obejmuje kompetencja współpraca? | M.in. **włączanie się w działania** realizowane razem z innymi, dbanie o **przepływ informacji**, o dobrą atmosferę, dostrzeganie wkładu pracy innych, branie pod uwagę zdania innych, dzielenie się wiedzą. | Model kompetencji `Współpraca` lub rozporządzenie `zał. nr 1` |
 | 18 | – | Ile wynosi dodatek za wysługę lat w służbie cywilnej? | **brak informacji** – baza nie obejmuje wynagrodzeń. | – |
 | 19 | – | Ile dni urlopu wypoczynkowego przysługuje urzędnikowi? | **brak informacji** – baza nie obejmuje urlopów. | – |
+| 20 | pierwsza | Kiedy najwcześniej i najpóźniej można dokonać pierwszej oceny? | Nie wcześniej niż po upływie **8 miesięcy** od nawiązania stosunku pracy i nie później niż **miesiąc** przed upływem okresu, na który zawarto umowę. | Ustawa `art. 38 ust. 1` |
+| 21 | pierwsza | Co dzieje się po pozytywnej pierwszej ocenie? | Kierujący komórką wnioskuje do dyrektora generalnego o zawarcie umowy o pracę **na czas nieokreślony**; po negatywnej – o jej niezawieranie albo rozwiązanie umowy na czas określony. | Ustawa `art. 38 ust. 3` |
+| 22 | okresowa | W jakim terminie rozpatruje się sprzeciw od oceny okresowej? | W terminie **14 dni** od dnia wniesienia sprzeciwu. | Ustawa `art. 83 ust. 3` |
+| 23 | okresowa | Co może zrobić pracownik, gdy jego sprzeciw od oceny okresowej nie został uwzględniony? | Może odwołać się do **sądu pracy** w terminie 14 dni od doręczenia decyzji. | Ustawa `art. 83 ust. 5` |
+| 24 | okresowa | Czy długa nieobecność pracownika wpływa na termin oceny okresowej? | Tak – przy usprawiedliwionej nieobecności dłuższej niż miesiąc termin oceny ulega **przedłuż**eniu o czas tej nieobecności. | Ustawa `art. 81 ust. 7` |
 
 ## Dodatkowo do sprawdzenia w UI
 - Pytanie z imieniem i nazwiskiem (np. „Jak ocenić Annę Kowalczyk, która się spóźnia?”) – pod odpowiedzią informacja,

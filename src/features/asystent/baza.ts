@@ -13,7 +13,7 @@ export interface Fragment {
   dokument: string;
   miejsce: string;
   rodzaj: RodzajOceny | "wspolne";
-  typ: "rozporzadzenie" | "poradnik" | "model";
+  typ: "ustawa" | "rozporzadzenie" | "poradnik" | "model";
   tekst: string;
   /** Tekst indeksowany przez wyszukiwarkę. */
   indeks: string;
@@ -23,23 +23,32 @@ const MODEL_DOKUMENT = "Model kompetencji (materiał organizatora – Ministerst
 
 const dokumenty = new Map(baza.dokumenty.map((d) => [d.id, d]));
 
+/** Przepisy (ustawa, rozporządzenia) są źródłem wiążącym – mają pierwszeństwo przed poradnikami. */
+const wiazacy = (f: Fragment) => f.typ === "ustawa" || f.typ === "rozporzadzenie";
+
 function zPdf(): Fragment[] {
   return baza.fragmenty.map((f) => {
     const d = dokumenty.get(f.dokumentId);
     if (!d) throw new Error(`Nieznany dokument w bazie wiedzy: ${f.dokumentId}`);
     const sekcja = "sekcja" in f ? f.sekcja : undefined;
     const slowa = "slowa" in f ? f.slowa : "";
+    const typ = d.typ as Fragment["typ"];
+    // Ustawa obejmuje obie ścieżki – ścieżkę ma każdy jej fragment (art. 38 – pierwsza, art. 81–83 – okresowa).
+    const rodzaj = ("rodzaj" in f && f.rodzaj ? f.rodzaj : d.rodzaj) as Fragment["rodzaj"];
+    // Paragrafy i artykuły rzadko powtarzają „ocena okresowa” / „pierwsza ocena”, więc dokładamy temat:
+    // dla rozporządzeń z nazwy dokumentu, dla ustawy ze ścieżki fragmentu.
+    const temat =
+      typ === "rozporzadzenie" ? d.krotko : typ === "ustawa" ? { pierwsza: "pierwsza ocena", okresowa: "ocena okresowa", wspolne: "" }[rodzaj] : "";
     return {
       id: f.id,
       dokumentId: f.dokumentId,
       dokument: d.nazwa,
       miejsce: f.miejsce,
-      rodzaj: d.rodzaj as RodzajOceny,
-      typ: f.dokumentId.startsWith("rozp") ? "rozporzadzenie" : "poradnik",
+      rodzaj,
+      typ,
       tekst: f.tekst,
-      // Tytuł rozdziału liczy się podwójnie – dobrze opisuje temat fragmentu. Paragrafy rozporządzeń
-      // rzadko powtarzają „ocena okresowa” / „pierwsza ocena”, więc dokładamy temat z nazwy dokumentu.
-      indeks: `${sekcja ?? ""} ${sekcja ?? ""} ${f.dokumentId.startsWith("rozp") ? d.krotko : ""} ${slowa} ${f.tekst}`,
+      // Tytuł rozdziału liczy się podwójnie – dobrze opisuje temat fragmentu.
+      indeks: `${sekcja ?? ""} ${sekcja ?? ""} ${temat} ${slowa} ${f.tekst}`,
     };
   });
 }
@@ -102,8 +111,8 @@ export interface WynikWyszukiwania {
 
 /**
  * Szuka fragmentów do odpowiedzi. Ścieżka oceny (z parametru albo z treści pytania)
- * podbija fragmenty z właściwych dokumentów; do kontekstu zawsze dokładamy najlepsze
- * fragmenty rozporządzeń, bo to one są źródłem wiążącym.
+ * podbija fragmenty z właściwych dokumentów; do kontekstu zawsze dokładamy najlepszy
+ * fragment przepisów (ustawa, rozporządzenia), bo to one są źródłem wiążącym.
  */
 export function szukajFragmentow(pytanie: string, rodzaj?: RodzajOceny, limit = 6): WynikWyszukiwania {
   const q = bezPolskichZnakow(pytanie);
@@ -113,16 +122,25 @@ export function szukajFragmentow(pytanie: string, rodzaj?: RodzajOceny, limit = 
       ? "okresowa"
       : undefined;
   const cel = wPytaniu ?? rodzaj;
-  const waga = (f: Fragment) => (cel && f.rodzaj === cel ? 1.3 : 1) * (f.typ === "rozporzadzenie" ? 1.1 : 1);
+  const waga = (f: Fragment) => (cel && f.rodzaj === cel ? 1.3 : 1) * (wiazacy(f) ? 1.1 : 1);
 
   const wszystkie = indeks.szukaj(pytanie, { limit: 30, waga });
-  const glowne = wszystkie.slice(0, limit - 1);
+  // Ustępy ustawy są krótkie (zwykle 1–2 zdania), więc nie zajmują miejsca w limicie – inaczej wypychałyby
+  // szczegółowe paragrafy rozporządzeń i poradników. Dokładamy najwyżej 2, które same weszłyby do czołówki.
+  const ustepy = wszystkie.filter((t) => t.item.typ === "ustawa");
+  const reszta = wszystkie.filter((t) => t.item.typ !== "ustawa");
+
+  const glowne = reszta.slice(0, limit - 1);
   // Jedno miejsce rezerwujemy dla najlepszego paragrafu rozporządzenia, jeśli jest choć w połowie tak trafny.
   const prog = (wszystkie[0]?.wynik ?? 0) * 0.5;
   const przepis = glowne.some((t) => t.item.typ === "rozporzadzenie")
     ? undefined
-    : wszystkie.find((t) => t.item.typ === "rozporzadzenie" && !glowne.includes(t) && t.wynik >= prog);
-  const fragmenty = [...glowne, ...(przepis ? [przepis] : []), ...wszystkie.filter((t) => !glowne.includes(t) && t !== przepis)].slice(0, limit);
+    : reszta.find((t) => t.item.typ === "rozporzadzenie" && !glowne.includes(t) && t.wynik >= prog);
+  const wybrane = [...glowne, ...(przepis ? [przepis] : []), ...reszta.filter((t) => !glowne.includes(t) && t !== przepis)].slice(0, limit);
+
+  const progUstawy = Math.max(prog, reszta[limit - 1]?.wynik ?? 0);
+  const zUstawy = ustepy.filter((t) => t.wynik >= progUstawy).slice(0, 2);
+  const fragmenty = [...wybrane, ...zUstawy].sort((a, b) => b.wynik - a.wynik);
 
   return {
     fragmenty,
