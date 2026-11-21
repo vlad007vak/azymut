@@ -21,7 +21,7 @@ export default function LogowaniePage() {
         </p>
       </header>
 
-      <Alert>
+      <Alert role="note">
         <Info aria-hidden />
         <AlertTitle>Prototyp – role demonstracyjne</AlertTitle>
         <AlertDescription>
