@@ -94,7 +94,7 @@ export function KrokRozmowa({ ocena, zmien, przejdz }: KrokProps) {
       </Card>
 
       <div className="flex justify-end">
-        <Button size="lg" onClick={dalej}>
+        <Button variant="brand" size="lg" onClick={dalej}>
           Rozmowa przeprowadzona – przejdź do decyzji <ArrowRightIcon data-icon="inline-end" />
         </Button>
       </div>

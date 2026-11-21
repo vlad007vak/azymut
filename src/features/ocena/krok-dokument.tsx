@@ -34,7 +34,7 @@ export function KrokDokument({ ocena, zmien }: KrokProps) {
           </AlertDescription>
         </Alert>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => window.print()}>
+          <Button variant="brand" onClick={() => window.print()}>
             <PrinterIcon data-icon="inline-start" /> Drukuj / zapisz PDF
           </Button>
           <EksportOceny ocena={ocena} urzad={NAZWA_URZEDU_DEMO} />

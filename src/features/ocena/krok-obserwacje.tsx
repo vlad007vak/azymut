@@ -177,7 +177,7 @@ export function KrokObserwacje({ ocena, zmien, przejdz }: KrokProps) {
             Bez wyboru zostało {nieocenione} wskaźn. – możesz do nich wrócić później.
           </span>
         )}
-        <Button size="lg" onClick={dalej}>
+        <Button variant="brand" size="lg" onClick={dalej}>
           Przejdź do rozmowy oceniającej <ArrowRightIcon data-icon="inline-end" />
         </Button>
       </div>
