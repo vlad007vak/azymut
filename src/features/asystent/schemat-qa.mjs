@@ -41,45 +41,28 @@ const pozycja = z.object(
   { error: "pozycja musi być obiektem z polami id, pytanie, odpowiedz, zrodlo, rodzaj" },
 );
 
-export const schematQa = z
-  .object(
-    {
-      nazwa: tekst("nazwa", 150),
-      wersja: z.literal(1, { error: "pole „wersja” musi mieć wartość 1" }),
-      pozycje: z
-        .array(pozycja, {
-          error: (iss) => (iss.input === undefined ? "brak pola „pozycje”" : "pole „pozycje” musi być listą pytań"),
-        })
-        .min(1, "baza musi zawierać co najmniej jedno pytanie")
-        .max(5000, "baza może zawierać najwyżej 5000 pytań"),
-    },
-    { error: "plik musi zawierać obiekt z polami nazwa, wersja, pozycje" },
-  )
-  .superRefine((baza, ctx) => {
-    /** @type {Map<string, number>} */
-    const widziane = new Map();
-    baza.pozycje.forEach((p, i) => {
-      const klucz = p.id.toLowerCase();
-      const wczesniej = widziane.get(klucz);
-      if (wczesniej === undefined) widziane.set(klucz, i);
-      else
-        ctx.addIssue({
-          code: "custom",
-          path: ["pozycje", i, "id"],
-          message: `identyfikator „${p.id}” powtarza się (pierwszy raz w pozycji nr ${wczesniej + 1})`,
-        });
-    });
-  });
+export const schematQa = z.object(
+  {
+    nazwa: tekst("nazwa", 150),
+    wersja: z.literal(1, { error: "pole „wersja” musi mieć wartość 1" }),
+    pozycje: z
+      .array(pozycja, {
+        error: (iss) => (iss.input === undefined ? "brak pola „pozycje”" : "pole „pozycje” musi być listą pytań"),
+      })
+      .min(1, "baza musi zawierać co najmniej jedno pytanie")
+      .max(5000, "baza może zawierać najwyżej 5000 pytań"),
+  },
+  { error: "plik musi zawierać obiekt z polami nazwa, wersja, pozycje" },
+);
+
+const MAX_BLEDOW = 20;
 
 /**
- * Sprawdza dane bazy Q&A. Zwraca bazę albo listę błędów po polsku.
+ * Sprawdza dane bazy Q&A. Zwraca bazę albo listę błędów po polsku (wszystkie naraz, z powtórzonymi id).
  * @param {unknown} dane
  * @param {(indeks: number) => string} [etykieta] opis pozycji w komunikacie (np. wiersz pliku CSV)
  */
 export function sprawdzBazeQa(dane, etykieta) {
-  const wynik = schematQa.safeParse(dane);
-  if (wynik.success) return /** @type {const} */ ({ ok: true, baza: wynik.data, bledy: [] });
-
   const pozycje = dane && typeof dane === "object" && "pozycje" in dane && Array.isArray(dane.pozycje) ? dane.pozycje : [];
   const opisz =
     etykieta ??
@@ -87,10 +70,32 @@ export function sprawdzBazeQa(dane, etykieta) {
       const id = pozycje[i] && typeof pozycje[i] === "object" ? pozycje[i].id : undefined;
       return `pozycja nr ${i + 1}${typeof id === "string" && id ? ` (id „${id}”)` : ""}`;
     });
-  const bledy = wynik.error.issues.slice(0, 20).map((iss) => {
-    const [pierwszy, indeks] = iss.path;
-    return pierwszy === "pozycje" && typeof indeks === "number" ? `${opisz(indeks)}: ${iss.message}` : iss.message;
+
+  /** @type {{ indeks: number | null, tekst: string }[]} */
+  const problemy = [];
+  const wynik = schematQa.safeParse(dane);
+  if (!wynik.success) {
+    for (const iss of wynik.error.issues) {
+      const [pierwszy, indeks] = iss.path;
+      problemy.push({ indeks: pierwszy === "pozycje" && typeof indeks === "number" ? indeks : null, tekst: iss.message });
+    }
+  }
+  // Powtórzone identyfikatory sprawdzamy osobno – zod pominąłby je, dopóki są inne błędy.
+  /** @type {Map<string, number>} */
+  const widziane = new Map();
+  pozycje.forEach((p, i) => {
+    const id = p && typeof p === "object" && typeof p.id === "string" ? p.id.trim() : "";
+    if (!id) return;
+    const wczesniej = widziane.get(id.toLowerCase());
+    if (wczesniej === undefined) widziane.set(id.toLowerCase(), i);
+    else problemy.push({ indeks: i, tekst: `identyfikator „${id}” powtarza się (tak samo jak w: ${opisz(wczesniej)})` });
   });
-  if (wynik.error.issues.length > 20) bledy.push(`…i ${wynik.error.issues.length - 20} kolejnych błędów`);
+
+  if (wynik.success && problemy.length === 0) return /** @type {const} */ ({ ok: true, baza: wynik.data, bledy: [] });
+  problemy.sort((a, b) => (a.indeks ?? -1) - (b.indeks ?? -1));
+  const bledy = problemy
+    .slice(0, MAX_BLEDOW)
+    .map((p) => (p.indeks === null ? p.tekst : `${opisz(p.indeks)}: ${p.tekst}`));
+  if (problemy.length > MAX_BLEDOW) bledy.push(`…i ${problemy.length - MAX_BLEDOW} kolejnych błędów`);
   return /** @type {const} */ ({ ok: false, baza: null, bledy });
 }
