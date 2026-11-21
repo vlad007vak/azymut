@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 import { BlokKodu, KartaEndpointu, MetodaBadge, TabelaPol } from "./skladniki";
 import { ENDPOINTY, rozwinSchemat, SPEC } from "./spec";
+import { WyprobujEksport } from "./wyprobuj-eksport";
 
 export const metadata: Metadata = {
   title: "Dokumentacja API",
@@ -88,10 +89,12 @@ export default function DokumentacjaApiPage() {
               <ul className="grid gap-2 text-sm">
                 {ENDPOINTY.map((e) => (
                   <li key={e.kotwica}>
-                    <a href={`#${e.kotwica}`} className="flex flex-wrap items-center gap-2 rounded hover:underline">
+                    <a href={`#${e.kotwica}`} className="flex items-baseline gap-2 rounded hover:underline">
                       <MetodaBadge metoda={e.metoda} />
-                      <code className="font-mono text-xs font-semibold">{e.sciezka}</code>
-                      <span className="text-muted-foreground">– {e.operacja.summary}</span>
+                      <span className="min-w-0">
+                        <code className="font-mono text-xs font-semibold">{e.sciezka}</code>{" "}
+                        <span className="text-muted-foreground">– {e.operacja.summary}</span>
+                      </span>
                     </a>
                   </li>
                 ))}
@@ -142,6 +145,21 @@ export default function DokumentacjaApiPage() {
               </summary>
               <BlokKodu wartosc={eksport.examples?.[0]} etykieta="Przykładowy plik eksportu oceny o1" />
             </details>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <h3>Wypróbuj eksport</h3>
+            </CardTitle>
+            <CardDescription>
+              Wybierz ocenę zapisaną w tej przeglądarce i pobierz plik albo obejrzyj jego treść. Dane demonstracyjne są
+              fikcyjne.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <WyprobujEksport />
           </CardContent>
         </Card>
 
