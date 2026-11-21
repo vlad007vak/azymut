@@ -43,6 +43,13 @@ Azymut prowadzi przełożonego przez cały proces w jednym miejscu, a decyzja za
    przypomnienia dla oceniających.
 10. **Role** – przełożony i HR (w prototypie role demonstracyjne; Panel HR tylko dla roli HR).
 
+## Zrzuty ekranu
+| Strona startowa | Ocena wskaźników – sugerowany poziom |
+|---|---|
+| ![Strona startowa Azymutu: „Ocena kompetencji krok po kroku”, przycisk „Przejdź do ocen” i cztery kafelki funkcji](docs/zrzuty/start.png) | ![Krok „Ocena wskaźników”: pasek kroków, lista kryteriów, sugestia systemu „Poniżej oczekiwań (3 pkt)” i opisy zachowań](docs/zrzuty/ocena-wskaznikow.png) |
+| **Asystent formalny – odpowiedź ze źródłem** | **Panel HR** |
+| ![Asystent formalny: odpowiedź o kryteriach dodatkowych z rozwiniętym źródłem – § 5 rozporządzenia i dosłowny cytat](docs/zrzuty/asystent.png) | ![Panel HR: liczniki procesów i tabela procesów z etapem, terminem, przyciskami „Przypomnij” i „Otwórz”](docs/zrzuty/panel-hr.png) |
+
 ## Jak przetestować (dla jury)
 Wszystko działa w przeglądarce na komputerze, bez zakładania konta. Dane demonstracyjne są fikcyjne
 i zapisują się tylko w Twojej przeglądarce (przycisk „Resetuj dane demo” w Panelu HR przywraca stan początkowy).
