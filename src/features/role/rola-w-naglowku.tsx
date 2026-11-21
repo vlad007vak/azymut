@@ -25,7 +25,6 @@ export function RolaWNaglowku({ className }: { className?: string }) {
       <Link
         href="/logowanie"
         className={cn(buttonVariants({ variant: "outline", size: "sm" }), className)}
-        title="Prototyp – wybierz rolę demonstracyjną: przełożony albo HR"
       >
         <LogIn data-icon="inline-start" aria-hidden />
         Wybierz rolę
