@@ -50,12 +50,13 @@ export function ListaKontrolnaRozmowy({
             <li key={p.id} className="flex gap-3">
               <Checkbox
                 id={`lista-${p.id}`}
+                aria-labelledby={`lista-${p.id}-etykieta`}
                 checked={!!zaznaczone[p.id]}
                 onCheckedChange={(v) => onZmiana(p.id, v)}
                 className="mt-0.5 print:hidden"
               />
               <div className="flex flex-col gap-1">
-                <label htmlFor={`lista-${p.id}`} className="cursor-pointer font-medium">
+                <label id={`lista-${p.id}-etykieta`} htmlFor={`lista-${p.id}`} className="cursor-pointer font-medium">
                   {i + 1}. {p.etykieta}
                   {!p.obowiazkowy && <span className="font-normal text-muted-foreground"> – opcjonalnie</span>}
                 </label>

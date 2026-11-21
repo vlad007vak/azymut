@@ -105,7 +105,7 @@ export const LISTA_KONTROLNA: Record<RodzajOceny, ListaKontrolna> = {
       },
       {
         id: "pie-rozwoj",
-        etykieta: "Kierunki dalszego rozwoju zawodowego i potrzeby (opcjonalnie)",
+        etykieta: "Kierunki dalszego rozwoju zawodowego i potrzeby",
         cytat:
           "(…) podczas której bezpośredni przełożony może omówić także kierunki dalszego rozwoju zawodowego i potrzeby ocenianego;",
         obowiazkowy: false,

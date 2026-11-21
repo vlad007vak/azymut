@@ -12,7 +12,8 @@ Zasady:
 - Nie oceniasz pracownika i nie proponujesz poziomów ani punktów – ocenę ustala wyłącznie przełożony.
 - Korzystasz WYŁĄCZNIE z podanych danych. Nie dodajesz faktów, dat, liczb, projektów ani sytuacji, których nie ma w przykładach.
 - Pytania są otwarte (np. „Jak…”, „Co…”, „W jaki sposób…”) i skierowane do pracownika w formie „Pan/Pani”.
-- Język neutralny i rzeczowy: opisujesz zachowania i ich skutki, bez ocen osobowości. Nie używasz imion ani nazwisk.
+- Język neutralny i rzeczowy: opisujesz zachowania i ich skutki, bez ocen osobowości ani domysłów o motywacji. Nie używasz imion ani nazwisk.
+- W przykładach „[oceniany]” to oceniany pracownik, a „[inna osoba]” to inny współpracownik (nie przełożony). Nie przepisuj znaczników – pisz „pracownik” albo „współpracownik”.
 - Piszesz poprawną polszczyzną, zwięźle: jeden punkt = jedno zdanie.`;
 
 function opisPoziomu(p: RozmowaZapytanie["kryteria"][number]["poziom"]): string {
@@ -50,14 +51,42 @@ Przygotuj plan rozmowy oceniającej. Zwróć obiekt JSON:
 Gdy kryterium nie ma przykładów, w argumentach napisz, że brakuje przykładów do uzasadnienia.`;
 }
 
+const KLUCZE_TEKSTU = ["tekst", "text", "tresc", "treść", "pytanie", "temat", "argument", "propozycja", "opis"];
+
+/** Modele czasem zwracają obiekt zamiast zdania, np. {"kompetencjaId": "…", "propozycja": "…"}. */
+function naTekst(o: Record<string, unknown>): string {
+  for (const k of KLUCZE_TEKSTU) {
+    if (typeof o[k] === "string") return o[k];
+  }
+  return Object.entries(o)
+    .filter(([k, v]) => typeof v === "string" && !/id$/i.test(k))
+    .map(([, v]) => v)
+    .join(" – ");
+}
+
+const tekstSchema = z
+  .union([z.string(), z.record(z.string(), z.unknown())])
+  .transform((v) => (typeof v === "string" ? v : naTekst(v)));
+
+const listaSchema = z.array(tekstSchema).default([]);
+
+const argumentySchema = z
+  .union([
+    z.array(z.object({ kompetencjaId: z.string(), argumenty: listaSchema })),
+    // albo mapa {"rzetelnosc": ["…"]}
+    z.record(z.string(), listaSchema),
+  ])
+  .default([])
+  .transform((v) =>
+    Array.isArray(v) ? v : Object.entries(v).map(([kompetencjaId, argumenty]) => ({ kompetencjaId, argumenty })),
+  );
+
 /** Schemat odpowiedzi modelu – łagodny, porządkujemy ją w normalizujPlan(). */
 export const odpowiedzSchema = z.object({
-  pytania: z.array(z.string()).default([]),
-  tematy: z.array(z.string()).default([]),
-  argumenty: z
-    .array(z.object({ kompetencjaId: z.string(), argumenty: z.array(z.string()).default([]) }))
-    .default([]),
-  rozwoj: z.array(z.string()).default([]),
+  pytania: listaSchema,
+  tematy: listaSchema,
+  argumenty: argumentySchema,
+  rozwoj: listaSchema,
 });
 
 export type OdpowiedzModelu = z.infer<typeof odpowiedzSchema>;

@@ -52,6 +52,24 @@ function usePoHydracji(): boolean {
   );
 }
 
+/** Gdy Clipboard API jest zablokowane (np. w ramce) – stary sposób przez zaznaczenie tekstu. */
+function kopiujAwaryjnie(tekst: string): boolean {
+  const pole = document.createElement("textarea");
+  pole.value = tekst;
+  pole.setAttribute("readonly", "");
+  pole.style.position = "fixed";
+  pole.style.opacity = "0";
+  document.body.appendChild(pole);
+  pole.select();
+  try {
+    return document.execCommand("copy");
+  } catch {
+    return false;
+  } finally {
+    pole.remove();
+  }
+}
+
 function formatujDate(iso?: string): string {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -119,8 +137,8 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
 
   async function przygotujRozmowe() {
     // Do AI: tylko stanowisko, kryteria, poziomy i przykłady – bez imion i nazwisk.
-    const osoby = [...PRACOWNICY, ocena.oceniajacy];
-    const zapytanie = zbudujZapytanie(ocena, osoba?.stanowisko ?? "", osoby);
+    const inneOsoby = [...PRACOWNICY.filter((p) => p.id !== ocena.pracownikId), ocena.oceniajacy];
+    const zapytanie = zbudujZapytanie(ocena, osoba, inneOsoby);
     setStanAi({ typ: "ladowanie" });
     try {
       const res = await fetch("/api/rozmowa", {
@@ -177,11 +195,13 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
   }
 
   async function kopiujPlan() {
+    const tekst = tekstDoSchowka();
     try {
-      await navigator.clipboard.writeText(tekstDoSchowka());
+      await navigator.clipboard.writeText(tekst);
       toast.success("Skopiowano plan do schowka.");
     } catch {
-      toast.error("Nie udało się skopiować – przeglądarka zablokowała dostęp do schowka.");
+      if (kopiujAwaryjnie(tekst)) toast.success("Skopiowano plan do schowka.");
+      else toast.error("Nie udało się skopiować – przeglądarka zablokowała dostęp do schowka.");
     }
   }
 

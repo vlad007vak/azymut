@@ -87,18 +87,21 @@ function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/** Wzorzec słowa z prostą odmianą (Anna → Anny, Annie, Anną; Kowalczyk → Kowalczyka…). */
+/**
+ * Wzorzec słowa z prostą odmianą: Anna → Anny, Annie, Anną; Kowalczyk → Kowalczyka;
+ * Nowicki → Nowickiego; Marek → Marka, Markiem.
+ */
 function wzorzecSlowa(slowo: string): string | null {
   if (slowo.length < 3) return null;
-  const rdzen = /[aeiouyąę]$/i.test(slowo) ? slowo.slice(0, -1) : slowo;
-  return `${escapeRegExp(rdzen)}\\p{L}{0,3}`;
+  const odmiana = "\\p{L}{0,4}";
+  if (/[aeiouyąę]$/i.test(slowo)) return `${escapeRegExp(slowo.slice(0, -1))}${odmiana}`;
+  if (/ek$/.test(slowo)) return `${escapeRegExp(slowo.slice(0, -2))}e?k${odmiana}`;
+  return `${escapeRegExp(slowo)}${odmiana}`;
 }
 
-/**
- * Zastępuje imiona i nazwiska znanych osób znacznikiem „[osoba]”, zanim tekst trafi do AI.
- * Przełożony mógł wpisać imię w przykładzie – do modelu wysyłamy tylko treść zachowania.
- */
-export function anonimizuj(tekst: string, osoby: { imie: string; nazwisko: string }[]): string {
+type DaneOsoby = { imie: string; nazwisko: string };
+
+function zamienOsoby(tekst: string, osoby: DaneOsoby[], znacznik: string): string {
   const wzorce = osoby
     .flatMap((o) => [o.imie, o.nazwisko])
     .flatMap((s) => s.split(/[\s-]+/))
@@ -107,7 +110,17 @@ export function anonimizuj(tekst: string, osoby: { imie: string; nazwisko: strin
     .filter((w): w is string => w !== null);
   if (wzorce.length === 0) return tekst;
   const re = new RegExp(`(?<!\\p{L})(?:${wzorce.join("|")})(?!\\p{L})`, "gu");
-  return tekst.replace(re, "[osoba]");
+  const powtorzenie = new RegExp(`${escapeRegExp(znacznik)}(?:\\s+${escapeRegExp(znacznik)})+`, "g");
+  return tekst.replace(re, znacznik).replace(powtorzenie, znacznik);
+}
+
+/**
+ * Zastępuje imiona i nazwiska znacznikami, zanim tekst trafi do AI: ocenianego – „[oceniany]”,
+ * pozostałe znane osoby – „[inna osoba]”. Przełożony mógł wpisać imię w przykładzie.
+ */
+export function anonimizuj(tekst: string, oceniany: DaneOsoby | undefined, inne: DaneOsoby[]): string {
+  const poOcenianym = oceniany ? zamienOsoby(tekst, [oceniany], "[oceniany]") : tekst;
+  return zamienOsoby(poOcenianym, inne, "[inna osoba]");
 }
 
 // ── Zapytanie do AI ──────────────────────────────────────────────────────────
@@ -128,18 +141,18 @@ function opisWskaznikaDlaAi(w: WskaznikOceniony): string {
  */
 export function zbudujZapytanie(
   ocena: Ocena,
-  stanowisko: string,
-  osoby: { imie: string; nazwisko: string }[],
+  oceniany: (DaneOsoby & { stanowisko: string }) | undefined,
+  inneOsoby: DaneOsoby[],
 ): RozmowaZapytanie {
   return {
     rodzaj: ocena.rodzaj,
-    stanowisko: stanowisko.trim() || "nie podano",
+    stanowisko: oceniany?.stanowisko.trim() || "nie podano",
     kryteria: podsumujOcene(ocena).map((k) => ({
       kompetencjaId: k.kompetencjaId,
       poziom: k.decyzja ?? k.sugerowany,
       przyklady: k.wskazniki
         .filter((w): w is WskaznikOceniony => w.poziom !== undefined)
-        .map((w) => anonimizuj(opisWskaznikaDlaAi(w), osoby)),
+        .map((w) => anonimizuj(opisWskaznikaDlaAi(w), oceniany, inneOsoby)),
     })),
   };
 }
