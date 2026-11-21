@@ -49,12 +49,7 @@ export function PrzyciskEksportu({ ocena, urzad, className }: PrzyciskEksportuPr
   };
 
   return (
-    <Button
-      variant="outline"
-      onClick={pobierz}
-      className={className}
-      title="Pobierz ocenę w formacie JSON (azymut.ocena, wersja 1) do przekazania do systemu kadrowego lub EZD"
-    >
+    <Button variant="outline" onClick={pobierz} className={className}>
       <DownloadIcon data-icon="inline-start" /> Pobierz JSON
     </Button>
   );
