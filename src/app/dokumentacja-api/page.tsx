@@ -89,7 +89,7 @@ export default function DokumentacjaApiPage() {
               <ul className="grid gap-2 text-sm">
                 {ENDPOINTY.map((e) => (
                   <li key={e.kotwica}>
-                    <a href={`#${e.kotwica}`} className="flex items-baseline gap-2 rounded hover:underline">
+                    <a href={`#${e.kotwica}`} className="flex items-baseline gap-2 rounded outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
                       <MetodaBadge metoda={e.metoda} />
                       <span className="min-w-0">
                         <code className="font-mono text-xs font-semibold">{e.sciezka}</code>{" "}
@@ -99,7 +99,7 @@ export default function DokumentacjaApiPage() {
                   </li>
                 ))}
                 <li>
-                  <a href="#eksport-oceny" className="flex items-center gap-2 rounded hover:underline">
+                  <a href="#eksport-oceny" className="flex items-center gap-2 rounded outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
                     <FileJsonIcon aria-hidden className="size-4 text-muted-foreground" />
                     Format eksportu oceny (azymut.ocena)
                   </a>

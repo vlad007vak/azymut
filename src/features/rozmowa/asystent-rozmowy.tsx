@@ -11,7 +11,7 @@ import {
   SparklesIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -42,6 +42,13 @@ import {
 } from "./szkic";
 
 const subskrypcjaPusta = () => () => {};
+
+/** Ten sam identyfikator – kolejny komunikat zastępuje poprzedni zamiast piętrzyć toasty. */
+const TOAST_AI = "rozmowa-ai";
+const BLAD_OGOLNY = "Nie udało się przygotować planu rozmowy. Spróbuj ponownie.";
+
+/** Widoczny fokus dla zwykłych linków tekstowych (przyciski mają go z komponentu). */
+const FOKUS_LINKU ="rounded-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50";
 
 /** false na serwerze i podczas hydracji, true po zamontowaniu w przeglądarce. */
 function usePoHydracji(): boolean {
@@ -108,7 +115,9 @@ export function AsystentRozmowy({ ocenaId }: { ocenaId: string }) {
             Nie ma oceny o identyfikatorze „{ocenaId}”. Mogła zostać usunięta albo link jest niepełny.
           </p>
           <p>
-            <Link href="/rozmowa">Wybierz ocenę z listy</Link>
+            <Link href="/rozmowa" className={FOKUS_LINKU}>
+              Wybierz ocenę z listy
+            </Link>
           </p>
         </AlertDescription>
       </Alert>
@@ -124,6 +133,8 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
   const kryteria = useMemo(() => podsumujOcene(ocena), [ocena]);
   const [szkic, setSzkic] = useState<SzkicRozmowy>(() => wczytajSzkic(ocena.id));
   const [stanAi, setStanAi] = useState<StanAi>({ typ: "bezczynny" });
+  // Blokada podwójnego kliknięcia – stan Reacta zmienia się dopiero po ponownym renderze.
+  const trwa = useRef(false);
 
   useEffect(() => {
     zapiszSzkic(ocena.id, szkic);
@@ -136,6 +147,8 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
   const nadpisze = !!(ocena.notatkiRozmowy || ocena.wnioskiRozwojowe);
 
   async function przygotujRozmowe() {
+    if (trwa.current) return;
+    trwa.current = true;
     // Do AI: tylko stanowisko, kryteria, poziomy i przykłady – bez imion i nazwisk.
     const inneOsoby = [...PRACOWNICY.filter((p) => p.id !== ocena.pracownikId), ocena.oceniajacy];
     const zapytanie = zbudujZapytanie(ocena, osoba, inneOsoby);
@@ -151,21 +164,23 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
         const komunikat =
           dane && typeof dane === "object" && "error" in dane && typeof dane.error === "string"
             ? dane.error
-            : "Nie udało się przygotować planu rozmowy.";
+            : BLAD_OGOLNY;
         throw new Error(komunikat);
       }
       setSzkic((s) => ({ ...s, plan: planDoSzkicu(dane as RozmowaPlan) }));
       setStanAi({ typ: "bezczynny" });
-      toast.success("Plan rozmowy jest gotowy. Sprawdź go i zaznacz, co wykorzystasz.");
+      toast.success("Plan rozmowy jest gotowy. Sprawdź go i zaznacz, co wykorzystasz.", { id: TOAST_AI });
     } catch (err) {
       const komunikat =
         err instanceof TypeError
           ? "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie."
-          : err instanceof Error
+          : err instanceof Error && err.message
             ? err.message
-            : "Nie udało się przygotować planu rozmowy.";
+            : BLAD_OGOLNY;
       setStanAi({ typ: "blad", komunikat });
-      toast.error(komunikat);
+      toast.error(komunikat, { id: TOAST_AI });
+    } finally {
+      trwa.current = false;
     }
   }
 
@@ -351,7 +366,11 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
                 ) : (
                   <SparklesIcon data-icon="inline-start" />
                 )}
-                {szkic.plan ? "Przygotuj ponownie" : "Przygotuj rozmowę"}
+                {stanAi.typ === "ladowanie"
+                  ? "Przygotowuję…"
+                  : szkic.plan
+                    ? "Przygotuj ponownie"
+                    : "Przygotuj rozmowę"}
               </Button>
               {szkic.plan && (
                 <span className="text-xs text-muted-foreground">
