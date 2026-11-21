@@ -3,16 +3,16 @@ import type { Metadata } from "next";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AsystentPanel } from "@/features/asystent";
-import { DOKUMENTY_BAZY, FRAGMENTY } from "@/features/asystent/baza";
+import { DOKUMENTY_BAZY, FRAGMENTY, FRAGMENTY_QA, odmiana } from "@/features/asystent/baza";
 
 export const metadata: Metadata = {
   title: "Asystent formalny",
   description:
-    "Zapytaj o zasady pierwszej oceny i oceny okresowej w służbie cywilnej. Odpowiedzi na podstawie ustawy o służbie cywilnej, rozporządzeń, poradników KPRM i modelu kompetencji – zawsze ze źródłem.",
+    "Zapytaj o zasady pierwszej oceny i oceny okresowej w służbie cywilnej. Odpowiedzi na podstawie ustawy o służbie cywilnej, rozporządzeń, poradników KPRM, modelu kompetencji i bazy pytań i odpowiedzi – zawsze ze źródłem.",
 };
 
 const JAK_DZIALA = [
-  "Wyszukuje w bazie wiedzy fragmenty przepisów i poradników pasujące do pytania.",
+  "Wyszukuje w bazie wiedzy fragmenty przepisów i poradników oraz pozycje bazy pytań i odpowiedzi pasujące do pytania.",
   "Model AI formułuje odpowiedź wyłącznie na podstawie tych fragmentów.",
   "Każde źródło ma dokument, miejsce (paragraf lub stronę) i dosłowny cytat.",
   "Gdy w bazie nie ma odpowiedzi – mówi to wprost zamiast zgadywać.",
@@ -26,7 +26,8 @@ export default function AsystentPage() {
         <h1 className="text-3xl font-semibold tracking-tight">Asystent formalny</h1>
         <p className="max-w-3xl text-muted-foreground">
           Pytaj o terminy, kryteria, skalę ocen, rozmowy i dokumenty w pierwszej ocenie i ocenie okresowej.
-          Asystent odpowiada na podstawie przepisów i poradników KPRM oraz pokazuje, skąd pochodzi odpowiedź.
+          Asystent odpowiada na podstawie przepisów, poradników KPRM i bazy pytań i odpowiedzi urzędu oraz pokazuje,
+          skąd pochodzi odpowiedź.
         </p>
       </header>
 
@@ -51,7 +52,10 @@ export default function AsystentPage() {
                 <FileTextIcon className="size-4 text-primary" aria-hidden />
                 Baza wiedzy
               </CardTitle>
-              <CardDescription>{FRAGMENTY.length} fragmentów z dokumentów:</CardDescription>
+              <CardDescription>
+                {odmiana(FRAGMENTY.length, ["fragment", "fragmenty", "fragmentów"])} z dokumentów i{" "}
+                {odmiana(FRAGMENTY_QA.length, ["pozycja", "pozycje", "pozycji"])} bazy pytań i odpowiedzi:
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="flex list-disc flex-col gap-1.5 pl-4 text-sm">
