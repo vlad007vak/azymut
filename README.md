@@ -36,6 +36,7 @@ Azymut prowadzi przełożonego przez cały proces w jednym miejscu, a decyzja za
 7. **Dokument** – arkusz według wzoru z rozporządzenia, do wydruku lub zapisu jako PDF.
 8. **Panel HR** – statusy wszystkich procesów, terminy (zbliżające się i przekroczone), nowy proces,
    przypomnienia dla oceniających.
+9. **Role** – przełożony i HR (w prototypie role demonstracyjne; Panel HR tylko dla roli HR).
 
 ## Jak przetestować (dla jury)
 Wszystko działa w przeglądarce na komputerze, bez zakładania konta. Dane demonstracyjne są fikcyjne
@@ -56,7 +57,8 @@ i zapisują się tylko w Twojej przeglądarce (przycisk „Resetuj dane demo” 
 7. Pierwsza ocena: **Julia Mazur** – skala 3/5/7 pkt i warunki z § 10 rozporządzenia o pierwszej ocenie.
 8. **Asystent formalny** (`/asystent`): pytania o terminy, kryteria i skalę; pytanie spoza tematu
    (np. o urlop) → komunikat „Brak informacji”.
-9. **Panel HR** (`/hr`): etapy i terminy procesów, nowy proces, przypomnienie.
+9. **Panel HR** (`/hr`): wybierz rolę **„HR / administrator procesu”** (role demonstracyjne, bez hasła) → etapy
+   i terminy procesów, nowy proces, przypomnienie. Rolę zmienisz w nagłówku („Zmień rolę”).
 
 ## Wykorzystanie sztucznej inteligencji
 | Element | Co robi AI | Zabezpieczenia |
