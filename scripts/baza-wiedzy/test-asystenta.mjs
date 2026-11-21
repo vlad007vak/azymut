@@ -49,6 +49,18 @@ function wybraneNumery(spec) {
   }
   return numery;
 }
+/** Ponawia zapytanie tylko przy błędzie sieci (np. chwilowy brak DNS) – nie przy odpowiedzi HTTP z błędem. */
+async function zPonowieniem(zapytanie, proby = 3) {
+  for (let i = 1; ; i++) {
+    try {
+      return await zapytanie();
+    } catch (err) {
+      if (i >= proby) throw err;
+      await new Promise((r) => setTimeout(r, 3000));
+    }
+  }
+}
+
 const numery = wybraneNumery(process.env.WIERSZE);
 const doTestu = numery ? wiersze.filter((w) => numery.has(w.nr)) : wiersze;
 const zapis = [];
@@ -59,11 +71,13 @@ for (const [i, w] of doTestu.entries()) {
   const t0 = Date.now();
   let wynik;
   try {
-    const res = await fetch(`${BASE}/api/asystent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pytanie: w.pytanie, ...(w.rodzaj ? { rodzaj: w.rodzaj } : {}) }),
-    });
+    const res = await zPonowieniem(() =>
+      fetch(`${BASE}/api/asystent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pytanie: w.pytanie, ...(w.rodzaj ? { rodzaj: w.rodzaj } : {}) }),
+      }),
+    );
     wynik = await res.json();
     if (!res.ok) throw new Error(wynik?.error ?? `HTTP ${res.status}`);
   } catch (err) {
