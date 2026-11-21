@@ -257,16 +257,18 @@ Diana na każdej wersji preview i produkcji.
 **Próba demo na produkcji – 21.11.2026** (świeże dane, okno 1440 px): wszystkie kroki z tabeli „Co ma być na ekranie” przeszły.
 Nowy krok „Stanowisko i kryteria” oraz panel HR (wejście bez roli, „Wejdź jako HR”) sprawdzone na produkcji 21.11 (#42).
 Zmierzone czasy odpowiedzi AI: asystent formalny ok. 1,4 s, kontrola jakości ok. 1 s, pytanie spoza bazy ok. 0,8 s.
-Czasy mówione w scenariuszu są liczone z liczby słów (ok. 130 słów/min) – **próba na głos z zegarem jeszcze przed nami**.
+Plan liczony z liczby słów (ok. 130 słów/min). **Próba na głos z zegarem** – Andrey, 21.11.2026, demo na produkcji,
+2 przebiegi: **4:56** i **4:32** – oba mieszczą się w 5:00, tekstu nie skracamy. Najdłużej trwa demo (w próbie 1 – 6 s ponad plan);
+gdy na scenie po kontroli jakości zegar pokazuje więcej niż 3:10, pomijamy slajd 8 (zasada w sekcji 1).
 
 | Fragment | Plan | Próba 1 (na głos) | Próba 2 (na głos) |
 |---|---|---|---|
-| Problem + rozwiązanie | 0:40 | | |
-| Demo: ocena okresowa (kryteria → wskaźniki → arkusz) | 2:25 | | |
-| AI wspiera, nie decyduje | 0:25 | | |
-| Panel HR | 0:35 | | |
-| Wdrożenie + zakończenie | 0:40 | | |
-| **Razem** | **4:45** | | |
+| Problem + rozwiązanie | 0:40 | 0:42 | 0:39 |
+| Demo: ocena okresowa (kryteria → wskaźniki → arkusz) | 2:25 | 2:31 | 2:20 |
+| AI wspiera, nie decyduje | 0:25 | 0:24 | 0:22 |
+| Panel HR | 0:35 | 0:38 | 0:33 |
+| Wdrożenie + zakończenie | 0:40 | 0:41 | 0:38 |
+| **Razem** | **4:45** | **4:56** | **4:32** |
 
 ---
 
