@@ -1,0 +1,1858 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Azymut – API prototypu „Kompas kompetencji”",
+    "version": "1.0.0",
+    "summary": "Interfejsy aplikacji Azymut i format wymiany danych oceny (azymut.ocena).",
+    "description": "API prototypu Azymut (HackNation 2026, zadanie „Kompas kompetencji” Ministerstwa Cyfryzacji).\n\n- Wszystkie endpointy przyjmują i zwracają JSON w UTF-8 (wyjątek: strumień tekstu z /api/ai/chat).\n- Błąd zawsze ma postać obiektu {\"error\": \"komunikat po polsku\"}.\n- Minimalizacja danych: do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy i przykłady zachowań.\n- Odpowiedzi AI są sugestiami. Ostateczny poziom każdego kryterium zawsze wybiera przełożony.\n- Oceny są przechowywane w przeglądarce użytkownika. Wymiana z systemami zewnętrznymi (system kadrowy, EZD) odbywa się przez plik eksportu w formacie azymut.ocena – schemat EksportOceny.\n- Prototyp nie ma uwierzytelniania – wymagania przed wdrożeniem opisuje docs/API.md (sekcja „Bezpieczeństwo przed wdrożeniem”)."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Ta sama domena co aplikacja (lokalnie http://localhost:3000, wdrożenie na Vercel)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Asystent formalny",
+      "description": "Odpowiedzi z bazy wiedzy (rozporządzenia, poradniki KPRM, model kompetencji) ze wskazaniem źródeł."
+    },
+    {
+      "name": "Opis stanowiska",
+      "description": "Analiza opisu stanowiska pracy (OSP): arkusz, kryteria dodatkowe, wskaźniki."
+    },
+    {
+      "name": "Asystent rozmowy",
+      "description": "Przygotowanie do rozmowy oceniającej."
+    },
+    {
+      "name": "Diagnostyka AI",
+      "description": "Stan dostawców modeli AI i endpoint techniczny czatu."
+    },
+    {
+      "name": "Eksport oceny",
+      "description": "Format wymiany danych oceny azymut.ocena (wersja 1) – plik generowany w przeglądarce przyciskiem „Pobierz JSON”. Schemat: EksportOceny."
+    }
+  ],
+  "paths": {
+    "/api/asystent": {
+      "post": {
+        "tags": [
+          "Asystent formalny"
+        ],
+        "operationId": "zapytajAsystenta",
+        "summary": "Odpowiedź asystenta formalnego ze źródłami",
+        "description": "Odpowiada wyłącznie na podstawie bazy wiedzy i podaje źródła z dosłownym cytatem. Gdy baza nie zawiera odpowiedzi, zwraca brakInformacji: true zamiast zgadywać. Imiona i nazwiska w pytaniu są usuwane przed wysłaniem do modelu AI (pole zanonimizowano).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AsystentZapytanie"
+              },
+              "examples": {
+                "pytanie": {
+                  "summary": "Pytanie o kryteria dodatkowe",
+                  "value": {
+                    "pytanie": "Ile kryteriów dodatkowych można wybrać w ocenie okresowej?",
+                    "rodzaj": "okresowa"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Odpowiedź z bazy wiedzy albo informacja, że baza nie zawiera odpowiedzi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AsystentOdpowiedz"
+                },
+                "examples": {
+                  "odpowiedz": {
+                    "summary": "Odpowiedź ze źródłem",
+                    "value": {
+                      "odpowiedz": "Oceniający może wybrać nie więcej niż 3 kryteria dodatkowe – najistotniejsze ze względu na charakter obowiązków wynikających z opisu stanowiska pracy ocenianego [1].",
+                      "zrodla": [
+                        {
+                          "id": "rozp-okresowa-005",
+                          "dokument": "Rozporządzenie PRM w sprawie ocen okresowych w służbie cywilnej (Dz.U. 2016 poz. 470)",
+                          "miejsce": "§ 5",
+                          "fragment": "2. Oceniający może wybrać z wykazu kryteriów oceny nie więcej niż 3 kryteria dodatkowe, najistotniejsze ze względu na charakter obowiązków wynikających z opisu stanowiska pracy zajmowanego przez ocenianego.",
+                          "tekst": "§ 5. 1. Oceniający przeprowadza z ocenianym rozmowę, podczas której omawia się: (…) 2. Oceniający może wybrać z wykazu kryteriów oceny nie więcej niż 3 kryteria dodatkowe, najistotniejsze ze względu na charakter obowiązków wynikających z opisu stanowiska pracy zajmowanego przez ocenianego. (…)"
+                        }
+                      ],
+                      "brakInformacji": false,
+                      "zanonimizowano": false,
+                      "dostawca": "groq"
+                    }
+                  },
+                  "brakInformacji": {
+                    "summary": "Pytanie spoza bazy wiedzy",
+                    "value": {
+                      "odpowiedz": "Nie znalazłem odpowiedzi na to pytanie w bazie wiedzy asystenta (rozporządzenia o pierwszej ocenie i o ocenach okresowych, poradniki KPRM, model kompetencji), więc nie będę zgadywać. Spróbuj zadać pytanie inaczej albo skontaktuj się z komórką kadr.",
+                      "zrodla": [],
+                      "brakInformacji": true,
+                      "zanonimizowano": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BladAsystent400"
+          },
+          "500": {
+            "description": "Nieoczekiwany błąd serwera.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Nie udało się przygotować odpowiedzi. Spróbuj ponownie."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Żaden dostawca AI nie odpowiedział (np. wyczerpany limit darmowych modeli).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Asystent AI jest chwilowo niedostępny (limit darmowych modeli). Spróbuj ponownie za chwilę."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/osp": {
+      "post": {
+        "tags": [
+          "Opis stanowiska"
+        ],
+        "operationId": "analizujOpisStanowiska",
+        "summary": "Analiza opisu stanowiska pracy (OSP)",
+        "description": "Na podstawie tekstu OSP sugeruje arkusz oceny okresowej (B – bezpośrednio kieruje pracownikami, C – pozostali), do 3 kryteriów dodatkowych spoza obowiązkowych i najistotniejsze wskaźniki behawioralne. Części OSP z danymi osobowymi są usuwane także po stronie serwera. Gdy AI jest niedostępne, a arkusz da się odczytać z tekstu, zwraca sam arkusz (X-AI-Status: niedostepne). Wszystko to sugestie – decyzję podejmuje przełożony.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OspZapytanie"
+              },
+              "examples": {
+                "osp": {
+                  "summary": "Fragment opisu stanowiska",
+                  "value": {
+                    "tekst": "Nazwa stanowiska: radca. Komórka: Wydział Wspierania Innowacyjności. Liczba podległych pracowników: 0. Główne zadania: opiniowanie projektów programów wsparcia innowacji, przygotowywanie analiz rynku i notatek dla kierownictwa, współpraca z departamentem prawnym przy uzgodnieniach, prowadzenie naboru wniosków."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sugestia arkusza, kryteriów dodatkowych i wskaźników.",
+            "headers": {
+              "X-AI-Status": {
+                "$ref": "#/components/headers/XAiStatus"
+              },
+              "X-AI-Cache": {
+                "$ref": "#/components/headers/XAiCache"
+              },
+              "X-AI-Provider": {
+                "$ref": "#/components/headers/XAiProvider"
+              },
+              "X-AI-Model": {
+                "$ref": "#/components/headers/XAiModel"
+              },
+              "X-AI-Retry-After": {
+                "$ref": "#/components/headers/XAiRetryAfter"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OspSugestia"
+                },
+                "examples": {
+                  "sugestia": {
+                    "summary": "Pełna sugestia (X-AI-Status: ok)",
+                    "value": {
+                      "sugerowanyArkusz": "C",
+                      "kryteriaDodatkowe": [
+                        {
+                          "kompetencjaId": "myslenie-analityczne",
+                          "uzasadnienie": "Przygotowywanie analiz rynku i opiniowanie projektów programów wsparcia."
+                        }
+                      ],
+                      "wskazniki": [
+                        {
+                          "wskaznikId": "wykorzystywanie-wiedzy-1",
+                          "uzasadnienie": "Opiniowanie projektów wymaga łączenia wiedzy z kilku obszarów."
+                        },
+                        {
+                          "wskaznikId": "komunikacja-3",
+                          "uzasadnienie": "Notatki i analizy dla kierownictwa."
+                        },
+                        {
+                          "wskaznikId": "myslenie-analityczne-2",
+                          "uzasadnienie": "Analiza rynku i zgłoszeń do programu."
+                        }
+                      ]
+                    }
+                  },
+                  "bezAi": {
+                    "summary": "AI niedostępne – sam arkusz odczytany z OSP (X-AI-Status: niedostepne)",
+                    "value": {
+                      "sugerowanyArkusz": "C",
+                      "kryteriaDodatkowe": [],
+                      "wskazniki": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Brak tekstu albo tekst za krótki / za długi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Wklej opis stanowiska (od 80 do 15 000 znaków)."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Nieoczekiwany błąd serwera.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Nie udało się przeanalizować opisu stanowiska. Spróbuj ponownie."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "AI niedostępne i nie udało się odczytać arkusza z tekstu OSP.",
+            "headers": {
+              "X-AI-Retry-After": {
+                "$ref": "#/components/headers/XAiRetryAfter"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Żaden dostawca AI nie odpowiedział. Spróbuj ponownie za ok. 20 s."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rozmowa": {
+      "post": {
+        "tags": [
+          "Asystent rozmowy"
+        ],
+        "operationId": "przygotujRozmowe",
+        "summary": "Plan rozmowy oceniającej",
+        "description": "Na podstawie stanowiska, kryteriów, poziomów i przykładów zachowań przygotowuje pytania do pracownika, tematy wymagające omówienia, argumenty uzasadniające ocenę (per kryterium) i propozycje do wniosków rozwojowych. Nie przyjmuje imion ani nazwisk. Te same dane wejściowe zwracają odpowiedź z pamięci podręcznej (X-AI-Cache: hit).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RozmowaZapytanie"
+              },
+              "examples": {
+                "okresowa": {
+                  "summary": "Ocena okresowa, dwa kryteria",
+                  "value": {
+                    "rodzaj": "okresowa",
+                    "stanowisko": "radca",
+                    "kryteria": [
+                      {
+                        "kompetencjaId": "rzetelnosc",
+                        "poziom": 2,
+                        "przyklady": [
+                          "Dwukrotnie zgłosiła ryzyko opóźnienia stanowiska do konsultacji dopiero w dniu terminu."
+                        ]
+                      },
+                      {
+                        "kompetencjaId": "wspolpraca",
+                        "poziom": 4,
+                        "przyklady": [
+                          "Prowadziła wspólny rejestr ustaleń z departamentem prawnym."
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plan rozmowy.",
+            "headers": {
+              "X-AI-Cache": {
+                "$ref": "#/components/headers/XAiCache"
+              },
+              "X-AI-Provider": {
+                "$ref": "#/components/headers/XAiProvider"
+              },
+              "X-AI-Model": {
+                "$ref": "#/components/headers/XAiModel"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RozmowaPlan"
+                },
+                "examples": {
+                  "plan": {
+                    "summary": "Plan rozmowy",
+                    "value": {
+                      "pytania": [
+                        "Co utrudniało wcześniejsze zgłoszenie ryzyka opóźnienia przy konsultacjach w marcu i wrześniu?",
+                        "Które elementy rejestru ustaleń z departamentem prawnym warto przenieść do innych spraw?"
+                      ],
+                      "tematy": [
+                        "Terminowe sygnalizowanie zagrożeń dla terminów (rzetelność – poziom poniżej oczekiwań)."
+                      ],
+                      "argumenty": [
+                        {
+                          "kompetencjaId": "rzetelnosc",
+                          "argumenty": [
+                            "Dwa przypadki zgłoszenia ryzyka opóźnienia w dniu terminu."
+                          ]
+                        },
+                        {
+                          "kompetencjaId": "wspolpraca",
+                          "argumenty": [
+                            "Wspólny rejestr ustaleń ograniczył powtarzanie uzgodnień."
+                          ]
+                        }
+                      ],
+                      "rozwoj": [
+                        "Szkolenie z planowania pracy i wczesnego sygnalizowania ryzyk."
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Nieprawidłowe dane wejściowe (np. brak kryteriów, nieznany identyfikator kompetencji).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Nieprawidłowe zapytanie."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Nieoczekiwany błąd serwera.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Nie udało się przygotować planu rozmowy. Spróbuj ponownie."
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Model AI zwrócił pusty plan.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Model zwrócił pusty plan. Spróbuj ponownie za chwilę."
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/AiNiedostepne"
+          }
+        }
+      }
+    },
+    "/api/ai/status": {
+      "get": {
+        "tags": [
+          "Diagnostyka AI"
+        ],
+        "operationId": "listaDostawcowAi",
+        "summary": "Skonfigurowani dostawcy AI",
+        "description": "Lista dostawców modeli AI w kolejności awaryjnego przełączania (bez kluczy API).",
+        "responses": {
+          "200": {
+            "description": "Lista dostawców.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDostawcow"
+                },
+                "example": {
+                  "providers": [
+                    {
+                      "name": "groq",
+                      "id": "groq",
+                      "model": "qwen/qwen3.8-27b"
+                    },
+                    {
+                      "name": "gemini",
+                      "id": "gemini",
+                      "model": "gemini-3.5-flash-lite"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Diagnostyka AI"
+        ],
+        "operationId": "testujDostawcowAi",
+        "summary": "Test połączenia z dostawcami AI",
+        "description": "Wysyła do każdego dostawcy osobno krótkie zapytanie testowe (bez przełączania awaryjnego) i zwraca wynik z czasem odpowiedzi.",
+        "responses": {
+          "200": {
+            "description": "Wynik testu dla każdego dostawcy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestDostawcow"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "name": "groq",
+                      "model": "qwen/qwen3.8-27b",
+                      "ok": true,
+                      "latencyMs": 412,
+                      "detail": "Działa."
+                    },
+                    {
+                      "name": "gemini",
+                      "model": "gemini-3.5-flash-lite",
+                      "ok": false,
+                      "latencyMs": 230,
+                      "detail": "Przekroczony limit zapytań."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ai/chat": {
+      "post": {
+        "tags": [
+          "Diagnostyka AI"
+        ],
+        "operationId": "czatOgolny",
+        "summary": "Czat ogólny (strumień tekstu)",
+        "description": "Endpoint techniczny z szablonu startowego – nie jest częścią procesu oceny. Zwraca odpowiedź modelu jako strumień zwykłego tekstu.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CzatZapytanie"
+              },
+              "example": {
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "Czy działasz?"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Strumień tekstu odpowiedzi.",
+            "headers": {
+              "X-AI-Provider": {
+                "$ref": "#/components/headers/XAiProvider"
+              },
+              "X-AI-Model": {
+                "$ref": "#/components/headers/XAiModel"
+              }
+            },
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Tak, działam. W czym mogę pomóc?"
+              }
+            }
+          },
+          "400": {
+            "description": "Nieprawidłowe dane wejściowe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Blad"
+                },
+                "example": {
+                  "error": "Nieprawidłowe zapytanie."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Nieoczekiwany błąd serwera (odpowiedź bez gwarantowanego formatu JSON)."
+          },
+          "503": {
+            "$ref": "#/components/responses/AiNiedostepne"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "headers": {
+      "XAiStatus": {
+        "description": "Stan analizy AI: ok – pełna odpowiedź; niedostepne – AI nie odpowiedziało, zwrócono tylko arkusz odczytany z OSP; niepelna – AI nie wskazało żadnego poprawnego wskaźnika.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "niedostepne",
+            "niepelna"
+          ]
+        }
+      },
+      "XAiCache": {
+        "description": "„hit”, gdy odpowiedź pochodzi z pamięci podręcznej serwera (bez nowego zapytania do AI).",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "hit"
+          ]
+        }
+      },
+      "XAiProvider": {
+        "description": "Dostawca AI, który odpowiedział (np. groq, gemini, ollama).",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "XAiModel": {
+        "description": "Model AI, który odpowiedział.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "XAiRetryAfter": {
+        "description": "Po ilu sekundach warto ponowić zapytanie (gdy dostawca podał limit).",
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        }
+      }
+    },
+    "responses": {
+      "AiNiedostepne": {
+        "description": "Żaden dostawca AI nie odpowiedział albo żaden nie jest skonfigurowany.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Blad"
+            },
+            "examples": {
+              "limit": {
+                "summary": "Limit darmowych modeli",
+                "value": {
+                  "error": "Żaden dostawca AI nie odpowiedział. Spróbuj ponownie za chwilę."
+                }
+              },
+              "brakKonfiguracji": {
+                "summary": "Brak kluczy API",
+                "value": {
+                  "error": "Brak skonfigurowanego dostawcy AI. Uzupełnij klucze w pliku .env.local."
+                }
+              }
+            }
+          }
+        }
+      },
+      "BladAsystent400": {
+        "description": "Nieprawidłowe dane wejściowe (komunikat z walidacji).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Blad"
+            },
+            "examples": {
+              "krotkie": {
+                "summary": "Za krótkie pytanie",
+                "value": {
+                  "error": "Pytanie jest za krótkie."
+                }
+              },
+              "dlugie": {
+                "summary": "Za długie pytanie",
+                "value": {
+                  "error": "Pytanie jest za długie (max 1000 znaków)."
+                }
+              },
+              "inne": {
+                "summary": "Inny błąd walidacji",
+                "value": {
+                  "error": "Nieprawidłowe zapytanie."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Blad": {
+        "type": "object",
+        "description": "Błąd – komunikat po polsku do pokazania użytkownikowi.",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "KompetencjaId": {
+        "type": "string",
+        "description": "Identyfikator kompetencji z modelu kompetencji organizatora (14 kompetencji).",
+        "enum": [
+          "rzetelnosc",
+          "komunikacja",
+          "wykorzystywanie-wiedzy",
+          "organizacja-pracy",
+          "kreatywnosc",
+          "wspolpraca",
+          "myslenie-analityczne",
+          "negocjowanie",
+          "wystapienia-publiczne",
+          "orientacja-na-klienta",
+          "sytuacje-kryzysowe",
+          "zarzadzanie-strategiczne",
+          "zarzadzanie-ludzmi",
+          "podejmowanie-decyzji"
+        ]
+      },
+      "PoziomId": {
+        "type": "integer",
+        "description": "Poziom: 1 – znacznie poniżej, 2 – poniżej, 3 – na poziomie, 4 – powyżej, 5 – znacznie powyżej oczekiwań.",
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "RodzajOceny": {
+        "type": "string",
+        "description": "pierwsza – pierwsza ocena w służbie cywilnej; okresowa – ocena okresowa.",
+        "enum": [
+          "pierwsza",
+          "okresowa"
+        ]
+      },
+      "Arkusz": {
+        "type": "string",
+        "description": "Arkusz oceny okresowej: A – kierownik urzędu (poza zakresem prototypu), B – bezpośrednio kieruje pracownikami, C – pozostali.",
+        "enum": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "EtapOceny": {
+        "type": "string",
+        "description": "Etap procesu: zaplanowana, kryteria (rozmowa wstępna), obserwacje (ocena wskaźników), rozmowa (rozmowa oceniająca), sporzadzona, zakonczona (pracownik zapoznał się z oceną).",
+        "enum": [
+          "zaplanowana",
+          "kryteria",
+          "obserwacje",
+          "rozmowa",
+          "sporzadzona",
+          "zakonczona"
+        ]
+      },
+      "WynikOceny": {
+        "type": "string",
+        "enum": [
+          "pozytywna",
+          "negatywna"
+        ]
+      },
+      "AsystentZapytanie": {
+        "type": "object",
+        "required": [
+          "pytanie"
+        ],
+        "properties": {
+          "pytanie": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 1000,
+            "description": "Pytanie użytkownika."
+          },
+          "historia": {
+            "type": "array",
+            "maxItems": 20,
+            "description": "Ostatnie wiadomości rozmowy (serwer bierze pod uwagę najwyżej 4 ostatnie).",
+            "items": {
+              "type": "object",
+              "required": [
+                "role",
+                "content"
+              ],
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "user",
+                    "assistant"
+                  ]
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 4000
+                }
+              }
+            }
+          },
+          "rodzaj": {
+            "$ref": "#/components/schemas/RodzajOceny",
+            "description": "Ścieżka, w której jest użytkownik (opcjonalnie)."
+          }
+        }
+      },
+      "ZrodloOdpowiedzi": {
+        "type": "object",
+        "required": [
+          "id",
+          "dokument",
+          "fragment",
+          "tekst"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identyfikator fragmentu bazy wiedzy."
+          },
+          "dokument": {
+            "type": "string",
+            "description": "Nazwa dokumentu źródłowego."
+          },
+          "miejsce": {
+            "type": "string",
+            "description": "Miejsce w dokumencie, np. „§ 11 ust. 1” albo „s. 14”."
+          },
+          "fragment": {
+            "type": "string",
+            "description": "Dosłowny cytat, na którym oparto odpowiedź."
+          },
+          "tekst": {
+            "type": "string",
+            "description": "Pełny tekst fragmentu bazy wiedzy."
+          }
+        }
+      },
+      "AsystentOdpowiedz": {
+        "type": "object",
+        "required": [
+          "odpowiedz",
+          "zrodla",
+          "brakInformacji",
+          "zanonimizowano"
+        ],
+        "properties": {
+          "odpowiedz": {
+            "type": "string",
+            "description": "Odpowiedź z odwołaniami [1], [2]… do listy źródeł."
+          },
+          "zrodla": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ZrodloOdpowiedzi"
+            }
+          },
+          "brakInformacji": {
+            "type": "boolean",
+            "description": "true – baza wiedzy nie zawiera odpowiedzi; asystent mówi to wprost."
+          },
+          "zanonimizowano": {
+            "type": "boolean",
+            "description": "true – z pytania usunięto imiona i nazwiska przed wysłaniem do AI."
+          },
+          "dostawca": {
+            "type": "string",
+            "description": "Dostawca AI, który odpowiedział (brak – odpowiedź bez udziału AI)."
+          }
+        }
+      },
+      "OspZapytanie": {
+        "type": "object",
+        "required": [
+          "tekst"
+        ],
+        "properties": {
+          "tekst": {
+            "type": "string",
+            "minLength": 80,
+            "maxLength": 15000,
+            "description": "Tekst opisu stanowiska pracy (bez danych osobowych)."
+          }
+        }
+      },
+      "OspSugestia": {
+        "type": "object",
+        "required": [
+          "sugerowanyArkusz",
+          "kryteriaDodatkowe",
+          "wskazniki"
+        ],
+        "properties": {
+          "sugerowanyArkusz": {
+            "type": "string",
+            "enum": [
+              "B",
+              "C"
+            ],
+            "description": "B – stanowisko z podległymi pracownikami, C – pozostałe."
+          },
+          "kryteriaDodatkowe": {
+            "type": "array",
+            "maxItems": 3,
+            "description": "Najwyżej 3 kryteria dodatkowe spoza obowiązkowych dla arkusza.",
+            "items": {
+              "type": "object",
+              "required": [
+                "kompetencjaId",
+                "uzasadnienie"
+              ],
+              "properties": {
+                "kompetencjaId": {
+                  "$ref": "#/components/schemas/KompetencjaId"
+                },
+                "uzasadnienie": {
+                  "type": "string",
+                  "description": "Zadanie z OSP uzasadniające wybór."
+                }
+              }
+            }
+          },
+          "wskazniki": {
+            "type": "array",
+            "description": "Wskaźniki najistotniejsze dla zadań na stanowisku (najwyżej 4 na kryterium).",
+            "items": {
+              "type": "object",
+              "required": [
+                "wskaznikId",
+                "uzasadnienie"
+              ],
+              "properties": {
+                "wskaznikId": {
+                  "type": "string",
+                  "description": "Identyfikator wskaźnika, np. „komunikacja-3”."
+                },
+                "uzasadnienie": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "RozmowaZapytanie": {
+        "type": "object",
+        "required": [
+          "rodzaj",
+          "stanowisko",
+          "kryteria"
+        ],
+        "properties": {
+          "rodzaj": {
+            "$ref": "#/components/schemas/RodzajOceny"
+          },
+          "stanowisko": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Nazwa stanowiska (bez imienia i nazwiska)."
+          },
+          "kryteria": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "required": [
+                "kompetencjaId",
+                "poziom",
+                "przyklady"
+              ],
+              "properties": {
+                "kompetencjaId": {
+                  "$ref": "#/components/schemas/KompetencjaId"
+                },
+                "poziom": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PoziomId"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "Sugerowany lub wybrany poziom; null – brak podstaw do oceny."
+                },
+                "przyklady": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "description": "Przykłady zachowań zapisane przez przełożonego.",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "RozmowaPlan": {
+        "type": "object",
+        "required": [
+          "pytania",
+          "tematy",
+          "argumenty",
+          "rozwoj"
+        ],
+        "properties": {
+          "pytania": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Pytania do zadania pracownikowi."
+          },
+          "tematy": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Kwestie wymagające omówienia (np. rozbieżności, brak podstaw do oceny)."
+          },
+          "argumenty": {
+            "type": "array",
+            "description": "Argumenty uzasadniające ocenę – per kryterium.",
+            "items": {
+              "type": "object",
+              "required": [
+                "kompetencjaId",
+                "argumenty"
+              ],
+              "properties": {
+                "kompetencjaId": {
+                  "$ref": "#/components/schemas/KompetencjaId"
+                },
+                "argumenty": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "rozwoj": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Propozycje do wniosków rozwojowych (IPRZ)."
+          }
+        }
+      },
+      "StatusDostawcow": {
+        "type": "object",
+        "required": [
+          "providers"
+        ],
+        "properties": {
+          "providers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "id",
+                "model"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Nazwa (przy kilku kluczach: np. groq#2)."
+                },
+                "id": {
+                  "type": "string",
+                  "enum": [
+                    "groq",
+                    "gemini",
+                    "ollama"
+                  ]
+                },
+                "model": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "TestDostawcow": {
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "model",
+                "ok",
+                "latencyMs",
+                "detail"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "ok": {
+                  "type": "boolean"
+                },
+                "latencyMs": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "detail": {
+                  "type": "string",
+                  "description": "Początek odpowiedzi modelu albo opis błędu."
+                }
+              }
+            }
+          }
+        }
+      },
+      "CzatZapytanie": {
+        "type": "object",
+        "required": [
+          "messages"
+        ],
+        "properties": {
+          "messages": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 40,
+            "items": {
+              "type": "object",
+              "required": [
+                "role",
+                "content"
+              ],
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "user",
+                    "assistant"
+                  ]
+                },
+                "content": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8000
+                }
+              }
+            }
+          }
+        }
+      },
+      "EksportOceny": {
+        "type": "object",
+        "title": "azymut.ocena – wersja 1",
+        "description": "Dokument wymiany danych jednej oceny (pierwszej albo okresowej) – do przekazania do systemu kadrowego lub EZD. Wszystkie pola są zawsze obecne; brak wartości = null. Daty w formacie ISO 8601. Wynik liczony wg rozporządzeń (src/lib/ocena/zasady.ts). Plik zawiera dane osobowe ocenianego i oceniającego. Nie zawiera notatek z rozmowy ani przypomnień HR.",
+        "required": [
+          "format",
+          "wersja",
+          "wygenerowano",
+          "zrodlo",
+          "id",
+          "urzad",
+          "rodzaj",
+          "arkusz",
+          "etap",
+          "okres",
+          "terminOceny",
+          "oceniany",
+          "oceniajacy",
+          "kryteria",
+          "pierwsza",
+          "wynik",
+          "uzasadnienie",
+          "wnioskiRozwojowe",
+          "daty"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "azymut.ocena",
+            "description": "Identyfikator formatu."
+          },
+          "wersja": {
+            "type": "integer",
+            "const": 1,
+            "description": "Wersja formatu – zmienia się tylko przy zmianie niekompatybilnej."
+          },
+          "wygenerowano": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data i godzina wygenerowania pliku (UTC)."
+          },
+          "zrodlo": {
+            "type": "object",
+            "required": [
+              "aplikacja",
+              "modelKompetencji"
+            ],
+            "properties": {
+              "aplikacja": {
+                "type": "string",
+                "description": "System, który wygenerował plik."
+              },
+              "modelKompetencji": {
+                "type": "string",
+                "description": "Źródło modelu kompetencji, z którego pochodzą kryteria i wskaźniki."
+              }
+            }
+          },
+          "id": {
+            "type": "string",
+            "description": "Identyfikator oceny w systemie źródłowym."
+          },
+          "urzad": {
+            "type": "string",
+            "description": "Nazwa urzędu."
+          },
+          "rodzaj": {
+            "$ref": "#/components/schemas/RodzajOceny"
+          },
+          "arkusz": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Arkusz"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Ocena okresowa: arkusz B albo C; pierwsza ocena: null."
+          },
+          "etap": {
+            "$ref": "#/components/schemas/EtapOceny"
+          },
+          "okres": {
+            "type": "object",
+            "description": "Okres podlegania ocenie.",
+            "required": [
+              "od",
+              "do"
+            ],
+            "properties": {
+              "od": {
+                "type": "string",
+                "format": "date"
+              },
+              "do": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          },
+          "terminOceny": {
+            "type": "string",
+            "format": "date",
+            "description": "Okresowa: termin sporządzenia oceny na piśmie; pierwsza: koniec okresu na dokonanie oceny."
+          },
+          "oceniany": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OsobaEksportu"
+              }
+            ],
+            "type": "object",
+            "required": [
+              "urzednikSC"
+            ],
+            "properties": {
+              "urzednikSC": {
+                "type": "boolean",
+                "description": "true – urzędnik służby cywilnej (mianowany)."
+              }
+            }
+          },
+          "oceniajacy": {
+            "$ref": "#/components/schemas/OsobaEksportu"
+          },
+          "kryteria": {
+            "type": "array",
+            "description": "Okresowa: kryteria obowiązkowe dla arkusza + do 3 dodatkowych; pierwsza: 5 elementów oceny.",
+            "items": {
+              "$ref": "#/components/schemas/KryteriumEksportu"
+            }
+          },
+          "pierwsza": {
+            "description": "Tylko pierwsza ocena – dodatkowe warunki oceny pozytywnej; ocena okresowa: null.",
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "egzaminSluzbyPrzygotowawczej",
+                  "sprawozdanieWTerminie",
+                  "terminSprawozdania"
+                ],
+                "properties": {
+                  "egzaminSluzbyPrzygotowawczej": {
+                    "type": "string",
+                    "enum": [
+                      "tak",
+                      "nie",
+                      "nie-dotyczy"
+                    ],
+                    "description": "Czy oceniany zaliczył egzamin ze służby przygotowawczej."
+                  },
+                  "sprawozdanieWTerminie": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "Czy sprawozdanie złożono w wyznaczonym terminie (null – jeszcze nie ustalono)."
+                  },
+                  "terminSprawozdania": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "wynik": {
+            "description": "Wynik oceny – null, dopóki przełożony nie wybierze ocen cząstkowych dla wszystkich kryteriów.",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WynikEksportu"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uzasadnienie": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Uzasadnienie oceny (obowiązkowe przy ocenie negatywnej)."
+          },
+          "wnioskiRozwojowe": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Okresowa: wnioski do indywidualnego programu rozwoju zawodowego; pierwsza: wnioski dotyczące rozwoju zawodowego."
+          },
+          "daty": {
+            "type": "object",
+            "required": [
+              "rozmowaWstepna",
+              "rozmowaOceniajaca",
+              "sporzadzenie",
+              "zapoznanie"
+            ],
+            "properties": {
+              "rozmowaWstepna": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date",
+                "description": "Okresowa: rozmowa o kryteriach; pierwsza: rozmowa wstępna."
+              },
+              "rozmowaOceniajaca": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "sporzadzenie": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date",
+                "description": "Data sporządzenia oceny na piśmie."
+              },
+              "zapoznanie": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date",
+                "description": "Data zapoznania ocenianego z oceną."
+              }
+            }
+          }
+        },
+        "examples": [
+          {
+            "format": "azymut.ocena",
+            "wersja": 1,
+            "wygenerowano": "2026-11-21T14:30:00.000Z",
+            "zrodlo": {
+              "aplikacja": "Azymut",
+              "modelKompetencji": "Model kompetencji – materiał organizatora zadania „Kompas kompetencji” (Ministerstwo Cyfryzacji), HackNation 2026, plik Model_kompetencji.xlsx"
+            },
+            "id": "o1",
+            "urzad": "Ministerstwo Cyfryzacji",
+            "rodzaj": "okresowa",
+            "arkusz": "C",
+            "etap": "sporzadzona",
+            "okres": {
+              "od": "2024-12-01",
+              "do": "2026-11-30"
+            },
+            "terminOceny": "2026-12-15",
+            "oceniany": {
+              "imie": "Anna",
+              "nazwisko": "Kowalczyk",
+              "stanowisko": "radca",
+              "komorka": "Departament Rozwoju i Bezpieczeństwa Sztucznej Inteligencji, Wydział Wspierania Innowacyjności",
+              "urzednikSC": true
+            },
+            "oceniajacy": {
+              "imie": "Katarzyna",
+              "nazwisko": "Wiśniewska",
+              "stanowisko": "naczelnik wydziału",
+              "komorka": "Departament Rozwoju i Bezpieczeństwa Sztucznej Inteligencji, Wydział Wspierania Innowacyjności"
+            },
+            "kryteria": [
+              {
+                "kompetencja": {
+                  "id": "wykorzystywanie-wiedzy",
+                  "nazwa": "Wykorzystywanie wiedzy i doskonalenie zawodowe"
+                },
+                "dodatkowe": false,
+                "sugestiaSystemu": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "ocenaCzastkowa": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "wskazniki": [
+                  {
+                    "id": "wykorzystywanie-wiedzy-1",
+                    "opis": "Wykorzystywanie wiedzy przy realizacji zadań na zajmowanym stanowisku pracy.",
+                    "poziom": 4,
+                    "zachowanie": "Łączy wiedzę z kilku obszarów, by rozwiązać nietypową sprawę, i uzasadnia dobór metody oraz granice jej stosowania.",
+                    "przyklad": "Przy opiniowaniu projektu programu wsparcia innowacji połączyła wiedzę o pomocy publicznej i o regulacjach AI; uzasadniła przyjętą metodę w notatce dla dyrektora."
+                  },
+                  {
+                    "id": "wykorzystywanie-wiedzy-3",
+                    "opis": "Korzystanie z dostępnych źródeł informacji, rozwiązań i technologii.",
+                    "poziom": 3,
+                    "zachowanie": "Dobiera dopuszczone źródła i narzędzia do celu oraz sprawdza aktualność informacji i poprawność wyniku.",
+                    "przyklad": "Do analizy rynku korzystała z dopuszczonych źródeł i sprawdzała aktualność danych przed przekazaniem."
+                  }
+                ]
+              },
+              {
+                "kompetencja": {
+                  "id": "rzetelnosc",
+                  "nazwa": "Rzetelność"
+                },
+                "dodatkowe": false,
+                "sugestiaSystemu": {
+                  "poziom": 2,
+                  "nazwa": "Poniżej oczekiwań",
+                  "punkty": 3
+                },
+                "ocenaCzastkowa": {
+                  "poziom": 2,
+                  "nazwa": "Poniżej oczekiwań",
+                  "punkty": 3
+                },
+                "wskazniki": [
+                  {
+                    "id": "rzetelnosc-1",
+                    "opis": "Wykonywanie zadań zgodnie z obowiązującymi standardami (przepisami, zasadami, procedurami) oraz dbałość o jakość rezultatów.",
+                    "poziom": 3,
+                    "zachowanie": "Sprawdza aktualne wymagania, stosuje właściwą procedurę i weryfikuje rezultat przed przekazaniem.",
+                    "przyklad": "Pisma do partnerów przygotowywała zgodnie z instrukcją kancelaryjną; przed wysyłką weryfikowała załączniki."
+                  },
+                  {
+                    "id": "rzetelnosc-2",
+                    "opis": "Dotrzymywanie zobowiązań (realizacja zadań) w wyznaczonym czasie.",
+                    "poziom": 2,
+                    "zachowanie": "Realizuje zadania w terminie przy przypomnieniach lub zgłasza zagrożenie zbyt późno, by zmienić plan.",
+                    "przyklad": "Dwukrotnie (marzec i wrzesień 2026) zgłosiła ryzyko opóźnienia stanowiska do konsultacji dopiero w dniu terminu."
+                  }
+                ]
+              },
+              {
+                "kompetencja": {
+                  "id": "organizacja-pracy",
+                  "nazwa": "Organizacja pracy i orientacja na osiąganie celów"
+                },
+                "dodatkowe": false,
+                "sugestiaSystemu": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "ocenaCzastkowa": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "wskazniki": [
+                  {
+                    "id": "organizacja-pracy-1",
+                    "opis": "Określanie sposobu realizacji zadań/celów.",
+                    "poziom": 3,
+                    "zachowanie": "Określa rezultat, główne kroki, ich kolejność i terminy odpowiednie do zadania.",
+                    "przyklad": "Dla naboru wniosków przygotowała harmonogram z etapami i terminami."
+                  },
+                  {
+                    "id": "organizacja-pracy-2",
+                    "opis": "Realizowanie zadań/celów w kolejności uwzględniającej ich wagę i pilność (ustalanie priorytetów działania).",
+                    "poziom": 3,
+                    "zachowanie": "Ustala kolejność zadań, uwzględniając ich wagę, pilność, terminy i wpływ na inne działania.",
+                    "przyklad": null
+                  },
+                  {
+                    "id": "organizacja-pracy-4",
+                    "opis": "Dostosowywanie się do zmieniających się okoliczności.",
+                    "poziom": null,
+                    "zachowanie": null,
+                    "przyklad": null
+                  }
+                ]
+              },
+              {
+                "kompetencja": {
+                  "id": "wspolpraca",
+                  "nazwa": "Współpraca"
+                },
+                "dodatkowe": false,
+                "sugestiaSystemu": {
+                  "poziom": 4,
+                  "nazwa": "Powyżej oczekiwań",
+                  "punkty": 7
+                },
+                "ocenaCzastkowa": {
+                  "poziom": 4,
+                  "nazwa": "Powyżej oczekiwań",
+                  "punkty": 7
+                },
+                "wskazniki": [
+                  {
+                    "id": "wspolpraca-2",
+                    "opis": "Dbanie o przepływ informacji.",
+                    "poziom": 4,
+                    "zachowanie": "Z wyprzedzeniem określa, komu i kiedy potrzebna jest informacja, oraz potwierdza dotarcie komunikatów istotnych dla dalszych działań.",
+                    "przyklad": "Prowadziła wspólny rejestr ustaleń z departamentem prawnym, dzięki czemu nie powtarzano uzgodnień."
+                  },
+                  {
+                    "id": "wspolpraca-6",
+                    "opis": "Dzielenie się wiedzą i doświadczeniem.",
+                    "poziom": 4,
+                    "zachowanie": "Z własnej inicjatywy dzieli się wskazówkami z ukończonych spraw, objaśnia ich zastosowanie i odpowiada na pytania.",
+                    "przyklad": "Przygotowała dla zespołu krótkie szkolenie z nowych wytycznych dotyczących AI."
+                  }
+                ]
+              },
+              {
+                "kompetencja": {
+                  "id": "komunikacja",
+                  "nazwa": "Komunikacja"
+                },
+                "dodatkowe": false,
+                "sugestiaSystemu": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "ocenaCzastkowa": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "wskazniki": [
+                  {
+                    "id": "komunikacja-2",
+                    "opis": "Wypowiadanie się w sposób jasny i precyzyjny, dostosowany do sytuacji i rozmówcy (dobieranie stylu, języka i treści).",
+                    "poziom": 3,
+                    "zachowanie": "Porządkuje wypowiedź, wyjaśnia potrzebne pojęcia i dostosowuje język oraz szczegółowość do rozmówcy i sytuacji.",
+                    "przyklad": null
+                  },
+                  {
+                    "id": "komunikacja-3",
+                    "opis": "Formułowanie jasnych i precyzyjnych wypowiedzi pisemnych dostosowanych do sytuacji i odbiorcy (dobieranie stylu, języka i treści).",
+                    "poziom": 3,
+                    "zachowanie": "Formułuje spójny tekst. Wskazuje cel i kluczowe informacje, a w razie potrzeby określa dalsze działanie i termin.",
+                    "przyklad": "Notatki dla kierownictwa mają cel, kluczowe informacje i proponowane dalsze kroki."
+                  }
+                ]
+              },
+              {
+                "kompetencja": {
+                  "id": "myslenie-analityczne",
+                  "nazwa": "Myślenie analityczne"
+                },
+                "dodatkowe": true,
+                "sugestiaSystemu": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "ocenaCzastkowa": {
+                  "poziom": 3,
+                  "nazwa": "Na poziomie oczekiwań",
+                  "punkty": 5
+                },
+                "wskazniki": [
+                  {
+                    "id": "myslenie-analityczne-2",
+                    "opis": "Dostrzeganie zależności między informacjami.",
+                    "poziom": 4,
+                    "zachowanie": "Porównuje alternatywne wyjaśnienia, uwzględnia dodatkowe czynniki i sprawdza, które dane potwierdzają lub podważają zależność.",
+                    "przyklad": "W analizie zgłoszeń do programu wskazała zależność między wielkością firmy a odsetkiem odrzuconych wniosków."
+                  },
+                  {
+                    "id": "myslenie-analityczne-3",
+                    "opis": "Formułowanie wniosków.",
+                    "poziom": 3,
+                    "zachowanie": "Formułuje logiczne wnioski, wskazuje ich podstawę i zaznacza ograniczenia zgromadzonych informacji.",
+                    "przyklad": null
+                  }
+                ]
+              }
+            ],
+            "pierwsza": null,
+            "wynik": {
+              "srednia": 5,
+              "ocenaLaczna": null,
+              "poziomOgolny": {
+                "poziom": 3,
+                "nazwa": "Na poziomie oczekiwań"
+              },
+              "wynik": "pozytywna",
+              "powody": []
+            },
+            "uzasadnienie": "Pracownica rzetelnie realizuje zadania analityczne i dobrze współpracuje z innymi komórkami; do poprawy terminowe sygnalizowanie ryzyka opóźnień.",
+            "wnioskiRozwojowe": "Szkolenie z zarządzania czasem i priorytetami; udział w projekcie międzydepartamentowym jako koordynator.",
+            "daty": {
+              "rozmowaWstepna": "2024-12-05",
+              "rozmowaOceniajaca": "2026-12-02",
+              "sporzadzenie": "2026-12-04",
+              "zapoznanie": null
+            }
+          }
+        ]
+      },
+      "OsobaEksportu": {
+        "type": "object",
+        "required": [
+          "imie",
+          "nazwisko",
+          "stanowisko",
+          "komorka"
+        ],
+        "properties": {
+          "imie": {
+            "type": "string"
+          },
+          "nazwisko": {
+            "type": "string"
+          },
+          "stanowisko": {
+            "type": "string"
+          },
+          "komorka": {
+            "type": "string",
+            "description": "Komórka organizacyjna."
+          }
+        }
+      },
+      "PoziomEksportu": {
+        "type": "object",
+        "required": [
+          "poziom",
+          "nazwa",
+          "punkty"
+        ],
+        "properties": {
+          "poziom": {
+            "$ref": "#/components/schemas/PoziomId"
+          },
+          "nazwa": {
+            "type": "string",
+            "description": "Np. „Na poziomie oczekiwań”."
+          },
+          "punkty": {
+            "type": "integer",
+            "enum": [
+              1,
+              3,
+              5,
+              7,
+              9
+            ],
+            "description": "Punkty wg skali ocen cząstkowych."
+          }
+        }
+      },
+      "WskaznikEksportu": {
+        "type": "object",
+        "required": [
+          "id",
+          "opis",
+          "poziom",
+          "zachowanie",
+          "przyklad"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identyfikator wskaźnika, np. „rzetelnosc-2”."
+          },
+          "opis": {
+            "type": "string",
+            "description": "Treść wskaźnika behawioralnego."
+          },
+          "poziom": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PoziomId"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Wybrane zachowanie (1–5); null – brak podstaw do oceny wskaźnika."
+          },
+          "zachowanie": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Opis wybranego zachowania z modelu kompetencji."
+          },
+          "przyklad": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Przykład z okresu oceny zapisany przez przełożonego."
+          }
+        }
+      },
+      "KryteriumEksportu": {
+        "type": "object",
+        "required": [
+          "kompetencja",
+          "dodatkowe",
+          "sugestiaSystemu",
+          "ocenaCzastkowa",
+          "wskazniki"
+        ],
+        "properties": {
+          "kompetencja": {
+            "type": "object",
+            "required": [
+              "id",
+              "nazwa"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/KompetencjaId"
+              },
+              "nazwa": {
+                "type": "string"
+              }
+            }
+          },
+          "dodatkowe": {
+            "type": "boolean",
+            "description": "true – kryterium dodatkowe wybrane przez oceniającego (tylko ocena okresowa)."
+          },
+          "sugestiaSystemu": {
+            "description": "Podpowiedź systemu wyliczona z wybranych zachowań – nie jest decyzją.",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PoziomEksportu"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ocenaCzastkowa": {
+            "description": "Ostateczna ocena cząstkowa wybrana przez przełożonego; null – jeszcze nie wybrana. Pierwsza ocena: tylko poziomy 2–4 (3/5/7 pkt).",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PoziomEksportu"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "wskazniki": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WskaznikEksportu"
+            }
+          }
+        }
+      },
+      "WynikEksportu": {
+        "type": "object",
+        "required": [
+          "srednia",
+          "ocenaLaczna",
+          "poziomOgolny",
+          "wynik",
+          "powody"
+        ],
+        "properties": {
+          "srednia": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Ocena okresowa: średnia arytmetyczna ocen cząstkowych (1–9 pkt, 2 miejsca po przecinku); pierwsza: null."
+          },
+          "ocenaLaczna": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Pierwsza ocena: ocena łączna (3–7 pkt, 2 miejsca po przecinku); okresowa: null."
+          },
+          "poziomOgolny": {
+            "description": "Ocena okresowa: ogólny poziom spełniania kryteriów; pierwsza: null.",
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "poziom",
+                  "nazwa"
+                ],
+                "properties": {
+                  "poziom": {
+                    "$ref": "#/components/schemas/PoziomId"
+                  },
+                  "nazwa": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "wynik": {
+            "$ref": "#/components/schemas/WynikOceny"
+          },
+          "powody": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Powody oceny negatywnej (pusta lista przy pozytywnej)."
+          }
+        }
+      }
+    }
+  }
+}
