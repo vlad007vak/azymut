@@ -10,7 +10,10 @@ const STOP = new Set(
     "a aby albo ale ani az bo by byc byl byla bylo byly bez czy co dla do gdy gdzie go i ich ile im ja jak jaka jaki jakie jakiej jakich " +
     "jako je jego jej jesli jest jestem jeszcze juz ktora ktore ktory ktorej ktorych kto kiedy lub mi mnie moge moze mozna mu na nad " +
     "nie nim niz o od oraz po pod przez przy sa sie sobie ta tak takze te tego tej to tu ty w we wiec wszystko z za ze zeby " +
-    "czym czego ktorym takie jakim mam mamy ma maja trzeba nalezy powinien powinna musi"
+    "czym czego ktorym takie jakim mam mamy ma maja trzeba nalezy powinien powinna musi " +
+    // Słowa pytające i modalne – nie występują w przepisach, a zaniżały pokrycie pytania („do kogo można wnieść…”).
+    "kogo komu kim czyj czyja czyje jakiego jakiemu jakimi ktorego ktoremu ktorzy ktorymi dlaczego czemu skad dokad " +
+    "wolno moga mozemy musze musza powinno powinni"
   ).split(" "),
 );
 
@@ -31,6 +34,8 @@ const SYNONIMY: Record<string, string[]> = {
   szef: ["przelo"],
   punkta: ["punkt", "skal"],
   now: ["pierws"], // nowy pracownik → pierwsza ocena
+  porozm: ["rozmow"], // porozmawiać z pracownikiem → rozmowa (wstępna, oceniająca)
+  rozmaw: ["rozmow"],
 };
 
 export function bezPolskichZnakow(s: string): string {
@@ -71,11 +76,20 @@ export function tokeny(tekst: string): string[] {
   return out;
 }
 
-export function tokenyPytania(tekst: string): string[] {
-  const t = tokeny(tekst);
-  const extra = t.flatMap((x) => SYNONIMY[x] ?? []);
-  return [...t, ...extra];
+/** Słowa pytania (bez powtórzeń), każde razem ze swoimi synonimami ze słownictwa dokumentów. */
+export function grupyPytania(tekst: string): string[][] {
+  return [...new Set(tokeny(tekst))].map((t) => [t, ...(SYNONIMY[t] ?? [])]);
 }
+
+export function tokenyPytania(tekst: string): string[] {
+  return grupyPytania(tekst).flat();
+}
+
+/**
+ * Do pokrycia wystarczy wspólny początek rdzenia – inna forma tego samego słowa
+ * („wnieść” ~ „wniesienie”, „zatrudniony” ~ „zatrudnienie”). Na ranking BM25 nie wpływa.
+ */
+const PREFIKS = 5;
 
 export interface Dokumentowalny {
   id: string;
@@ -91,7 +105,7 @@ export interface Trafienie<T> {
 }
 
 export class Bm25<T extends Dokumentowalny> {
-  private readonly docs: { item: T; tf: Map<string, number>; len: number }[];
+  private readonly docs: { item: T; tf: Map<string, number>; prefiksy: Set<string>; len: number }[];
   private readonly df = new Map<string, number>();
   private readonly avgLen: number;
   private readonly k1 = 1.2;
@@ -103,7 +117,8 @@ export class Bm25<T extends Dokumentowalny> {
       const toks = tokeny(item.indeks);
       for (const t of toks) tf.set(t, (tf.get(t) ?? 0) + 1);
       for (const t of tf.keys()) this.df.set(t, (this.df.get(t) ?? 0) + 1);
-      return { item, tf, len: toks.length };
+      const prefiksy = new Set(toks.filter((t) => t.length >= PREFIKS).map((t) => t.slice(0, PREFIKS)));
+      return { item, tf, prefiksy, len: toks.length };
     });
     this.avgLen = this.docs.reduce((s, d) => s + d.len, 0) / Math.max(1, this.docs.length);
   }
@@ -115,23 +130,25 @@ export class Bm25<T extends Dokumentowalny> {
   }
 
   szukaj(pytanie: string, opcje: { limit?: number; waga?: (item: T) => number } = {}): Trafienie<T>[] {
-    const terms = [...new Set(tokenyPytania(pytanie))];
+    const grupy = grupyPytania(pytanie);
+    const terms = [...new Set(grupy.flat())];
     if (terms.length === 0) return [];
     // Słowa obecne w prawie każdym fragmencie („ocena”, „służba”) mało mówią o pokryciu pytania.
-    const istotne = terms.filter((t) => this.idf(t) > 1);
+    // Synonim nie jest osobnym wymaganiem: słowo pytania jest pokryte, gdy we fragmencie jest ono albo jego synonim.
+    const istotne = grupy.filter(([t]) => this.idf(t) > 1);
     const wynik: Trafienie<T>[] = [];
     for (const d of this.docs) {
       let s = 0;
-      let trafione = 0;
       for (const t of terms) {
         const f = d.tf.get(t);
         if (!f) continue;
-        if (istotne.includes(t)) trafione++;
         const idf = this.idf(t);
         s += (idf * f * (this.k1 + 1)) / (f + this.k1 * (1 - this.b + (this.b * d.len) / this.avgLen));
       }
       if (s <= 0) continue;
       s *= opcje.waga?.(d.item) ?? 1;
+      const zawiera = (t: string) => d.tf.has(t) || (t.length >= PREFIKS && d.prefiksy.has(t.slice(0, PREFIKS)));
+      const trafione = istotne.filter((g) => g.some(zawiera)).length;
       wynik.push({ item: d.item, wynik: s, pokrycie: istotne.length ? trafione / istotne.length : 0 });
     }
     wynik.sort((a, b) => b.wynik - a.wynik);
