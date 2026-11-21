@@ -3,14 +3,15 @@
 Pytania, jakie może zadać jury, z oczekiwaną odpowiedzią i źródłem w bazie wiedzy.
 Baza: ustawa o służbie cywilnej (t.j. Dz.U. 2026 poz. 590) – art. 38 i 81–83, rozporządzenie o pierwszej ocenie
 (Dz.U. 2015 poz. 1144), rozporządzenie o ocenach okresowych (Dz.U. 2016 poz. 470), poradniki KPRM „Pierwsza ocena
-w służbie cywilnej” i „Oceny okresowe w służbie cywilnej” (2016), model kompetencji organizatora.
+w służbie cywilnej” i „Oceny okresowe w służbie cywilnej” (2016), model kompetencji organizatora oraz przykładowa
+baza pytań i odpowiedzi (`src/data/baza-wiedzy/pytania-odpowiedzi.json`, opis: `docs/BAZA-WIEDZY.md`).
 
 ## Jak testować
 
 **Ręcznie (Diana):** otwórz `/asystent`, wpisz pytanie z tabeli i sprawdź:
 1. odpowiedź zawiera fakty z kolumny „Oczekiwana odpowiedź” (pogrubione = muszą wystąpić),
 2. pod odpowiedzią jest źródło z kolumny „Źródło” – po kliknięciu widać dokument, miejsce i dosłowny cytat,
-3. pytania 18–19 (spoza bazy) kończą się żółtym komunikatem „Brak informacji w bazie wiedzy” – bez zmyślonej odpowiedzi,
+3. pytania 18, 19 i 35 (spoza bazy) kończą się żółtym komunikatem „Brak informacji w bazie wiedzy” – bez zmyślonej odpowiedzi,
 4. odpowiedź pojawia się zwykle w < 5 s; w trakcie widać „Szukam w bazie wiedzy…”.
 
 **Automatycznie:** przy działającej aplikacji
@@ -54,6 +55,14 @@ Skrypt robi 4 s przerwy między pytaniami (darmowe limity AI) i wypisuje ✓/✗
 | 28 | okresowa | Jak często ocenia się urzędnika w służbie cywilnej? | Co **24 miesi**ące – od dnia sporządzenia poprzedniej oceny albo od zatrudnienia na czas nieokreślony. | Ustawa `art. 81 ust. 4`, poradnik „Oceny okresowe” `s. 8` lub `s. 10` |
 | 29 | okresowa | Po jakim czasie od negatywnej oceny ocenia się pracownika ponownie? | Po upływie **6 miesi**ęcy od dnia zapoznania się z negatywną oceną. | Ustawa `art. 81 ust. 9`, poradnik „Oceny okresowe” `s. 13` lub `s. 34` |
 | 30 | okresowa | Ile czasu ma przełożony na ustalenie kryteriów po zatrudnieniu pracownika na czas nieokreślony? | **30 dni** od dnia zatrudnienia na czas nieokreślony (albo od sporządzenia poprzedniej oceny). | Rozporządzenie 2016 `§ 7`, poradnik `s. 20` |
+| 31 | pierwsza | Kiedy odbywa się rozmowa oceniająca z nowym pracownikiem? | **Niezwłocznie** po złożeniu **sprawozdani**a albo po upływie terminu wyznaczonego na jego złożenie. | Baza Q&A `qa-001` (+ rozporządzenie 2015 § 8) |
+| 32 | okresowa | Kiedy mogę złożyć wniosek o kolejny stopień służbowy dla urzędnika? | Przy ocenie **pozytywn**ej – umotywowany wniosek w części **III** arkusza. | Baza Q&A `qa-009` (+ rozporządzenie 2016 § 11 ust. 5) |
+| 33 | okresowa | Co się dzieje z oryginałem arkusza oceny okresowej? | Oryginał włącza się do **akt osobowych** ocenianego, a **kopi**ę oceniający doręcza ocenianemu. | Baza Q&A `qa-010` (+ rozporządzenie 2016 § 12) |
+| 34 | okresowa | Czy po zmianie stanowiska pracownik musi mieć nową ocenę okresową? | Tak, gdy zmiana wiąże się z istotną zmianą zakresu obowiązków, a od ostatniej oceny minęło ponad **6 miesi**ęcy; ocenę sporządza się nie wcześniej niż 7 dni przed zmianą i nie później niż **30 dni** od niej. | Baza Q&A `qa-011` (+ ustawa art. 81 ust. 6) |
+| 35 | – | Czy urzędnik może pracować zdalnie? | **brak informacji** – baza nie obejmuje pracy zdalnej. | – |
+
+Wiersze 31–34 trafiają w pozycje bazy pytań i odpowiedzi (zadanie #40), zadane innymi słowami niż w bazie –
+w źródłach musi być „Baza pytań i odpowiedzi – …” z podanym identyfikatorem (zwykle obok przepisu); wiersz 35 jest spoza bazy.
 
 Wiersze 25–30 to te same fakty co wyżej, ale sformułowane innymi słowami (jak pyta jury) – sprawdzają, że asystent
 nie odpowiada fałszywym „brak informacji” (zgłoszenie #26).
