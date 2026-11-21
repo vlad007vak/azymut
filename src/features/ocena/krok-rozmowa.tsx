@@ -7,6 +7,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AsystentPanel } from "@/features/asystent";
 
 import type { KrokProps } from "./kreator";
 import { dzisIso } from "./logika";
@@ -46,11 +47,21 @@ export function KrokRozmowa({ ocena, zmien, przejdz }: KrokProps) {
           </CardHeader>
           <CardContent>
             <Link href="/asystent" className={buttonVariants({ variant: "outline" })}>
-              Zapytaj asystenta
+              Otwórz pełny widok asystenta
             </Link>
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Zapytaj asystenta formalnego</CardTitle>
+          <CardDescription>Odpowiedzi tylko z bazy wiedzy (rozporządzenia, poradniki KPRM, model kompetencji) – ze źródłem.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AsystentPanel rodzaj={ocena.rodzaj} />
+        </CardContent>
+      </Card>
 
       {ocena.notatkiRozmowy && (
         <Card>

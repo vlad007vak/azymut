@@ -9,10 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AnalizaOsp } from "@/features/osp";
 import { kompetencja, MODEL } from "@/lib/ocena/model";
 import { pracownik as znajdzPracownika } from "@/lib/ocena/store";
 import { arkuszDlaStanowiska, KRYTERIA_OBOWIAZKOWE, MAX_KRYTERIOW_DODATKOWYCH } from "@/lib/ocena/zasady";
 import { cn } from "@/lib/utils";
+import type { OspSugestia } from "@/types/api";
 import type { Arkusz, DanePierwszejOceny, KompetencjaId, Ocena, OcenaKryterium } from "@/types/ocena";
 
 import type { KrokProps } from "./kreator";
@@ -56,6 +58,31 @@ function ArkuszIKryteria({ ocena, zmien }: Pick<KrokProps, "ocena" | "zmien">) {
 
   const ustawArkusz = (a: Exclude<Arkusz, "A">) =>
     zmien((o) => ({ ...o, arkusz: a, kryteria: kryteriaDlaArkusza(a, o.kryteria) }));
+
+  /** Podpowiedź z analizy OSP (tylko to, co przełożony przyjął). */
+  const zastosujOsp = (s: OspSugestia) => {
+    zmien((o) => {
+      const a = s.sugerowanyArkusz;
+      const obow = KRYTERIA_OBOWIAZKOWE[a];
+      const dodatkowe = s.kryteriaDodatkowe
+        .map((k) => k.kompetencjaId)
+        .filter((id) => !obow.includes(id))
+        .slice(0, MAX_KRYTERIOW_DODATKOWYCH);
+      const bazowe = kryteriaDlaArkusza(a, o.kryteria.filter((k) => !k.dodatkowe));
+      const kryteria = [...bazowe, ...dodatkowe.map((id) => o.kryteria.find((k) => k.kompetencjaId === id) ?? nowyKryterium(id, true))].map(
+        (k) => {
+          const sug = s.wskazniki.map((w) => w.wskaznikId).filter((id) => id.startsWith(`${k.kompetencjaId}-`));
+          if (sug.length === 0) return k;
+          const kolejnosc = kompetencja(k.kompetencjaId).wskazniki.map((w) => w.id);
+          return { ...k, wskazniki: kolejnosc.filter((id) => sug.includes(id)) };
+        },
+      );
+      return { ...o, arkusz: a, kryteria };
+    });
+    toast.success("Zastosowano podpowiedzi z analizy opisu stanowiska", {
+      description: "Sprawdź kryteria i wskaźniki poniżej – możesz je jeszcze zmienić.",
+    });
+  };
 
   const przelaczDodatkowe = (id: KompetencjaId, wlacz: boolean) => {
     if (wlacz && dodatkowe.length >= MAX_KRYTERIOW_DODATKOWYCH) {
@@ -114,9 +141,11 @@ function ArkuszIKryteria({ ocena, zmien }: Pick<KrokProps, "ocena" | "zmien">) {
           <Alert>
             <InfoIcon />
             <AlertDescription>
-              Analiza opisu stanowiska z pomocą AI (podpowiedź kryteriów dodatkowych i wskaźników) pojawi się w tym miejscu.
+              Wklej opis stanowiska pracy (albo wybierz przykład) – AI podpowie arkusz, kryteria dodatkowe i najważniejsze
+              wskaźniki. Każdą podpowiedź przyjmujesz albo odrzucasz; „Zastosuj” wpisze je poniżej.
             </AlertDescription>
           </Alert>
+          <AnalizaOsp onZastosuj={zastosujOsp} />
         </CardContent>
       </Card>
 

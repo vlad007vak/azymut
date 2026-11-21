@@ -5,9 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { APP_CONFIG } from "@/config/app";
 
 // Te same pozycje trafiają do menu na węższym ekranie (MobileNav) – dodajesz w jednym miejscu.
-// Linki do stron z innych PR (asystent, rozmowa) dodajemy po ich merge.
 const NAV: NavItem[] = [
   { href: "/", label: "Oceny" },
+  { href: "/asystent", label: "Asystent formalny" },
+  { href: "/rozmowa", label: "Asystent rozmowy" },
   { href: "/hr", label: "Panel HR" },
 ];
 

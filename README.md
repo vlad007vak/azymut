@@ -44,6 +44,8 @@ Zgodnie z zasadami HackNation informujemy o zasobach przygotowanych lub użytych
   Cała logika związana z zadaniem powstała podczas hackathonu.
 - **Biblioteki open source:** Next.js, React, Tailwind CSS, shadcn/ui, Base UI, lucide-react, sonner, zod,
   openai (klient API), react-markdown, remark-gfm.
+- **Narzędzia do budowy bazy wiedzy asystenta:** `pdftotext` (Poppler) do wyciągnięcia tekstu z PDF; wyszukiwanie
+  fragmentów (BM25) napisane przez zespół bez zewnętrznych bibliotek.
 - **Narzędzia AI:** kod powstawał z pomocą asystenta Claude Code.
 - **Źródła danych i wiedzy:** model kompetencji (14 kompetencji, 49 wskaźników behawioralnych) oraz wzory arkuszy,
   poradniki KPRM i przykładowe opisy stanowisk – materiały organizatora zadania (Ministerstwo Cyfryzacji);
