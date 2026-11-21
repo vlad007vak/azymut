@@ -39,6 +39,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -49,72 +51,95 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Azymut – paleta: granat (powierzchnie, przyciski), czerwień (główne wezwanie do działania), chłodna biel. */
+  --background: #f6f7fa;
+  --foreground: #0f1a2e;
+  --card: #ffffff;
+  --card-foreground: #0f1a2e;
+  --popover: #ffffff;
+  --popover-foreground: #0f1a2e;
+  --primary: #1f3a6e;
+  --primary-foreground: #ffffff;
+  --secondary: #eaeef5;
+  --secondary-foreground: #14254a;
+  --muted: #eef1f6;
+  --muted-foreground: #5a6478;
+  --accent: #e6ecf6;
+  --accent-foreground: #14254a;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --border: #dfe4ec;
+  --input: #d3dae5;
+  --ring: #3b63b0;
+  /* Czerwień tylko dla jednego, najważniejszego przycisku na ekranie (nie dla błędów – te mają --destructive). */
+  --brand: #d4213d;
+  --brand-foreground: #ffffff;
+  --chart-1: #1f3a6e;
+  --chart-2: #3b63b0;
+  --chart-3: #7f9bd1;
+  --chart-4: #d4213d;
+  --chart-5: #b8c4d8;
+  --radius: 0.5rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f1a2e;
+  --sidebar-primary: #1f3a6e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef1f6;
+  --sidebar-accent-foreground: #14254a;
+  --sidebar-border: #dfe4ec;
+  --sidebar-ring: #3b63b0;
 }
 
+/*
+ * Klasa `.dark` = granatowa powierzchnia (nagłówek, stopka, baner strony startowej, NaglowekStrony).
+ * Aplikacja nie ma trybu ciemnego – wystarczy dodać `dark` do kontenera, a komponenty w środku
+ * (przyciski, plakietki, pola) same dobiorą kolory.
+ */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #0b1730;
+  --foreground: #f4f6fa;
+  --card: #12213f;
+  --card-foreground: #f4f6fa;
+  --popover: #12213f;
+  --popover-foreground: #f4f6fa;
+  --primary: #f4f6fa;
+  --primary-foreground: #0b1730;
+  --secondary: #1a2c52;
+  --secondary-foreground: #f4f6fa;
+  --muted: #17284b;
+  --muted-foreground: #a9b4c8;
+  --accent: #1d315a;
+  --accent-foreground: #f4f6fa;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --border: rgb(255 255 255 / 12%);
+  --input: rgb(255 255 255 / 18%);
+  --ring: #7f9bd1;
+  --brand: #d4213d;
+  --brand-foreground: #ffffff;
+  --chart-1: #7f9bd1;
+  --chart-2: #3b63b0;
+  --chart-3: #b8c4d8;
+  --chart-4: #d4213d;
+  --chart-5: #1f3a6e;
+  --sidebar: #12213f;
+  --sidebar-foreground: #f4f6fa;
+  --sidebar-primary: #7f9bd1;
+  --sidebar-primary-foreground: #0b1730;
+  --sidebar-accent: #1d315a;
+  --sidebar-accent-foreground: #f4f6fa;
+  --sidebar-border: rgb(255 255 255 / 12%);
+  --sidebar-ring: #7f9bd1;
+}
+
+/* Wydruk (arkusz oceny): zawsze biało-czarny. */
+@media print {
+  :root,
+  .dark {
+    --background: #ffffff;
+    --foreground: #000000;
+    --card: #ffffff;
+    --muted-foreground: #333333;
+    --border: #999999;
+  }
 }
 
 @layer base {
@@ -126,5 +151,10 @@
   }
   html {
     @apply font-sans;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply tracking-tight;
   }
 }
