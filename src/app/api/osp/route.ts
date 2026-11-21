@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { MAX_DLUGOSC_OSP, MIN_DLUGOSC_OSP, odczytajArkusz, tekstDlaAi, wyczyscOsp } from "@/features/osp/analiza";
 import {
+  komunikatNiedostepnosci,
   normalizujSugestie,
   odpowiedzSchema,
   sekundyDoPonowienia,
@@ -79,8 +80,7 @@ export async function POST(request: Request) {
           ponow,
         );
       }
-      const komunikat = sekundy ? `${err.message} Spróbuj ponownie za ok. ${sekundy} s.` : err.message;
-      return Response.json({ error: komunikat }, { status: 503, headers: ponow });
+      return Response.json({ error: komunikatNiedostepnosci(err.message, sekundy) }, { status: 503, headers: ponow });
     }
     console.error("[osp]", err);
     return Response.json({ error: "Nie udało się przeanalizować opisu stanowiska. Spróbuj ponownie." }, { status: 500 });

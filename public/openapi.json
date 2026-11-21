@@ -15,7 +15,7 @@
   "tags": [
     {
       "name": "Asystent formalny",
-      "description": "Odpowiedzi z bazy wiedzy (rozporządzenia, poradniki KPRM, model kompetencji) ze wskazaniem źródeł."
+      "description": "Odpowiedzi z bazy wiedzy (ustawa o służbie cywilnej (art. 38, 81–83), rozporządzenia, poradniki KPRM, model kompetencji) ze wskazaniem źródeł."
     },
     {
       "name": "Opis stanowiska",
@@ -722,15 +722,26 @@
     },
     "responses": {
       "AiNiedostepne": {
-        "description": "Żaden dostawca AI nie odpowiedział albo żaden nie jest skonfigurowany.",
+        "description": "Żaden dostawca AI nie odpowiedział albo żaden nie jest skonfigurowany. Gdy dostawca podał limit, komunikat zawiera liczbę sekund do ponowienia (nagłówek X-AI-Retry-After).",
+        "headers": {
+          "X-AI-Retry-After": {
+            "$ref": "#/components/headers/XAiRetryAfter"
+          }
+        },
         "content": {
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/Blad"
             },
             "examples": {
+              "limitZCzasem": {
+                "summary": "Limit darmowego planu (dostawca podał czas)",
+                "value": {
+                  "error": "Wyczerpano chwilowo limit darmowego planu AI. Spróbuj ponownie za ok. 21 s."
+                }
+              },
               "limit": {
-                "summary": "Limit darmowych modeli",
+                "summary": "Dostawcy AI nie odpowiadają",
                 "value": {
                   "error": "Żaden dostawca AI nie odpowiedział. Spróbuj ponownie za chwilę."
                 }
