@@ -4,11 +4,10 @@ import { MobileNav, type NavItem } from "@/components/mobile-nav";
 import { Badge } from "@/components/ui/badge";
 import { APP_CONFIG } from "@/config/app";
 
-// TODO(zadanie): uzupełnij nawigację o strony aplikacji.
-// Te same pozycje trafiają do menu na telefonie (MobileNav) – dodajesz w jednym miejscu.
+// Te same pozycje trafiają do menu na węższym ekranie (MobileNav) – dodajesz w jednym miejscu.
+// Linki do stron z innych PR (asystent, rozmowa) dodajemy po ich merge.
 const NAV: NavItem[] = [
-  { href: "/#jak-to-dziala", label: "Jak to działa" },
-  { href: "/#asystent", label: "Asystent AI" },
+  { href: "/", label: "Oceny" },
   { href: "/hr", label: "Panel HR" },
 ];
 
