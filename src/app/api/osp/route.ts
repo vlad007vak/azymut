@@ -1,7 +1,13 @@
 import { z } from "zod";
 
 import { MAX_DLUGOSC_OSP, MIN_DLUGOSC_OSP, odczytajArkusz, tekstDlaAi, wyczyscOsp } from "@/features/osp/analiza";
-import { normalizujSugestie, odpowiedzSchema, SYSTEM_PROMPT, zbudujPrompt } from "@/features/osp/prompt";
+import {
+  normalizujSugestie,
+  odpowiedzSchema,
+  sekundyDoPonowienia,
+  SYSTEM_PROMPT,
+  zbudujPrompt,
+} from "@/features/osp/prompt";
 import { AiUnavailableError, generateJson } from "@/lib/ai/client";
 import type { OspSugestia, OspZapytanie } from "@/types/api";
 
@@ -49,7 +55,7 @@ export async function POST(request: Request) {
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: zbudujPrompt(tekstAi, odczyt?.arkusz ?? null) }],
       temperature: 0.1,
-      maxTokens: 1800,
+      maxTokens: 1100,
     });
     const sugestia = normalizujSugestie(data, odczyt?.arkusz ?? null);
     if (sugestia.wskazniki.length === 0) {
@@ -63,11 +69,18 @@ export async function POST(request: Request) {
     return odpowiedz(sugestia, "ok", { "X-AI-Provider": provider, "X-AI-Model": model });
   } catch (err) {
     if (err instanceof AiUnavailableError) {
+      const sekundy = sekundyDoPonowienia(err.attempts);
+      const ponow: Record<string, string> = sekundy ? { "X-AI-Retry-After": String(sekundy) } : {};
       // Arkusz da się ustalić bez AI – zwracamy przynajmniej to.
       if (odczyt) {
-        return odpowiedz({ sugerowanyArkusz: odczyt.arkusz, kryteriaDodatkowe: [], wskazniki: [] }, "niedostepne");
+        return odpowiedz(
+          { sugerowanyArkusz: odczyt.arkusz, kryteriaDodatkowe: [], wskazniki: [] },
+          "niedostepne",
+          ponow,
+        );
       }
-      return Response.json({ error: err.message }, { status: 503 });
+      const komunikat = sekundy ? `${err.message} Spróbuj ponownie za ok. ${sekundy} s.` : err.message;
+      return Response.json({ error: komunikat }, { status: 503, headers: ponow });
     }
     console.error("[osp]", err);
     return Response.json({ error: "Nie udało się przeanalizować opisu stanowiska. Spróbuj ponownie." }, { status: 500 });

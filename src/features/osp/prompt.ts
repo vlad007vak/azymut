@@ -13,13 +13,18 @@ type ArkuszBC = Exclude<Arkusz, "A">;
 export const SYSTEM_PROMPT = `Jesteś specjalistą HR w polskiej służbie cywilnej. Pomagasz bezpośredniemu przełożonemu przygotować ocenę okresową na podstawie opisu stanowiska pracy (OSP).
 Zasady:
 - Opierasz się WYŁĄCZNIE na zadaniach, celu stanowiska i wymaganiach zapisanych w OSP. Nie wymyślasz zadań.
-- Każde uzasadnienie to jedno zdanie, które wskazuje konkretne zadanie lub wymaganie z OSP (np. „Zadanie 3: koordynuje obsługę spraw budżetowych…”).
+- Każde uzasadnienie to jedno krótkie zdanie (maks. 20 słów) własnymi słowami, zaczynające się od numeru zadania z OSP, np. „Zadanie 3 – koordynacja budżetu i dotacji wymaga terminowości i dbałości o poprawność.”. Nie przepisuj całych zadań.
+- Kryteria dodatkowe dobierasz przede wszystkim do ZADAŃ DOMINUJĄCYCH: pierwszeństwo mają kompetencje, których nazwa wprost odpowiada przedmiotowi tych zadań (np. zarządzanie kryzysowe, negocjacje, wystąpienia, obsługa interesantów, analizy).
 - Używasz tylko identyfikatorów kompetencji i wskaźników z podanej listy.
 - Piszesz poprawną polszczyzną, zwięźle.`;
 
+function skroc(s: string, max: number): string {
+  return s.length <= max ? s : `${s.slice(0, s.lastIndexOf(" ", max))}…`;
+}
+
 function listaKompetencji(): string {
   return MODEL.kompetencje
-    .map((k) => `[${k.id}] ${k.nazwa}\n${k.wskazniki.map((w) => `  - ${w.id}: ${w.opis}`).join("\n")}`)
+    .map((k) => `[${k.id}] ${k.nazwa}\n${k.wskazniki.map((w) => `- ${w.id}: ${skroc(w.opis, 75)}`).join("\n")}`)
     .join("\n");
 }
 
@@ -112,7 +117,21 @@ function arkuszZOdpowiedzi(v: unknown): ArkuszBC | null {
 }
 
 const MAX_WSKAZNIKOW_NA_KRYTERIUM = 4;
-const MAX_DLUGOSC_UZASADNIENIA = 400;
+const MAX_DLUGOSC_UZASADNIENIA = 240;
+
+function uzasadnienie(s: string | undefined): string {
+  const t = (s ?? "").replace(/\s+/g, " ").trim();
+  return t.length <= MAX_DLUGOSC_UZASADNIENIA ? t : skroc(t, MAX_DLUGOSC_UZASADNIENIA);
+}
+
+/** „Please try again in 21.08s” z komunikatów dostawców → sekundy (do podpowiedzi w UI). */
+export function sekundyDoPonowienia(proby: string[]): number | null {
+  const sekundy = proby
+    .map((p) => p.match(/try again in ([\d.]+)\s*s/i)?.[1])
+    .filter((s): s is string => !!s)
+    .map((s) => Math.ceil(Number(s)));
+  return sekundy.length ? Math.min(...sekundy) : null;
+}
 
 /**
  * Walidacja po stronie serwera: arkusz z OSP ma pierwszeństwo przed AI; kryteria dodatkowe bez
@@ -126,10 +145,10 @@ export function normalizujSugestie(o: OdpowiedzModelu, arkuszZOsp: ArkuszBC | nu
   const kryteriaDodatkowe: OspSugestia["kryteriaDodatkowe"] = [];
   for (const k of o.kryteriaDodatkowe) {
     const id = dopasujKompetencje(k.kompetencjaId, k.id, k.nazwa);
-    const uzasadnienie = (k.uzasadnienie ?? "").slice(0, MAX_DLUGOSC_UZASADNIENIA);
-    if (!id || obowiazkowe.has(id) || !uzasadnienie) continue;
+    const tekst = uzasadnienie(k.uzasadnienie);
+    if (!id || obowiazkowe.has(id) || !tekst) continue;
     if (kryteriaDodatkowe.some((x) => x.kompetencjaId === id)) continue;
-    kryteriaDodatkowe.push({ kompetencjaId: id, uzasadnienie });
+    kryteriaDodatkowe.push({ kompetencjaId: id, uzasadnienie: tekst });
     if (kryteriaDodatkowe.length >= MAX_KRYTERIOW_DODATKOWYCH) break;
   }
 
@@ -144,7 +163,7 @@ export function normalizujSugestie(o: OdpowiedzModelu, arkuszZOsp: ArkuszBC | nu
     const ile = naKryterium.get(komp.id) ?? 0;
     if (ile >= MAX_WSKAZNIKOW_NA_KRYTERIUM) continue;
     naKryterium.set(komp.id, ile + 1);
-    wskazniki.push({ wskaznikId: id, uzasadnienie: (w.uzasadnienie ?? "").slice(0, MAX_DLUGOSC_UZASADNIENIA) });
+    wskazniki.push({ wskaznikId: id, uzasadnienie: uzasadnienie(w.uzasadnienie) });
   }
 
   return { sugerowanyArkusz, kryteriaDodatkowe, wskazniki };

@@ -71,13 +71,43 @@ export function wyczyscOsp(wejscie: string): WynikCzyszczenia {
   return { tekst, usuniete };
 }
 
-/** Tekst dla modelu: bez niezaznaczonych opcji pól wyboru (szum) i przycięty do limitu. */
-export function tekstDlaAi(tekst: string, limit = 9000): string {
-  return tekst
-    .replace(/☐[^☐☒\n]*/g, "")
-    .replace(/[ \t]{2,}/g, " ")
-    .slice(0, limit)
-    .trim();
+/** Sekcje OSP istotne dla doboru kryteriów i limit znaków każdej z nich (0 = pomijamy). */
+const SEKCJE_DLA_AI: { wzorzec: RegExp; limit: number }[] = [
+  { wzorzec: /CEL ISTNIENIA STANOWISKA/i, limit: 900 },
+  { wzorzec: /LICZBA PODLEG[ŁL]YCH PRACOWNIK/i, limit: 300 },
+  { wzorzec: /G[ŁL][ÓO]WNE ZADANIA REALIZOWANE/i, limit: 3800 },
+  { wzorzec: /UPOWA[ŻZ]NIENIA I PE[ŁL]NOMOCNICTWA/i, limit: 300 },
+  { wzorzec: /Z[ŁL]O[ŻZ]ONO[ŚS][ĆC] I KREATYWNO/i, limit: 350 },
+  { wzorzec: /NIEZB[ĘE]DNA SAMODZIELNO/i, limit: 350 },
+  { wzorzec: /HORYZONT CZASOWY/i, limit: 0 },
+  { wzorzec: /KONTAKTY ZEWN[ĘE]TRZNE/i, limit: 300 },
+  { wzorzec: /CZYNNIKI SZCZEG[ÓO]LNIE/i, limit: 0 },
+  { wzorzec: /WYMAGANE KOMPETENCJE/i, limit: 1100 },
+];
+
+function przytnij(tekst: string, limit: number): string {
+  if (tekst.length <= limit) return tekst;
+  const ciecie = tekst.lastIndexOf(" ", limit);
+  return `${tekst.slice(0, ciecie > limit * 0.7 ? ciecie : limit)}…`;
+}
+
+/**
+ * Tekst dla modelu (darmowe modele mają małe limity tokenów): tylko sekcje istotne dla doboru
+ * kryteriów, każda przycięta, bez niezaznaczonych opcji pól wyboru. Tekst bez nagłówków OSP – przycięty w całości.
+ */
+export function tekstDlaAi(tekst: string, limitCalosci = 6500): string {
+  const bezPustychOpcji = tekst.replace(/☐[^☐☒\n]*/g, "").replace(/[ \t]{2,}/g, " ");
+  const pozycje = SEKCJE_DLA_AI.map((s) => ({ ...s, start: bezPustychOpcji.search(s.wzorzec) }))
+    .filter((s) => s.start !== -1)
+    .sort((a, b) => a.start - b.start);
+  if (pozycje.length < 3) return przytnij(bezPustychOpcji.trim(), limitCalosci);
+
+  const czesci = pozycje.map((s, i) => {
+    if (s.limit === 0) return "";
+    const koniec = pozycje[i + 1]?.start ?? bezPustychOpcji.length;
+    return przytnij(bezPustychOpcji.slice(s.start, koniec).trim(), s.limit);
+  });
+  return przytnij(czesci.filter(Boolean).join("\n\n"), limitCalosci);
 }
 
 // ── Arkusz z sekcji „LICZBA PODLEGŁYCH PRACOWNIKÓW” ──────────────────────────

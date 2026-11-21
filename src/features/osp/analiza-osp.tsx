@@ -6,6 +6,7 @@ import {
   FileTextIcon,
   InfoIcon,
   Loader2Icon,
+  RefreshCwIcon,
   ShieldAlertIcon,
   SparklesIcon,
 } from "lucide-react";
@@ -37,6 +38,8 @@ interface Wynik {
   odczyt: OdczytArkusza | null;
   usuniete: string[];
   statusAi: StatusAi;
+  /** Za ile sekund dostawca AI przyjmie kolejne zapytanie (limit darmowego planu). */
+  ponowZa: number | null;
 }
 
 type Stan = { typ: "bezczynny" } | { typ: "ladowanie" } | { typ: "blad"; komunikat: string };
@@ -113,7 +116,8 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
       }
       const sugestia = dane as OspSugestia;
       const statusAi = (res.headers.get("X-AI-Status") as StatusAi | null) ?? "ok";
-      setWynik({ sugestia, odczyt, usuniete, statusAi });
+      const ponowZa = Number(res.headers.get("X-AI-Retry-After")) || null;
+      setWynik({ sugestia, odczyt, usuniete, statusAi, ponowZa });
       setArkusz(sugestia.sugerowanyArkusz);
       setDecyzjeKryteria({});
       setDecyzjeWskazniki({});
@@ -302,8 +306,14 @@ export function AnalizaOsp({ onZastosuj }: { onZastosuj: (sugestia: OspSugestia)
                   {wynik.statusAi === "niedostepne" ? "AI jest chwilowo niedostępne" : "AI zwróciło niepełne sugestie"}
                 </AlertTitle>
                 <AlertDescription>
-                  Arkusz odczytaliśmy z opisu stanowiska. Kryteria dodatkowe i wskaźniki możesz dobrać ręcznie w
-                  kreatorze albo spróbować analizy ponownie za chwilę.
+                  <p>
+                    Arkusz odczytaliśmy z opisu stanowiska. Kryteria dodatkowe i wskaźniki możesz dobrać ręcznie w
+                    kreatorze albo spróbować analizy ponownie
+                    {wynik.ponowZa ? ` za ok. ${wynik.ponowZa} s (limit darmowego planu AI).` : " za chwilę."}
+                  </p>
+                  <Button variant="outline" size="sm" onClick={analizuj} className="mt-1">
+                    <RefreshCwIcon data-icon="inline-start" /> Analizuj ponownie
+                  </Button>
                 </AlertDescription>
               </Alert>
             )}
