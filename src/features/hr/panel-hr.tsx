@@ -127,6 +127,8 @@ function PanelTresc({ oceny, dzis }: { oceny: Ocena[]; dzis: string }) {
     setFiltrEtapu("wszystkie");
     setFiltrRodzaju("wszystkie");
     setLicznik(null);
+    // Przycisk „Wyczyść filtry” znika po kliknięciu – fokus wraca do pierwszego filtra, a nie na <body>.
+    document.getElementById("hr-filtr-etap")?.focus();
   }
 
   return (
@@ -208,6 +210,10 @@ function PanelTresc({ oceny, dzis }: { oceny: Ocena[]; dzis: string }) {
           <NowyProcesDialog oceny={oceny} />
         </div>
       </div>
+
+      <p className="sr-only" aria-live="polite">
+        {filtrAktywny ? `Wyświetlane procesy: ${widoczne.length} z ${oceny.length}.` : ""}
+      </p>
 
       {oceny.length === 0 ? (
         <div className="rounded-xl border border-dashed p-10 text-center">
