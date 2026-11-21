@@ -21,7 +21,7 @@ function opisPoziomu(p: RozmowaZapytanie["kryteria"][number]["poziom"]): string 
 }
 
 export function zbudujPrompt(zap: RozmowaZapytanie): string {
-  const rodzaj = zap.rodzaj === "pierwsza" ? "pierwsza ocena (pracownik w pierwszym roku pracy)" : "ocena okresowa";
+  const rodzaj = zap.rodzaj === "pierwsza" ? "pierwsza ocena w służbie cywilnej" : "ocena okresowa";
   const rozwoj =
     zap.rodzaj === "pierwsza"
       ? "wnioski dotyczące dalszego rozwoju zawodowego"
