@@ -967,7 +967,8 @@
                   }
                 }
               }
-            }
+            },
+            "description": "Kryteria oceny z poziomem i przykładami zachowań."
           }
         }
       },
@@ -1131,7 +1132,8 @@
                   "maxLength": 8000
                 }
               }
-            }
+            },
+            "description": "Wiadomości rozmowy w kolejności chronologicznej."
           }
         }
       },
@@ -1178,6 +1180,7 @@
           },
           "zrodlo": {
             "type": "object",
+            "description": "System źródłowy i źródło modelu kompetencji.",
             "required": [
               "aplikacja",
               "modelKompetencji"
@@ -1242,6 +1245,7 @@
             "description": "Okresowa: termin sporządzenia oceny na piśmie; pierwsza: koniec okresu na dokonanie oceny."
           },
           "oceniany": {
+            "description": "Dane ocenianego.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/OsobaEksportu"
@@ -1259,7 +1263,8 @@
             }
           },
           "oceniajacy": {
-            "$ref": "#/components/schemas/OsobaEksportu"
+            "$ref": "#/components/schemas/OsobaEksportu",
+            "description": "Dane oceniającego (pierwsza ocena: bezpośredni przełożony)."
           },
           "kryteria": {
             "type": "array",
@@ -1336,6 +1341,7 @@
           },
           "daty": {
             "type": "object",
+            "description": "Daty etapów procesu oceny.",
             "required": [
               "rozmowaWstepna",
               "rozmowaOceniajaca",
@@ -1648,13 +1654,16 @@
         ],
         "properties": {
           "imie": {
-            "type": "string"
+            "type": "string",
+            "description": "Imię."
           },
           "nazwisko": {
-            "type": "string"
+            "type": "string",
+            "description": "Nazwisko."
           },
           "stanowisko": {
-            "type": "string"
+            "type": "string",
+            "description": "Nazwa stanowiska."
           },
           "komorka": {
             "type": "string",
@@ -1758,7 +1767,8 @@
               "nazwa": {
                 "type": "string"
               }
-            }
+            },
+            "description": "Kompetencja z modelu kompetencji (identyfikator i nazwa)."
           },
           "dodatkowe": {
             "type": "boolean",
@@ -1790,7 +1800,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/WskaznikEksportu"
-            }
+            },
+            "description": "Wskaźniki behawioralne dobrane do stanowiska, z wybranym zachowaniem."
           }
         }
       },
@@ -1842,7 +1853,8 @@
             ]
           },
           "wynik": {
-            "$ref": "#/components/schemas/WynikOceny"
+            "$ref": "#/components/schemas/WynikOceny",
+            "description": "Wynik oceny: pozytywna albo negatywna."
           },
           "powody": {
             "type": "array",
