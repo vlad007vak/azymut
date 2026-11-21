@@ -2,6 +2,7 @@
 
 import { BellIcon, CheckIcon, ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { useRef, type RefObject } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -48,10 +49,12 @@ export function SzczegolyProcesu({
   onZamknij: () => void;
   onPrzypomnij: (ocena: Ocena) => void;
 }) {
+  // Fokus na tytule – inaczej Base UI ustawia go na pierwszym przycisku (na dole) i przewija panel.
+  const tytulRef = useRef<HTMLHeadingElement>(null);
   return (
     <Sheet open={ocena !== null} onOpenChange={(open) => !open && onZamknij()}>
-      <SheetContent className="w-full overflow-y-auto data-[side=right]:sm:max-w-xl">
-        {ocena && <Tresc ocena={ocena} dzis={dzis} onPrzypomnij={onPrzypomnij} />}
+      <SheetContent className="w-full overflow-y-auto data-[side=right]:sm:max-w-xl" initialFocus={tytulRef}>
+        {ocena && <Tresc ocena={ocena} dzis={dzis} onPrzypomnij={onPrzypomnij} tytulRef={tytulRef} />}
       </SheetContent>
     </Sheet>
   );
@@ -61,10 +64,12 @@ function Tresc({
   ocena,
   dzis,
   onPrzypomnij,
+  tytulRef,
 }: {
   ocena: Ocena;
   dzis: string;
   onPrzypomnij: (ocena: Ocena) => void;
+  tytulRef: RefObject<HTMLHeadingElement | null>;
 }) {
   const p = pracownik(ocena.pracownikId);
   const indeksEtapu = ETAPY.findIndex((e) => e.id === ocena.etap);
@@ -74,7 +79,9 @@ function Tresc({
   return (
     <>
       <SheetHeader>
-        <SheetTitle>{p ? `${p.imie} ${p.nazwisko}` : "Nieznany pracownik"}</SheetTitle>
+        <SheetTitle ref={tytulRef} tabIndex={-1} className="outline-none">
+          {p ? `${p.imie} ${p.nazwisko}` : "Nieznany pracownik"}
+        </SheetTitle>
         <SheetDescription>
           {p ? `${p.stanowisko} · ${p.komorka}` : `Brak danych pracownika (id: ${ocena.pracownikId}).`}
         </SheetDescription>

@@ -58,8 +58,8 @@ function FormularzPrzypomnienia({
       <DialogHeader>
         <DialogTitle>Przypomnienie o zaległej czynności</DialogTitle>
         <DialogDescription>
-          Do: {o.imie} {o.nazwisko} ({o.stanowisko}) – oceniający. Treść przygotowano z szablonu dla
-          bieżącego etapu; możesz ją zmienić przed wysłaniem.
+          Adresat – osoba oceniająca: {o.imie} {o.nazwisko} ({o.stanowisko}). Treść przygotowano z
+          szablonu dla bieżącego etapu; możesz ją zmienić przed wysłaniem.
         </DialogDescription>
       </DialogHeader>
       <form id="hr-przypomnienie" onSubmit={wyslij} className="grid gap-1.5">

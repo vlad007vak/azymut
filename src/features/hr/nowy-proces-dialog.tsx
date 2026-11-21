@@ -167,17 +167,22 @@ export function NowyProcesDialog({ oceny }: { oceny: Ocena[] }) {
           </div>
 
           <fieldset className="grid gap-1.5">
-            <legend className="mb-1.5 text-sm font-medium">Rodzaj oceny</legend>
+            <legend id="hr-rodzaj-etykieta" className="mb-1.5 text-sm font-medium">
+              Rodzaj oceny
+            </legend>
             <RadioGroup
               value={rodzaj}
               onValueChange={(v) => setRodzaj(v as RodzajOceny)}
               className="flex flex-wrap gap-6"
+              aria-labelledby="hr-rodzaj-etykieta"
             >
               <Label className="flex items-center gap-2 font-normal">
-                <RadioGroupItem value="okresowa" /> Ocena okresowa
+                <RadioGroupItem value="okresowa" aria-labelledby="hr-rodzaj-okresowa" />
+                <span id="hr-rodzaj-okresowa">Ocena okresowa</span>
               </Label>
               <Label className="flex items-center gap-2 font-normal">
-                <RadioGroupItem value="pierwsza" /> Pierwsza ocena
+                <RadioGroupItem value="pierwsza" aria-labelledby="hr-rodzaj-pierwsza" />
+                <span id="hr-rodzaj-pierwsza">Pierwsza ocena</span>
               </Label>
             </RadioGroup>
           </fieldset>
@@ -221,7 +226,10 @@ export function NowyProcesDialog({ oceny }: { oceny: Ocena[] }) {
                   id="hr-od"
                   type="date"
                   value={od}
-                  onChange={(e) => setOd(e.target.value)}
+                  onChange={(e) => {
+                    setOd(e.target.value);
+                    setBledy((b) => ({ ...b, okres: undefined }));
+                  }}
                   aria-invalid={bledy.okres ? true : undefined}
                   aria-describedby={bledy.okres ? "hr-okres-blad" : undefined}
                 />
@@ -235,7 +243,10 @@ export function NowyProcesDialog({ oceny }: { oceny: Ocena[] }) {
                   type="date"
                   value={doDnia}
                   min={od || undefined}
-                  onChange={(e) => setDoDnia(e.target.value)}
+                  onChange={(e) => {
+                    setDoDnia(e.target.value);
+                    setBledy((b) => ({ ...b, okres: undefined }));
+                  }}
                   aria-invalid={bledy.okres ? true : undefined}
                   aria-describedby={bledy.okres ? "hr-okres-blad" : undefined}
                 />
@@ -257,7 +268,10 @@ export function NowyProcesDialog({ oceny }: { oceny: Ocena[] }) {
               type="date"
               value={termin}
               min={od || undefined}
-              onChange={(e) => setTermin(e.target.value)}
+              onChange={(e) => {
+                setTermin(e.target.value);
+                setBledy((b) => ({ ...b, termin: undefined }));
+              }}
               aria-invalid={bledy.termin ? true : undefined}
               aria-describedby={bledy.termin ? "hr-termin-blad" : undefined}
             />

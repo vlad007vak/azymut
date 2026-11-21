@@ -217,7 +217,7 @@ function PanelTresc({ oceny, dzis }: { oceny: Ocena[]; dzis: string }) {
           </p>
         </div>
       ) : (
-        <div className="rounded-xl border">
+        <div className="min-w-0 rounded-xl border">
           <Table>
             <TableCaption className="sr-only">
               Procesy ocen pracowników: etap, termin i przypomnienia. Kliknij pracownika, aby zobaczyć szczegóły.
@@ -225,8 +225,7 @@ function PanelTresc({ oceny, dzis }: { oceny: Ocena[]; dzis: string }) {
             <TableHeader>
               <TableRow>
                 <TableHead className="pl-4">Pracownik</TableHead>
-                <TableHead>Rodzaj</TableHead>
-                <TableHead>Arkusz</TableHead>
+                <TableHead>Rodzaj i arkusz</TableHead>
                 <TableHead>Etap</TableHead>
                 <TableHead>Termin</TableHead>
                 <TableHead>Ostatnia zmiana</TableHead>
@@ -238,7 +237,7 @@ function PanelTresc({ oceny, dzis }: { oceny: Ocena[]; dzis: string }) {
             <TableBody>
               {widoczne.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="py-10 text-center whitespace-normal">
+                  <TableCell colSpan={6} className="py-10 text-center whitespace-normal">
                     <p className="text-muted-foreground">Brak procesów spełniających wybrane filtry.</p>
                     <Button variant="link" onClick={wyczyscFiltry}>
                       Wyczyść filtry
@@ -296,7 +295,8 @@ function WierszProcesu({
 
   return (
     <TableRow className={cn(status === "po-terminie" && "bg-destructive/5")}>
-      <TableCell className="max-w-72 pl-4 whitespace-normal">
+      <TableCell className="pl-4">
+        <div className="w-44 whitespace-normal xl:w-72">
         <button
           type="button"
           onClick={onSzczegoly}
@@ -306,13 +306,21 @@ function WierszProcesu({
           {nazwa}
         </button>
         {p && (
-          <span className="block text-xs text-muted-foreground">
-            {p.stanowisko} · {p.komorka}
-          </span>
+          <>
+            <span className="block text-xs text-muted-foreground">{p.stanowisko}</span>
+            <span className="line-clamp-2 text-xs text-muted-foreground" title={p.komorka}>
+              {p.komorka}
+            </span>
+          </>
         )}
+        </div>
       </TableCell>
-      <TableCell>{ocena.rodzaj === "okresowa" ? "Okresowa" : "Pierwsza"}</TableCell>
-      <TableCell>{ocena.rodzaj === "okresowa" ? (ocena.arkusz ?? "—") : "—"}</TableCell>
+      <TableCell>
+        <span className="block">{ocena.rodzaj === "okresowa" ? "Okresowa" : "Pierwsza"}</span>
+        <span className="block text-xs text-muted-foreground">
+          {ocena.rodzaj === "okresowa" ? `arkusz ${ocena.arkusz ?? "—"}` : "arkusz pierwszej oceny"}
+        </span>
+      </TableCell>
       <TableCell>
         <EtapBadge etap={ocena.etap} />
       </TableCell>
