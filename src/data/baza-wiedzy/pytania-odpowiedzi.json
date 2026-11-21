@@ -1,0 +1,90 @@
+{
+  "nazwa": "przykładowa baza zespołu Azymut",
+  "wersja": 1,
+  "pozycje": [
+    {
+      "id": "qa-001",
+      "pytanie": "Kiedy w pierwszej ocenie przeprowadza się rozmowę oceniającą?",
+      "odpowiedz": "Bezpośredni przełożony przeprowadza z ocenianym rozmowę oceniającą niezwłocznie po złożeniu przez niego sprawozdania albo po upływie terminu wyznaczonego na złożenie sprawozdania.",
+      "zrodlo": "§ 8 ust. 1 rozporządzenia w sprawie pierwszej oceny (Dz.U. 2015 poz. 1144)",
+      "rodzaj": "pierwsza"
+    },
+    {
+      "id": "qa-002",
+      "pytanie": "Kto może uczestniczyć w rozmowie oceniającej w pierwszej ocenie?",
+      "odpowiedz": "Rozmowę prowadzi bezpośredni przełożony, a może w niej uczestniczyć także kierujący komórką organizacyjną, w której oceniany jest zatrudniony. Według poradnika KPRM jego udział jest wskazany.",
+      "zrodlo": "§ 8 ust. 2 rozporządzenia w sprawie pierwszej oceny; poradnik KPRM „Pierwsza ocena w służbie cywilnej”, s. 27",
+      "rodzaj": "pierwsza"
+    },
+    {
+      "id": "qa-003",
+      "pytanie": "Z jakich etapów składa się pierwsza ocena?",
+      "odpowiedz": "I. rozmowa wstępna bezpośredniego przełożonego z ocenianym; II. odbycie służby przygotowawczej i zaliczenie egzaminu ze służby przygotowawczej (jeżeli oceniany im podlega); III. sporządzenie i złożenie sprawozdania przez ocenianego; IV. rozmowa oceniająca; V. dokonanie pierwszej oceny na piśmie przez bezpośredniego przełożonego w porozumieniu z kierującym komórką organizacyjną; VI. złożenie przez kierującego komórką organizacyjną wniosku do dyrektora generalnego urzędu.",
+      "zrodlo": "poradnik KPRM „Pierwsza ocena w służbie cywilnej”, s. 17 (rozdz. 6.1)",
+      "rodzaj": "pierwsza"
+    },
+    {
+      "id": "qa-004",
+      "pytanie": "Z jakich etapów składa się ocena okresowa?",
+      "odpowiedz": "I. rozmowa rozpoczynająca proces oceny (w tym ewentualny wybór kryteriów dodatkowych); II. ocenianie; III. rozmowa oceniająca; IV. sporządzenie oceny na piśmie.",
+      "zrodlo": "poradnik KPRM „Oceny okresowe w służbie cywilnej”, s. 19 (rozdz. 6.2)",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-005",
+      "pytanie": "Kto sporządza ocenę okresową?",
+      "odpowiedz": "Ocenie okresowej dokonywanej przez bezpośredniego przełożonego podlega urzędnik służby cywilnej oraz pracownik służby cywilnej zatrudniony na podstawie umowy o pracę na czas nieokreślony.",
+      "zrodlo": "art. 81 ust. 1 ustawy o służbie cywilnej",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-006",
+      "pytanie": "Co omawia się podczas rozmowy oceniającej w ocenie okresowej?",
+      "odpowiedz": "Przed sporządzeniem oceny na piśmie oceniający omawia z ocenianym: główne obowiązki wykonywane w okresie oceny i sposób ich realizacji, z uwzględnieniem ustalonych kryteriów oceny; sposób realizowania celów, jeżeli zostały wyznaczone; kierunki dalszego rozwoju zawodowego i potrzeby w zakresie podnoszenia kwalifikacji i doskonalenia umiejętności.",
+      "zrodlo": "§ 10 rozporządzenia w sprawie ocen okresowych (Dz.U. 2016 poz. 470)",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-007",
+      "pytanie": "Jak ustala się ogólny poziom spełniania kryteriów w ocenie okresowej?",
+      "odpowiedz": "Wylicza się średnią arytmetyczną z ocen cząstkowych i przypisuje poziom: od 1 do 2 punktów – znacznie poniżej oczekiwań; powyżej 2 do 4 punktów – poniżej oczekiwań; powyżej 4 do 6 punktów – na poziomie oczekiwań; powyżej 6 do 8 punktów – powyżej oczekiwań; powyżej 8 do 9 punktów – znacznie powyżej oczekiwań.",
+      "zrodlo": "§ 11 ust. 1 pkt 2 rozporządzenia w sprawie ocen okresowych",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-008",
+      "pytanie": "Czy pozytywną ocenę okresową trzeba uzasadnić?",
+      "odpowiedz": "Nie jest to obowiązkowe: uzasadnienie trzeba sporządzić przy ocenie negatywnej, a przy ocenie pozytywnej oceniający może je sporządzić. Poradnik KPRM zaleca przygotowanie uzasadnienia także przy ocenie pozytywnej.",
+      "zrodlo": "§ 11 ust. 3 i 4 rozporządzenia w sprawie ocen okresowych; poradnik KPRM „Oceny okresowe w służbie cywilnej”, s. 28",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-009",
+      "pytanie": "Kiedy przełożony może wnioskować o kolejny stopień służbowy dla urzędnika?",
+      "odpowiedz": "Gdy przyznaje urzędnikowi służby cywilnej ocenę pozytywną – oceniający może wtedy sporządzić umotywowany wniosek o przyznanie kolejnego stopnia służbowego, wypełniając część III arkusza oceny.",
+      "zrodlo": "§ 11 ust. 5 rozporządzenia w sprawie ocen okresowych",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-010",
+      "pytanie": "Co dzieje się z arkuszem po sporządzeniu oceny okresowej?",
+      "odpowiedz": "Oceniający niezwłocznie zapoznaje ocenianego z oceną sporządzoną na piśmie, a oceniany potwierdza to podpisem w części II arkusza. Następnie oryginał arkusza włącza się do akt osobowych ocenianego, a kopię arkusza oceniający doręcza ocenianemu.",
+      "zrodlo": "§ 12 rozporządzenia w sprawie ocen okresowych; poradnik KPRM „Oceny okresowe w służbie cywilnej”, s. 30",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-011",
+      "pytanie": "Czy zmiana stanowiska pracy oznacza sporządzenie oceny okresowej?",
+      "odpowiedz": "Tak, jeżeli zmiana stanowiska wiąże się z istotną zmianą zakresu obowiązków, a od dnia sporządzenia ostatniej oceny okresowej upłynęło więcej niż 6 miesięcy (przy osobie ocenianej po raz pierwszy – jeżeli okres podlegający ocenie jest dłuższy niż 6 miesięcy). Ocenę sporządza się nie wcześniej niż 7 dni przed zmianą stanowiska albo nie później niż 30 dni od tej zmiany.",
+      "zrodlo": "art. 81 ust. 6 ustawy o służbie cywilnej; § 9 ust. 2 rozporządzenia w sprawie ocen okresowych",
+      "rodzaj": "okresowa"
+    },
+    {
+      "id": "qa-012",
+      "pytanie": "Ile poziomów ma model kompetencji i co zrobić, gdy nie zaobserwowano zachowania?",
+      "odpowiedz": "Model kompetencji opisuje 5 poziomów: znacznie poniżej oczekiwań, poniżej oczekiwań, na poziomie oczekiwań, powyżej oczekiwań i znacznie powyżej oczekiwań. Jeśli nie było okazji do zaobserwowania zachowania, odnotowuje się brak podstaw do oceny danego wskaźnika.",
+      "zrodlo": "model kompetencji (materiał organizatora – Ministerstwo Cyfryzacji), poziomy i wskazówki",
+      "rodzaj": "wspolne"
+    }
+  ]
+}
