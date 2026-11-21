@@ -26,7 +26,7 @@ const SCHEMATY_EKSPORTU: { nazwa: string; opis: string }[] = [
 ];
 
 const ZASADY = [
-  "Żądania i odpowiedzi w formacie JSON (UTF-8); wyjątek: /api/ai/chat zwraca strumień tekstu.",
+  "Żądania i odpowiedzi w formacie JSON (UTF-8).",
   "Błąd ma zawsze postać {\"error\": \"komunikat po polsku\"} z kodem 400 (dane wejściowe), 502/503 (AI) albo 500.",
   "Minimalizacja danych: do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy i przykłady zachowań.",
   "Odpowiedzi AI są sugestiami. Ostateczny poziom każdego kryterium zawsze wybiera przełożony.",

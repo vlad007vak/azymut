@@ -18,11 +18,8 @@ import {
   type WynikEksportu,
 } from "./typy";
 
-/** Urząd w danych demonstracyjnych (ten sam co na arkuszu w kroku „Dokument”). */
-export const URZAD_DEMO = "Ministerstwo Cyfryzacji";
-
 export interface OpcjeEksportu {
-  /** Nazwa urzędu na arkuszu; domyślnie urząd demonstracyjny. */
+  /** Nazwa urzędu na arkuszu; domyślnie `APP_CONFIG.urzad` (ten sam co na arkuszu w kroku „Dokument”). */
   urzad?: string;
   /** Dane ocenianego; domyślnie z magazynu ocen (po `ocena.pracownikId`). */
   pracownik?: Pracownik;
@@ -105,7 +102,7 @@ export function eksportujOcene(ocena: Ocena, opcje: OpcjeEksportu = {}): Eksport
     wygenerowano: (opcje.teraz ?? new Date()).toISOString(),
     zrodlo: { aplikacja: APP_CONFIG.name, modelKompetencji: MODEL.zrodlo },
     id: ocena.id,
-    urzad: opcje.urzad ?? URZAD_DEMO,
+    urzad: opcje.urzad ?? APP_CONFIG.urzad,
     rodzaj: ocena.rodzaj,
     arkusz: ocena.rodzaj === "okresowa" ? (ocena.arkusz ?? null) : null,
     etap: ocena.etap,
