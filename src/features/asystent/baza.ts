@@ -205,7 +205,7 @@ export function szukajFragmentow(pytanie: string, rodzaj?: RodzajOceny, limit = 
   // Pozycja z innej ścieżki (pytanie o pierwszą ocenę → Q&A o okresowej) nie trafia do kontekstu.
   // Istotność słów oceniamy na dużym indeksie dokumentów – w kilkunastu pozycjach Q&A nawet „rozmowa” byłaby „częsta”.
   const zQa = indeksQa
-    .szukaj(pytanie, { limit: MAX_QA + 3, waga, istotne: (t) => indeks.idf(t) > 1 })
+    .szukaj(pytanie, { limit: 20, waga, istotne: (t) => indeks.idf(t) > 1 })
     .filter((t) => t.pokrycie >= MIN_POKRYCIE_QA && (!cel || t.item.rodzaj === cel || t.item.rodzaj === "wspolne"))
     .slice(0, MAX_QA);
 
