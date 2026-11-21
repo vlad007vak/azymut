@@ -55,3 +55,19 @@ Skrypt robi 4 s przerwy między pytaniami (darmowe limity AI) i wypisuje ✓/✗
 - Dopytanie bez kontekstu: po pytaniu 3 wpisz „A w ocenie okresowej?” – odpowiedź o skali 1–9 punktów.
 - Pod polem pytania zawsze widać: „Asystent ma charakter pomocniczy – decyzję podejmuje przełożony.”
 - Błąd sieci / limit AI → czerwony toast po polsku, pytanie wraca do pola.
+
+## Kontrola jakości uzasadnienia (`POST /api/jakosc`, zadanie #18)
+
+Komponent `<KontrolaJakosci ocena={ocena} />` w kroku „Decyzja i wynik” kreatora (osadza Vlad). Na demo `o1`:
+
+| Nr | Co zrobić | Oczekiwany wynik |
+|---|---|---|
+| J1 | W uzasadnieniu wpisz „Pani Kowalczyk pracuje dobrze i jest zaangażowana.” → „Sprawdź uzasadnienie” | Uwaga **Ogólnik** „w uzasadnieniu” z cytatem „pracuje dobrze i jest zaangażowana”; informacja, że imiona i nazwiska zastąpiono „[osoba]” |
+| J2 | Usuń wszystkie przykłady przy kryterium „Komunikacja” (krok 2) i sprawdź ponownie | Uwaga **Brak przykładu** przy „Komunikacja” (sprawdzenie automatyczne) |
+| J3 | Dla „Rzetelność” wybierz „Znacznie powyżej oczekiwań” (zachowania: na poziomie / poniżej) | Uwaga **Niespójność z poziomem** – poziom wyższy niż wszystkie zaznaczone zachowania |
+| J4 | Dopisz „Mimo młodego wieku i małego dziecka w domu…” oraz „Ma trudny charakter.” | **Ryzyko stronniczości** i **Ocena osoby zamiast zachowania** z cytatami |
+| J5 | Oryginalne `o1` bez uzasadnienia i wniosków | Zielony komunikat „Nie znaleziono uwag” |
+| J6 | Zmień tekst po sprawdzeniu | Żółta informacja „Treść oceny zmieniła się…”, przycisk „Sprawdź ponownie” |
+
+Zawsze: cytat jest dosłownym fragmentem tekstu przełożonego, AI nie zmienia poziomów, widać zastrzeżenie
+„AI podpowiada – nie ocenia”. Limit AI → żółty komunikat i tylko sprawdzenia automatyczne (bez błędu).
