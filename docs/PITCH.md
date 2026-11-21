@@ -27,7 +27,9 @@ na scenie: „Tego nie sprawdzaliśmy w prototypie – to element planu wdrożen
 
 ## 1. Scenariusz 5:00
 
-Tempo planu: ok. 130 słów/min. Plan kończy się na **4:35** – 25 s rezerwy na odpowiedzi AI i przejścia.
+Tempo planu: ok. 130 słów/min. Plan kończy się na **4:45** – 15 s rezerwy na odpowiedzi AI i przejścia.
+**Pełna ścieżka, której wymaga mentorka MC** (#3, odpowiedzi mentorki): rozpoczęcie procesu, stanowisko i kryteria (0:40) →
+ocena wskaźników i sugerowany poziom (1:00) → decyzja przełożonego (2:00) → arkusz (2:45).
 Na scenie: **Andrey** mówi, **Vlad** przy komputerze na scenie klika demo według scenariusza, **Diana** – telefon z hotspotem
 i laptop zapasowy z wideo.
 
@@ -35,25 +37,26 @@ i laptop zapasowy z wideo.
 |---|---|---|---|
 | 0:00–0:20 | Andrey | Slajd 1 → slajd 2 (Problem) | „Dzień dobry, jesteśmy zespół Azymut. Przełożony w służbie cywilnej ocenia swoich pracowników: nowych w pierwszej ocenie, pozostałych co dwa lata. Musi połączyć ustawę, dwa rozporządzenia, formularz i model kompetencji. Łatwo ocenić »na wrażenie«, a różni przełożeni różnie rozumieją te same kryteria.” |
 | 0:20–0:40 | Andrey | Slajd 3 (Rozwiązanie) | „Azymut prowadzi przełożonego krok po kroku przez obie ścieżki – zgodnie z rozporządzeniami. Ocena opiera się na obserwowalnych zachowaniach z modelu kompetencji. System podpowiada poziom, pilnuje reguł i przygotowuje arkusz. AI doradza, decyzję podejmuje przełożony. Pokażę to na żywo.” |
-| 0:40–0:50 | Andrey | **Demo:** strona główna → blok „Ocena okresowa” → **Anna Kowalczyk** | „To Anna Kowalczyk, radca, arkusz C – dane są fikcyjne. Jesteśmy w kroku »Ocena wskaźników«.” |
-| 0:50–1:20 | Andrey | **Demo:** kryterium **Rzetelność** (średnia 4 pkt, „Poniżej oczekiwań”) → przy wskaźniku „Dotrzymywanie zobowiązań…” klik **„Na poziomie oczekiwań”** → sugestia zmienia się na „Na poziomie oczekiwań (5 pkt)” | „Przełożony nie wpisuje cyfry. Przy każdym wskaźniku wybiera zachowanie, które naprawdę obserwował, i zapisuje przykład. Rzetelność: średnia 4 punkty, czyli »poniżej oczekiwań«. Zmieniam jedno zachowanie – terminy dotrzymane z wyprzedzeniem – i sugestia od razu rośnie do »na poziomie oczekiwań«. Liczy ją prosta reguła oparta na przedziałach z rozporządzenia – nie AI.” |
-| 1:20–1:50 | Andrey | **Demo:** „Przejdź do rozmowy oceniającej” → gotowe pytanie **„Ile kryteriów dodatkowych można wybrać w ocenie okresowej?”** → rozwinąć źródło **[1] … § 5** (cytat) | „Przed rozmową można zapytać asystenta formalnego. Odpowiada tylko z bazy wiedzy: ustawy, rozporządzeń, poradników KPRM i modelu kompetencji. Każda odpowiedź ma źródło – tu paragraf 5 – i dosłowny cytat. Cytaty buduje serwer, więc model ich nie zmyśli. Gdy bazie brakuje odpowiedzi, asystent mówi wprost: brak informacji.” |
-| 1:50–2:10 | Andrey | **Demo:** „Rozmowa przeprowadzona – przejdź do decyzji” → **„Przyjmij sugestie dla kryteriów bez decyzji”** → „Ocena pozytywna”, średnia 5,33 pkt | „Decyzję podejmuje przełożony: przyjmuje sugestie albo wybiera inny poziom. Wynik liczy kod według paragrafu 11: średnia 5,33 – ocena pozytywna. Jedno kryterium na 1 punkt dałoby ocenę negatywną nawet przy dobrej średniej.” |
-| 2:10–2:35 | Andrey | **Demo:** pole „Uzasadnienie oceny” → wkleić tekst ze schowka → **„Sprawdź uzasadnienie”** → uwagi „Ogólnik” i „Ocena osoby zamiast zachowania” | „Teraz typowe uzasadnienie. Kontrola jakości wskazuje ogólnik i ocenę osoby zamiast zachowania – z dosłownym cytatem i podpowiedzią, co poprawić. Wyłapuje też brak przykładów i ryzyko stronniczości. AI nie zmienia ani tekstu, ani poziomów.” |
-| 2:35–2:55 | Andrey | **Demo:** **„Sporządź ocenę na piśmie”** → przewinąć do tabeli kryteriów (kolumny „Sugestia systemu” i „Ocena cząstkowa (decyzja)”) | „Gotowy arkusz według wzoru z rozporządzenia – do druku albo PDF. Dwie kolumny: sugestia systemu i decyzja przełożonego. Zawsze widać, kto zdecydował. Ten sam podział trafia do eksportu JSON dla systemu kadrowego i EZD.” |
-| 2:55–3:20 | Andrey | Slajd 8 (AI wspiera, nie decyduje) | „AI działa u nas w czterech miejscach: asystent formalny, analiza opisu stanowiska, asystent rozmowy i kontrola uzasadnienia. Wszędzie AI nie liczy punktów i nie ustala poziomu, nie dostaje imion i nazwisk, a serwer sprawdza jego odpowiedzi – odrzuca na przykład uwagi bez dosłownego cytatu.” |
-| 3:20–3:55 | Andrey | **Demo:** w nagłówku **„Panel HR”** → strona wyboru roli → **„Wejdź jako HR”** → Anna Kowalczyk: „Ocena sporządzona” → **„Przypomnij”** przy Julii Mazur → „Wyślij przypomnienie” | „Druga perspektywa to HR. Panel jest tylko dla roli HR – w prototypie role są demonstracyjne, docelowo logowanie przez system urzędu. HR widzi wszystkie procesy, etapy i terminy – także ocenę, którą przed chwilą sporządziliśmy – i wysyła przypomnienia: dziś symulowane, docelowo e-mailem lub przez EZD.” |
-| 3:55–4:20 | Andrey | Slajd 9 → slajd 10 | „Architektura jest gotowa na wdrożenie: reguły oceny w jednym module, udokumentowane API w OpenAPI i wymienna warstwa AI – również na model w infrastrukturze urzędu. Następne kroki: logowanie przez system urzędu, baza danych w urzędzie i integracje z EZD oraz systemem kadrowym, na przykład QNT.” |
-| 4:20–4:35 | Andrey | Slajd 10 | „Azymut to spójniejsze, lepiej uzasadnione oceny i mniej błędów formalnych. **AI doradza – decyzję podejmuje przełożony.** Dziękujemy, zapraszamy do pytań.” |
-| 4:35–5:00 | – | – | **Rezerwa** (wolna odpowiedź AI, przejścia między oknami) |
+| 0:40–1:00 | Andrey | **Demo:** strona główna → blok „Ocena okresowa” → **Anna Kowalczyk** → w pasku kroków **„Stanowisko i kryteria”** (arkusz C „podpowiedź ze stanowiska”) → przewinąć do „2. Kryteria oceny” → w pasku kroków **„Ocena wskaźników”** (nie klikać „Zatwierdź…”) | „To Anna Kowalczyk, radca – dane są fikcyjne. Proces zaczyna się od stanowiska: system podpowiada arkusz C, a z niego wynika pięć kryteriów obowiązkowych. Przełożony dodaje kryterium dodatkowe i dobiera wskaźniki z modelu kompetencji. Teraz – ocena wskaźników.” |
+| 1:00–1:30 | Andrey | **Demo:** kryterium **Rzetelność** (średnia 4 pkt, „Poniżej oczekiwań”) → przy wskaźniku „Dotrzymywanie zobowiązań…” klik **„Na poziomie oczekiwań”** → sugestia zmienia się na „Na poziomie oczekiwań (5 pkt)” | „Przełożony nie wpisuje cyfry. Przy każdym wskaźniku wybiera zachowanie, które naprawdę obserwował, i zapisuje przykład. Rzetelność: średnia 4 punkty, czyli »poniżej oczekiwań«. Zmieniam jedno zachowanie – terminy dotrzymane z wyprzedzeniem – i sugestia od razu rośnie do »na poziomie oczekiwań«. Liczy ją prosta reguła oparta na przedziałach z rozporządzenia – nie AI.” |
+| 1:30–2:00 | Andrey | **Demo:** „Przejdź do rozmowy oceniającej” → gotowe pytanie **„Ile kryteriów dodatkowych można wybrać w ocenie okresowej?”** → rozwinąć źródło **[1] … § 5** (cytat) | „Przed rozmową można zapytać asystenta formalnego. Odpowiada tylko z bazy wiedzy: ustawy, rozporządzeń, poradników KPRM i modelu kompetencji. Każda odpowiedź ma źródło – tu paragraf 5 – i dosłowny cytat. Cytaty buduje serwer, więc model ich nie zmyśli. Gdy bazie brakuje odpowiedzi, asystent mówi wprost: brak informacji.” |
+| 2:00–2:20 | Andrey | **Demo:** „Rozmowa przeprowadzona – przejdź do decyzji” → **„Przyjmij sugestie dla kryteriów bez decyzji”** → „Ocena pozytywna”, średnia 5,33 pkt | „Decyzję podejmuje przełożony: przyjmuje sugestie albo wybiera inny poziom. Wynik liczy kod według paragrafu 11: średnia 5,33 – ocena pozytywna. Jedno kryterium na 1 punkt dałoby ocenę negatywną nawet przy dobrej średniej.” |
+| 2:20–2:45 | Andrey | **Demo:** pole „Uzasadnienie oceny” → wkleić tekst ze schowka → **„Sprawdź uzasadnienie”** → uwagi „Ogólnik” i „Ocena osoby zamiast zachowania” | „Teraz typowe uzasadnienie. Kontrola jakości wskazuje ogólnik i ocenę osoby zamiast zachowania – z dosłownym cytatem i podpowiedzią, co poprawić. Wyłapuje też brak przykładów i ryzyko stronniczości. AI nie zmienia ani tekstu, ani poziomów.” |
+| 2:45–3:05 | Andrey | **Demo:** **„Sporządź ocenę na piśmie”** → przewinąć do tabeli kryteriów (kolumny „Sugestia systemu” i „Ocena cząstkowa (decyzja)”) | „Gotowy arkusz według wzoru z rozporządzenia – do druku albo PDF. Dwie kolumny: sugestia systemu i decyzja przełożonego. Zawsze widać, kto zdecydował. Ten sam podział trafia do eksportu JSON dla systemu kadrowego i EZD.” |
+| 3:05–3:30 | Andrey | Slajd 8 (AI wspiera, nie decyduje) | „AI działa u nas w czterech miejscach: asystent formalny, analiza opisu stanowiska, asystent rozmowy i kontrola uzasadnienia. Wszędzie AI nie liczy punktów i nie ustala poziomu, nie dostaje imion i nazwisk, a serwer sprawdza jego odpowiedzi – odrzuca na przykład uwagi bez dosłownego cytatu.” |
+| 3:30–4:05 | Andrey | **Demo:** w nagłówku **„Panel HR”** → strona wyboru roli → **„Wejdź jako HR”** → Anna Kowalczyk: „Ocena sporządzona” → **„Przypomnij”** przy Julii Mazur → „Wyślij przypomnienie” | „Druga perspektywa to HR. Panel jest tylko dla roli HR – w prototypie role są demonstracyjne, docelowo logowanie przez system urzędu. HR zakłada procesy ocen i widzi wszystkie etapy i terminy – także ocenę, którą przed chwilą sporządziliśmy – i wysyła przypomnienia: dziś symulowane, docelowo e-mailem lub przez EZD.” |
+| 4:05–4:30 | Andrey | Slajd 9 → slajd 10 | „Architektura jest gotowa na wdrożenie: reguły oceny w jednym module, udokumentowane API w OpenAPI i wymienna warstwa AI – również na model w infrastrukturze urzędu. Następne kroki: logowanie przez system urzędu, baza danych w urzędzie i integracje z EZD oraz systemem kadrowym, na przykład QNT.” |
+| 4:30–4:45 | Andrey | Slajd 10 | „Azymut to spójniejsze, lepiej uzasadnione oceny i mniej błędów formalnych. **AI doradza – decyzję podejmuje przełożony.** Dziękujemy, zapraszamy do pytań.” |
+| 4:45–5:00 | – | – | **Rezerwa** (wolna odpowiedź AI, przejścia między oknami) |
 
-**Gdy brakuje czasu** (po 2:35 zegar pokazuje więcej niż 3:00): pomijamy slajd 8 – jego treść padła już w demo.
+**Gdy brakuje czasu** (po kontroli jakości – plan 2:45 – zegar pokazuje więcej niż 3:10): pomijamy slajd 8 – jego treść padła już w demo.
 
 ### Co ma być na ekranie – sprawdzone na produkcji (21.11.2026, świeże dane demo)
 
 | Krok | Oczekiwany wynik |
 |---|---|
 | Strona główna | W bloku „Ocena okresowa” → „Oceny w toku”: Anna Kowalczyk, radca · arkusz C · termin 15.12.2026, etap „Ocena wskaźników” |
+| Stanowisko i kryteria | Pasek kroków → „Stanowisko i kryteria”: arkusz C z dopiskiem „podpowiedź ze stanowiska”; niżej „2. Kryteria oceny”: 5 kryteriów obowiązkowych, „Wybrano: 1/3”, dodatkowe „Myślenie analityczne”; „3. Dobór wskaźników behawioralnych”. Powrót przez pasek kroków → „Ocena wskaźników”: dane bez zmian (Rzetelność – „Poniżej oczekiwań (3 pkt)”) |
 | Rzetelność | Przed zmianą: „Średnia 4 pkt z 2 ocenionych wskaźników”, sugestia „Poniżej oczekiwań (3 pkt)”; po zmianie: „Średnia 5 pkt”, „Na poziomie oczekiwań (5 pkt)” |
 | Asystent formalny | „…nie więcej niż 3 kryteria dodatkowe [1]…”; źródła: [1] Rozporządzenie PRM w sprawie ocen okresowych (Dz.U. 2016 poz. 470) – § 5, [2] Poradnik KPRM „Oceny okresowe w służbie cywilnej” (2016) – s. 22; po rozwinięciu [1] dosłowny cytat. Odpowiedź w ok. 1,4 s |
 | Decyzja | „Ocena pozytywna”, „Średnia arytmetyczna ocen cząstkowych: 5,33 pkt → … na poziomie oczekiwań”. Bez zmiany przy rzetelności: średnia 5 pkt |
@@ -101,19 +104,21 @@ Andrey kieruje pytanie do osoby z tabeli („Na to odpowie …”). Gdy nikt nie
 **1. Skąd pewność, że wynik jest zgodny z rozporządzeniami?** *(Vlad)*
 Wszystkie reguły – skale punktowe, przedziały średniej, warunki oceny negatywnej i pierwszej oceny – są w jednym module
 i nigdzie indziej. AI nie liczy punktów ani wyniku. Przykład: jedna ocena „znacznie poniżej oczekiwań” daje ocenę negatywną
-nawet przy średniej 4,67 (§ 11 ust. 1 pkt 4) – sprawdzone na produkcji.
-Źródło: `src/lib/ocena/zasady.ts` (`wynikOkresowej`, `wynikPierwszej`); `README.md` → „Gdzie AI nie działa”.
+nawet przy średniej 4,67 (§ 11 ust. 1 pkt 4) – sprawdzone na produkcji. Metodę sugerowanego poziomu, skalę pierwszej oceny
+i arkusze B / C potwierdziła mentorka MC (#3, odpowiedzi mentorki) – pytania 2, 3 i 5 poniżej.
+Źródło: `src/lib/ocena/zasady.ts` (`wynikOkresowej`, `wynikPierwszej`); `README.md` → „Gdzie AI nie działa”; issue #3.
 
 **2. Jak liczycie sugerowany poziom? Czy wskaźniki mają wagi?** *(Vlad)*
 Każde wybrane zachowanie zamieniamy na punkty 1/3/5/7/9, liczymy średnią ze wskaźników z obserwacją i stosujemy przedziały
-z § 11 ust. 1 pkt 2; „brak podstaw do oceny” nie wchodzi do średniej, wskaźniki mają równe wagi. W kodzie to opisana
-propozycja zespołu – czy mentorzy ją potwierdzili: **DO USTALENIA z Vladem** (issue #3, pytanie 4).
-Źródło: `src/lib/ocena/zasady.ts` → `sugerowanyPoziom`, `poziomZeSredniej`.
+z § 11 ust. 1 pkt 2; „brak podstaw do oceny” nie wchodzi do średniej. **Potwierdziła to mentorka MC:** wskaźniki mają równe
+wagi, sugerowany poziom kompetencji to średnia ze wskaźników, a ostateczny poziom w ocenie okresowej – według § 11 ust. 1
+pkt 2 rozporządzenia z 2016 r. (#3, odpowiedzi mentorki).
+Źródło: `src/lib/ocena/zasady.ts` → `sugerowanyPoziom`, `poziomZeSredniej`; issue #3 (odpowiedzi mentorki, pyt. 4).
 
 **3. Pierwsza ocena ma skalę 3/5/7 pkt, a model 5 poziomów. Jak to łączycie?** *(Vlad)*
-Sugestię „znacznie poniżej” traktujemy jak „poniżej” (3 pkt), a „znacznie powyżej” jak „powyżej” (7 pkt). To również
-propozycja zespołu opisana w kodzie – potwierdzenie mentorów: **DO USTALENIA z Vladem** (issue #3, pytanie 5).
-Źródło: `src/lib/ocena/zasady.ts` → `doSkaliPierwszejOceny`.
+Sugestię „znacznie poniżej” traktujemy jak „poniżej” (3 pkt), „na poziomie oczekiwań” to 5 pkt, a „znacznie powyżej” –
+jak „powyżej” (7 pkt). **Mentorka MC potwierdziła** to przełożenie na skalę 3/5/7 (#3, odpowiedzi mentorki).
+Źródło: `src/lib/ocena/zasady.ts` → `doSkaliPierwszejOceny`; issue #3 (odpowiedzi mentorki, pyt. 5).
 
 **4. Skąd model kompetencji? Czy to wasz pomysł?** *(Maks)*
 To model organizatora zadania: 14 kompetencji, 49 wskaźników behawioralnych, 5 poziomów. Plik JSON generujemy skryptem
@@ -121,9 +126,9 @@ z materiału organizatora, więc nie przepisujemy go ręcznie.
 Źródło: `src/data/model-kompetencji.json`, `scripts/model-z-xlsx.py`; `README.md` → „Architektura”, „Wykorzystane zasoby”.
 
 **5. Co z arkuszem A?** *(Vlad)*
-Prototyp obsługuje arkusze B i C (w materiałach zadania są tylko te dwa); arkusz wynika z tego, czy pracownik kieruje zespołem.
-Czy mentorzy potwierdzili pominięcie arkusza A: **DO USTALENIA z Vladem** (issue #3, pytanie 7).
-Źródło: `src/lib/ocena/zasady.ts` → `arkuszDlaStanowiska`, `KRYTERIA_OBOWIAZKOWE`.
+Prototyp obsługuje arkusze B i C; arkusz wynika z tego, czy pracownik kieruje zespołem. **Mentorka MC potwierdziła:**
+arkusza A nie bierzemy pod uwagę – tylko B i C (#3, odpowiedzi mentorki).
+Źródło: `src/lib/ocena/zasady.ts` → `arkuszDlaStanowiska`, `KRYTERIA_OBOWIAZKOWE`; issue #3 (odpowiedzi mentorki, pyt. 7).
 
 **6. Co z odwołaniem od oceny?** *(Maks / Andrey)*
 Arkusz zawiera pouczenie o sprzeciwie do dyrektora generalnego w terminie 7 dni (art. 83 ustawy), a asystent odpowiada na pytania
@@ -139,15 +144,16 @@ Do tego asystent formalny i plan rozmowy w tym samym miejscu.
 Źródło: `README.md` → „Rozwiązanie” (punkty 1–9).
 
 **8. A smartfony?** *(Andrey)*
-Zadanie mówi, że system nie ma być przeznaczony na smartfony, więc projektowaliśmy pod komputer (od 1024 px); na mniejszym ekranie
-nawigacja zwija się do menu, żeby nic się nie rozsypało. Czy na telefonie blokować dostęp – pytanie do mentorów bez odpowiedzi
-w repo: **DO USTALENIA z Vladem**.
-Źródło: `CLAUDE.md` → „Target is the desktop browser”; `src/components/mobile-nav.tsx`; issue #2 „Otwarte”, issue #3 pytanie 1.
+Zadanie mówi, że system nie ma być przeznaczony na smartfony. **Mentorka MC potwierdziła:** aplikacja webowa na komputer,
+a blokada telefonu – według uznania zespołu (#3, odpowiedzi mentorki). Projektujemy pod komputer (od 1024 px). Na ekranie
+węższym niż 768 px pokazujemy pasek „Azymut jest przeznaczony na komputer” – bez blokady; nawigacja zwija się do menu.
+Źródło: `CLAUDE.md` → „Target is the desktop browser”; `src/components/uwaga-komputer.tsx` (PR #39); `src/components/mobile-nav.tsx`;
+issue #3 (odpowiedzi mentorki, pyt. 1).
 
 **9. Ile czasu zajmuje przełożonemu jedna ocena?** *(Andrey)*
 Nie mierzyliśmy tego z prawdziwymi przełożonymi – **DO USTALENIA z Vladem**. Na scenie: „Nie mamy pomiarów z urzędu; w demo
 kompletną ocenę okresową przechodzimy w ok. 2 minuty, ale na danych przygotowanych wcześniej.”
-Źródło: scenariusz powyżej (demo 0:40–2:55).
+Źródło: scenariusz powyżej (demo 0:40–3:05).
 
 **10. Czy aplikacja jest dostępna (WCAG)?** *(Andrey)*
 Zasady projektu wymagają etykiet pól, atrybutów `aria-*` i obsługi klawiatury, ale pełnego audytu dostępności nie robiliśmy –
@@ -218,7 +224,10 @@ do EZD arkusz PDF i plik `azymut.ocena`; proponowane endpointy `/api/v1` są opi
 Działa: obie ścieżki oceny z regułami z rozporządzeń, sugestia poziomu, cztery funkcje AI, arkusz do druku / PDF, eksport JSON,
 dokumentacja API (`/dokumentacja-api`), panel HR i ochrona panelu rolą. Prototypowe: role bez hasła (wybór roli zapisany w cookie),
 oceny tylko w przeglądarce, przypomnienia symulowane, integracje z EZD i systemem kadrowym tylko opisane.
-Źródło: `README.md` → „Rozwiązanie”; `docs/ROLE.md` → „Jak to działa w prototypie”; `docs/API.md` §3 (zastrzeżenie).
+Czy role demonstracyjne z opisem docelowego logowania (SSO) i symulowane przypomnienia wystarczą – mentorka MC poprosiła
+o doprecyzowanie pytania; **czekamy na odpowiedź (#3)**.
+Źródło: `README.md` → „Rozwiązanie”; `docs/ROLE.md` → „Jak to działa w prototypie”; `docs/API.md` §3 (zastrzeżenie);
+issue #3 (odpowiedzi mentorki, pyt. 8 i 9).
 
 **21. Jak aktualizować przepisy i model kompetencji?** *(Maks)*
 Baza wiedzy i model są generowane skryptami z plików źródłowych – po zmianie przepisów podmieniamy PDF i przebudowujemy pliki.
@@ -236,26 +245,28 @@ architektura pozwala użyć modelu w infrastrukturze urzędu.”
 Źródło: brak w repo.
 
 **24. Czy testowaliście z prawdziwymi przełożonymi lub HR?** *(Andrey / Diana)*
-W repo nie ma zapisów takich testów – **DO USTALENIA z Vladem** (konsultacje z mentorami MC – issue #3). Testy funkcjonalne prowadzi
+W repo nie ma zapisów takich testów – **DO USTALENIA z Vladem**. Reguły oceny konsultowaliśmy z mentorką MC – potwierdziła
+metodę sugerowanego poziomu, skalę pierwszej oceny i arkusze B / C (#3, odpowiedzi mentorki). Testy funkcjonalne prowadzi
 Diana na każdej wersji preview i produkcji.
-Źródło: issue #9 „Raport z testów”; `docs/WORKFLOW.md` (tabela ról – Diana).
+Źródło: issue #9 „Raport z testów”; issue #3 (odpowiedzi mentorki); `docs/WORKFLOW.md` (tabela ról – Diana).
 
 ---
 
 ## 5. Próba
 
 **Próba demo na produkcji – 21.11.2026** (świeże dane, okno 1440 px): wszystkie kroki z tabeli „Co ma być na ekranie” przeszły.
+Nowy krok „Stanowisko i kryteria” oraz panel HR (wejście bez roli, „Wejdź jako HR”) sprawdzone na produkcji 21.11 (#42).
 Zmierzone czasy odpowiedzi AI: asystent formalny ok. 1,4 s, kontrola jakości ok. 1 s, pytanie spoza bazy ok. 0,8 s.
 Czasy mówione w scenariuszu są liczone z liczby słów (ok. 130 słów/min) – **próba na głos z zegarem jeszcze przed nami**.
 
 | Fragment | Plan | Próba 1 (na głos) | Próba 2 (na głos) |
 |---|---|---|---|
 | Problem + rozwiązanie | 0:40 | | |
-| Demo: ocena okresowa (wskaźniki → arkusz) | 2:15 | | |
+| Demo: ocena okresowa (kryteria → wskaźniki → arkusz) | 2:25 | | |
 | AI wspiera, nie decyduje | 0:25 | | |
 | Panel HR | 0:35 | | |
 | Wdrożenie + zakończenie | 0:40 | | |
-| **Razem** | **4:35** | | |
+| **Razem** | **4:45** | | |
 
 ---
 
@@ -263,11 +274,17 @@ Czasy mówione w scenariuszu są liczone z liczby słów (ok. 130 słów/min) �
 
 1. **Ustalone:** Vlad – komputer na scenie (klika demo według scenariusza), Andrey – mówi, Diana – telefon z hotspotem i laptop
    zapasowy z wideo.
-2. Odpowiedzi mentorów z issue #3: metoda sugerowanego poziomu (pyt. 4), skala pierwszej oceny (pyt. 5), arkusz A (pyt. 7), smartfony (pyt. 1)
-   – czekamy, prześle Maks.
+2. **Ustalone** (#3, odpowiedzi mentorki MC, 21.11): sugerowany poziom – równe wagi, średnia ze wskaźników, § 11 ust. 1 pkt 2
+   (ściąga pyt. 2); pierwsza ocena 3/5/7, „na poziomie oczekiwań” = 5 pkt (pyt. 3); tylko arkusze B i C (pyt. 5); aplikacja
+   webowa na komputer, na ekranach < 768 px pasek bez blokady – PR #39 (pyt. 8). Wymóg do demo: co najmniej jedna kompletna
+   ścieżka (rozpoczęcie procesu → kryteria → ocena wskaźników → sugerowany poziom → decyzja przełożonego) – scenariusz
+   ją pokazuje (sekcja 1). Najlepiej obie ścieżki pełne – w aplikacji są obie, na scenie pokazujemy okresową.
 3. **Ustalone:** automatyczny test asystenta (`scripts/baza-wiedzy/test-asystenta.mjs`) – **30/30** z prawdziwym AI (Maks, PR #33).
 4. Koszty wdrożenia, liczba urzędów, harmonogram – brak w repo, na scenie nie podajemy liczb.
 5. Czy ktoś testował aplikację z prawdziwymi przełożonymi / HR.
 6. **Ustalone:** internet na scenie będzie; slajdy (PDF) i wideo (mp4) pokazujemy z pendrive'a na komputerze na scenie;
    demo lokalnego z Ollamą nie robimy (decyzja zespołu).
 7. Linki do wideo i prezentacji (w `README.md` jeszcze „https://…”).
+8. Logowanie (role demonstracyjne + opis docelowego SSO) i symulowane przypomnienia HR – mentorka poprosiła o doprecyzowanie;
+   **czekamy na odpowiedź (#3)**. Do tego czasu na scenie mówimy jak w scenariuszu: role demonstracyjne, docelowo logowanie
+   przez system urzędu; przypomnienia symulowane, docelowo e-mail lub EZD.
