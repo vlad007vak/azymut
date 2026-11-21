@@ -6,9 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -24,85 +22,158 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PRZELOZONY_DEMO } from "@/data/demo";
 import { PRACOWNICY, pracownik, useOceny, zapiszOcene } from "@/lib/ocena/store";
 import { arkuszDlaStanowiska, nazwaEtapu } from "@/lib/ocena/zasady";
+import { cn } from "@/lib/utils";
 import type { RodzajOceny } from "@/types/ocena";
 
-import { data, utworzOcene } from "./logika";
+import { data, KROKI, krokStartowy, utworzOcene } from "./logika";
 
 const pusta = () => () => {};
 
-const SCIEZKI: { rodzaj: RodzajOceny; tytul: string; opis: string; ikona: typeof PlayIcon }[] = [
+const SCIEZKI: { rodzaj: RodzajOceny; tytul: string; opis: string; fakty: string[]; ikona: typeof PlayIcon }[] = [
   {
     rodzaj: "pierwsza",
     tytul: "Pierwsza ocena w służbie cywilnej",
     opis: "Rozmowa wstępna, sprawozdanie, 5 stałych elementów oceny (3/5/7 pkt), warunki oceny pozytywnej.",
+    fakty: ["5 elementów", "skala 3/5/7 pkt"],
     ikona: UserRoundCheckIcon,
   },
   {
     rodzaj: "okresowa",
     tytul: "Ocena okresowa w służbie cywilnej",
     opis: "Analiza opisu stanowiska, arkusz B lub C, kryteria obowiązkowe i do 3 dodatkowych (1–9 pkt).",
+    fakty: ["arkusz B lub C", "skala 1–9 pkt"],
     ikona: CalendarDaysIcon,
   },
 ];
 
+/** Dzisiejsza data (yyyy-mm-dd, czas lokalny) – tylko w przeglądarce, po hydracji. */
+function dzisiajLokalnie(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** „za 24 dni”, „za 1 dzień”, „termin dziś”, „po terminie” + czy termin jest blisko (≤ 14 dni). */
+function ileDoTerminu(termin: string | undefined, dzis: string): { tekst: string; pilne: boolean } | null {
+  if (!termin) return null;
+  const dni = Math.round((Date.parse(termin) - Date.parse(dzis)) / 86_400_000);
+  if (Number.isNaN(dni)) return null;
+  if (dni < 0) return { tekst: "po terminie", pilne: true };
+  if (dni === 0) return { tekst: "termin dziś", pilne: true };
+  return { tekst: `za ${dni} ${dni === 1 ? "dzień" : "dni"}`, pilne: dni <= 14 };
+}
+
 export function StartOcen() {
   const poHydracji = useSyncExternalStore(pusta, () => true, () => false);
   const oceny = useOceny();
+  const dzis = poHydracji ? dzisiajLokalnie() : null;
 
   return (
-    <div className="grid gap-8">
-      <section className="grid gap-4 md:grid-cols-2">
-        {SCIEZKI.map(({ rodzaj, tytul, opis, ikona: Ikona }) => {
-          const lista = oceny.filter((o) => o.rodzaj === rodzaj && o.etap !== "zakonczona");
-          return (
-            <Card key={rodzaj} className="flex flex-col">
-              <CardHeader>
-                <Ikona className="mb-1 size-7 text-primary" aria-hidden />
-                <CardTitle className="text-xl">{tytul}</CardTitle>
-                <CardDescription>{opis}</CardDescription>
-              </CardHeader>
-              <CardContent className="mt-auto grid gap-4">
+    <section className="grid gap-6 md:grid-cols-2">
+      {SCIEZKI.map(({ rodzaj, tytul, opis, fakty, ikona: Ikona }) => {
+        const lista = oceny.filter((o) => o.rodzaj === rodzaj && o.etap !== "zakonczona");
+        return (
+          <div key={rodzaj} className="flex flex-col gap-4">
+            {/* Granatowa karta ścieżki (klasa `dark` = granatowe tokeny – przycisk sam robi się jasny) */}
+            <div className="dark relative flex flex-1 flex-col gap-4 overflow-hidden rounded-xl bg-background p-6 text-foreground shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <span className="flex size-11 items-center justify-center rounded-lg bg-brand/15 text-brand">
+                  <Ikona className="size-6" strokeWidth={1.75} aria-hidden />
+                </span>
+                {poHydracji && (
+                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                    W toku: {lista.length}
+                  </span>
+                )}
+              </div>
+              <div className="grid gap-1.5">
+                <h3 className="text-xl font-bold">{tytul}</h3>
+                <p className="text-sm text-muted-foreground">{opis}</p>
+              </div>
+              <ul className="flex flex-wrap gap-2" aria-label="Najważniejsze zasady">
+                {fakty.map((f) => (
+                  <li key={f} className="rounded-full border px-2.5 py-0.5 text-xs text-muted-foreground">
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto">
                 <NowaOcenaDialog rodzaj={rodzaj} />
-                <div className="grid gap-2">
-                  <p className="text-sm font-medium">Oceny w toku</p>
-                  {!poHydracji ? (
-                    <Skeleton className="h-16" />
-                  ) : lista.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Brak ocen w toku.</p>
-                  ) : (
-                    <ul className="grid gap-2">
-                      {lista.map((o) => {
-                        const p = pracownik(o.pracownikId);
-                        return (
-                          <li key={o.id}>
-                            <Link
-                              href={`/ocena/${o.id}`}
-                              className="flex items-center justify-between gap-3 rounded-md border p-3 text-sm transition-colors hover:bg-muted/50"
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <p className="text-sm font-semibold">Oceny w toku</p>
+              {!poHydracji ? (
+                <Skeleton className="h-16" />
+              ) : lista.length === 0 ? (
+                <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">Brak ocen w toku.</p>
+              ) : (
+                <ul className="grid gap-2">
+                  {lista.map((o) => {
+                    const p = pracownik(o.pracownikId);
+                    const nrKroku = KROKI.findIndex((k) => k.id === krokStartowy(o.etap)) + 1;
+                    const termin = dzis ? ileDoTerminu(o.terminOceny, dzis) : null;
+                    return (
+                      <li key={o.id}>
+                        <Link
+                          href={`/ocena/${o.id}`}
+                          className="group flex items-center gap-3 rounded-lg border bg-card p-3 text-sm shadow-xs transition-all outline-none hover:border-primary/40 hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50"
+                        >
+                          <span
+                            aria-hidden
+                            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-primary"
+                          >
+                            {p ? `${p.imie[0]}${p.nazwisko[0]}` : "?"}
+                          </span>
+                          <span className="grid min-w-0 flex-1">
+                            <span className="truncate font-semibold">{p ? `${p.imie} ${p.nazwisko}` : "Pracownik"}</span>
+                            <span className="truncate text-xs text-muted-foreground">
+                              {p?.stanowisko}
+                              {o.arkusz ? ` · arkusz ${o.arkusz}` : ""} · termin {data(o.terminOceny)}
+                            </span>
+                          </span>
+                          <span className="hidden w-36 shrink-0 gap-1 lg:grid">
+                            <span className="flex min-w-0 justify-between gap-2 text-xs" title={nazwaEtapu(o.etap)}>
+                              <span className="truncate font-medium">{nazwaEtapu(o.etap)}</span>
+                              <span className="shrink-0 text-muted-foreground">
+                                {nrKroku}/{KROKI.length}
+                              </span>
+                            </span>
+                            <span aria-hidden className="h-1.5 overflow-hidden rounded-full bg-muted">
+                              <span
+                                className="block h-full rounded-full bg-primary"
+                                style={{ width: `${(nrKroku / KROKI.length) * 100}%` }}
+                              />
+                            </span>
+                            <span className="sr-only">
+                              Krok {nrKroku} z {KROKI.length}
+                            </span>
+                          </span>
+                          {termin && (
+                            <span
+                              className={cn(
+                                "hidden shrink-0 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap sm:inline",
+                                termin.pilne ? "bg-brand/10 text-brand" : "bg-muted text-muted-foreground",
+                              )}
                             >
-                              <span className="grid">
-                                <span className="font-medium">{p ? `${p.imie} ${p.nazwisko}` : "Pracownik"}</span>
-                                <span className="text-xs text-muted-foreground">
-                                  {p?.stanowisko}
-                                  {o.arkusz ? ` · arkusz ${o.arkusz}` : ""} · termin {data(o.terminOceny)}
-                                </span>
-                              </span>
-                              <span className="flex items-center gap-2">
-                                <Badge variant="secondary">{nazwaEtapu(o.etap)}</Badge>
-                                <ArrowRightIcon className="size-4 text-muted-foreground" aria-hidden />
-                              </span>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </section>
-    </div>
+                              {termin.tekst}
+                            </span>
+                          )}
+                          <ArrowRightIcon
+                            className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+                            aria-hidden
+                          />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </section>
   );
 }
 
@@ -147,7 +218,7 @@ function NowaOcenaDialog({ rodzaj }: { rodzaj: RodzajOceny }) {
   const idp = `nowa-${rodzaj}`;
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="lg" />}>
+      <DialogTrigger render={<Button size="lg" className="h-10 px-4" />}>
         <PlayIcon data-icon="inline-start" aria-hidden /> Rozpocznij ocenę
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
