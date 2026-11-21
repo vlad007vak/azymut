@@ -178,7 +178,8 @@ Odpowiedzi AI są buforowane, żeby nie zużywać limitów.
 Źródło: `docs/API.md` §1 (zasady wspólne, `/api/osp`); `README.md` → tabela AI, wiersz „Kontrola jakości”.
 
 **15. Jak sprawdzaliście poprawność asystenta?** *(Maks / Diana)*
-Mamy zestaw 24 pytań z oczekiwanymi odpowiedziami i źródłami (m.in. 2 pytania spoza bazy) oraz skrypt, który zadaje je automatycznie.
+Mamy zestaw 30 pytań z oczekiwanymi odpowiedziami i źródłami – w tym 2 spoza bazy i 6 tych samych faktów zadanych innymi słowami,
+tak jak pyta jury (po zgłoszeniu #26) – oraz skrypt, który zadaje je automatycznie.
 Wynik ostatniego przebiegu nie jest zapisany w repo – **DO USTALENIA z Vladem** (raport Diany, issue #9).
 Źródło: `docs/test-asystenta.md`; `scripts/baza-wiedzy/test-asystenta.mjs`.
 
