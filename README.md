@@ -33,11 +33,14 @@ Azymut prowadzi przełożonego przez cały proces w jednym miejscu, a decyzja za
    każdą podpowiedź przełożony przyjmuje albo odrzuca.
 6. **Asystent rozmowy (AI)** – plan rozmowy oceniającej: pytania do pracownika, kwestie do omówienia,
    argumenty uzasadniające ocenę i propozycje rozwoju, plus lista kontrolna z rozporządzenia.
-7. **Dokument** – arkusz według wzoru z rozporządzenia, do wydruku lub zapisu jako PDF, oraz **eksport oceny do JSON**
+7. **Kontrola jakości uzasadnienia (AI + reguły)** – przed sporządzeniem oceny wskazuje kryteria bez przykładu,
+   poziom niespójny z zaznaczonymi zachowaniami, ogólniki, ocenę osoby zamiast zachowania i sformułowania
+   mogące świadczyć o stronniczości – każdą uwagę z dosłownym cytatem i podpowiedzią, co doprecyzować.
+8. **Dokument** – arkusz według wzoru z rozporządzenia, do wydruku lub zapisu jako PDF, oraz **eksport oceny do JSON**
    (format `azymut.ocena` v1) – podstawa wymiany danych z systemem kadrowym i EZD.
-8. **Panel HR** – statusy wszystkich procesów, terminy (zbliżające się i przekroczone), nowy proces,
+9. **Panel HR** – statusy wszystkich procesów, terminy (zbliżające się i przekroczone), nowy proces,
    przypomnienia dla oceniających.
-9. **Role** – przełożony i HR (w prototypie role demonstracyjne; Panel HR tylko dla roli HR).
+10. **Role** – przełożony i HR (w prototypie role demonstracyjne; Panel HR tylko dla roli HR).
 
 ## Jak przetestować (dla jury)
 Wszystko działa w przeglądarce na komputerze, bez zakładania konta. Dane demonstracyjne są fikcyjne
@@ -52,13 +55,15 @@ i zapisują się tylko w Twojej przeglądarce (przycisk „Resetuj dane demo” 
 4. **„Rozmowa przeprowadzona – przejdź do decyzji”** → „Przyjmij sugestie” → wynik: średnia 5 pkt,
    **ocena pozytywna**. Dla sprawdzenia reguł ustaw jednemu kryterium **1 pkt** → ocena negatywna
    (§ 11 ust. 1 pkt 4), bez uzasadnienia nie da się jej sporządzić.
-5. **„Sporządź ocenę na piśmie”** → podgląd arkusza → **„Drukuj / zapisz PDF”**.
-6. Nowa ocena: strona główna → „Ocena okresowa” → **Rozpocznij ocenę** → w kroku 1 wybierz przykładowy opis
+5. W polu „Uzasadnienie oceny” wpisz np. „Pracuje dobrze i jest zaangażowana. Ma trudny charakter.” →
+   **„Sprawdź uzasadnienie”** → uwagi „Ogólnik” i „Ocena osoby zamiast zachowania” z cytatami (AI nie zmienia poziomów).
+6. **„Sporządź ocenę na piśmie”** → podgląd arkusza → **„Drukuj / zapisz PDF”**.
+7. Nowa ocena: strona główna → „Ocena okresowa” → **Rozpocznij ocenę** → w kroku 1 wybierz przykładowy opis
    stanowiska „Naczelnik wydziału” → **Analizuj** (arkusz B, kryteria dodatkowe z uzasadnieniem) → **Zastosuj**.
-7. Pierwsza ocena: **Julia Mazur** – skala 3/5/7 pkt i warunki z § 10 rozporządzenia o pierwszej ocenie.
-8. **Asystent formalny** (`/asystent`): pytania o terminy, kryteria i skalę; pytanie spoza tematu
+8. Pierwsza ocena: **Julia Mazur** – skala 3/5/7 pkt i warunki z § 10 rozporządzenia o pierwszej ocenie.
+9. **Asystent formalny** (`/asystent`): pytania o terminy, kryteria i skalę; pytanie spoza tematu
    (np. o urlop) → komunikat „Brak informacji”.
-9. **Panel HR** (`/hr`): wybierz rolę **„HR / administrator procesu”** (role demonstracyjne, bez hasła) → etapy
+10. **Panel HR** (`/hr`): wybierz rolę **„HR / administrator procesu”** (role demonstracyjne, bez hasła) → etapy
    i terminy procesów, nowy proces, przypomnienie. Rolę zmienisz w nagłówku („Zmień rolę”).
 
 ## Wykorzystanie sztucznej inteligencji
@@ -67,6 +72,7 @@ i zapisują się tylko w Twojej przeglądarce (przycisk „Resetuj dane demo” 
 | Asystent formalny (`/asystent`, `POST /api/asystent`) | Formułuje odpowiedź na podstawie fragmentów bazy wiedzy znalezionych wyszukiwarką BM25 (183 fragmenty: oba rozporządzenia, poradniki KPRM, model kompetencji) | Model wskazuje tylko numery fragmentów – źródła i cytaty buduje serwer; gdy pytanie wykracza poza bazę → „Brak informacji”; imiona i nazwiska usuwane z pytania |
 | Analiza opisu stanowiska (`POST /api/osp`) | Podpowiada kryteria dodatkowe i wskaźniki z uzasadnieniem z zadań na stanowisku | Arkusz B/C ustalany regułą (bez AI); serwer odrzuca kryteria obowiązkowe, nadmiarowe i nieistniejące wskaźniki; części OSP z danymi osobowymi usuwane przed wysłaniem |
 | Asystent rozmowy (`POST /api/rozmowa`) | Plan rozmowy oceniającej oparty na zapisanych przykładach zachowań | Do AI trafia tylko stanowisko, kryteria i przykłady (anonimizowane); prompt zabrania oceniania i dodawania faktów |
+| Kontrola jakości uzasadnienia (`POST /api/jakosc`) | Wskazuje ogólniki, ocenę osoby zamiast zachowania, przykład sprzeczny z poziomem i ryzyko stronniczości w tekście przełożonego | Uwaga AI bez dosłownego cytatu jest odrzucana przez serwer; brak przykładu i niespójność poziomów sprawdzają reguły (działają też przy limicie AI); odpowiedź nie zawiera poziomów; imiona i nazwiska zamieniane na „[osoba]” |
 
 **Gdzie AI nie działa:** poziomy, punkty, średnie i wynik oceny liczy deterministyczny kod
 (`src/lib/ocena/zasady.ts`) według rozporządzeń. Sugestia poziomu wynika z wybranych przez przełożonego
@@ -83,7 +89,7 @@ flowchart LR
   UI --> S[(Magazyn ocen<br/>prototyp: przeglądarka)]
   UI --> R[Zasady z rozporządzeń<br/>src/lib/ocena/zasady.ts]
   UI --> M[Model kompetencji<br/>src/data/model-kompetencji.json]
-  UI --> API[API: /api/asystent, /api/osp,<br/>/api/rozmowa]
+  UI --> API[API: /api/asystent, /api/osp,<br/>/api/rozmowa, /api/jakosc]
   API --> KB[(Baza wiedzy<br/>183 fragmenty + BM25)]
   API --> AI[Warstwa AI<br/>Groq → Gemini]
 ```

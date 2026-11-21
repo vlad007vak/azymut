@@ -30,13 +30,16 @@ z pracownikiem. Azymut łączy to w jednym narzędziu dla przełożonego (i pane
   ze źródłem i cytatem, a gdy w bazie nie ma odpowiedzi – jasny komunikat zamiast zgadywania.
 - **Analiza opisu stanowiska** (podpowiedź arkusza, kryteriów dodatkowych i wskaźników) oraz **asystent rozmowy**
   (pytania, kwestie do omówienia, argumenty, propozycje rozwoju).
+- **Kontrola jakości uzasadnienia:** przed sporządzeniem oceny wskazuje ogólniki, ocenę osoby zamiast zachowania,
+  niespójności z poziomem, kryteria bez przykładu i ryzyko stronniczości – z cytatem i podpowiedzią.
 - **Arkusz** według wzoru do wydruku / PDF i **panel HR** ze statusami, terminami i przypomnieniami.
 
 ## Opis wykorzystania AI
-AI działa w trzech miejscach: asystent formalny (odpowiedzi wyłącznie z bazy wiedzy, źródła i cytaty budowane
+AI działa w czterech miejscach: asystent formalny (odpowiedzi wyłącznie z bazy wiedzy, źródła i cytaty budowane
 przez serwer, komunikat „brak informacji” poza bazą), analiza opisu stanowiska (podpowiedzi kryteriów dodatkowych
-i wskaźników, weryfikowane regułami po stronie serwera) oraz asystent rozmowy (plan rozmowy na podstawie przykładów
-zachowań). AI nie liczy punktów i nie ustala poziomu – robi to kod zgodny z rozporządzeniami, a decyzję podejmuje
+i wskaźników, weryfikowane regułami po stronie serwera), asystent rozmowy (plan rozmowy na podstawie przykładów
+zachowań) oraz kontrola jakości uzasadnienia (uwagi tylko z dosłownym cytatem tekstu przełożonego, sprawdzanym
+przez serwer). AI nie liczy punktów i nie ustala poziomu – robi to kod zgodny z rozporządzeniami, a decyzję podejmuje
 przełożony. Do AI nie trafiają imiona i nazwiska. Modele: darmowe API Groq (qwen3.8-27b) z automatycznym
 przełączeniem na Google Gemini (gemini-3.5-flash-lite).
 

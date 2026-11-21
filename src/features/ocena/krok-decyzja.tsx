@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { KontrolaJakosci } from "@/features/jakosc";
 import { kompetencja, poziom } from "@/lib/ocena/model";
 import { poziomZeSredniej, wynikOkresowej, wynikPierwszej } from "@/lib/ocena/zasady";
 import { cn } from "@/lib/utils";
@@ -171,6 +172,9 @@ export function KrokDecyzja({ ocena, zmien, przejdz }: KrokProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Kontrola jakości uzasadnienia (Maks, #18) – po wpisaniu przykładów i uzasadnienia, przed sporządzeniem oceny. */}
+      <KontrolaJakosci ocena={ocena} />
 
       <div className="flex justify-end">
         {zablokowana ? (

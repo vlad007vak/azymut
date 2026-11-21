@@ -60,12 +60,12 @@ Schemat (jak na grafice organizatora):
 ## Slajd 8 – AI wspiera, nie decyduje
 - **Analiza opisu stanowiska:** arkusz (regułą), kryteria dodatkowe i wskaźniki z uzasadnieniem – przełożony przyjmuje lub odrzuca.
 - **Asystent rozmowy:** pytania do pracownika, kwestie do omówienia, argumenty do oceny, propozycje rozwoju + lista kontrolna z rozporządzenia.
-- **[po merge] Kontrola jakości uzasadnienia:** wskazuje ogólniki, oceny osobowości, niespójności i ryzyko stronniczości.
+- **Kontrola jakości uzasadnienia:** wskazuje kryteria bez przykładu, ogólniki, oceny osobowości, niespójności z poziomem i ryzyko stronniczości – zawsze z dosłownym cytatem; uwagi bez cytatu serwer odrzuca.
 - Bezpieczeństwo: do AI nie trafiają imiona i nazwiska; AI nie liczy punktów; darmowe modele z automatycznym przełączaniem (Groq → Gemini).
 
 ## Slajd 9 – HR, architektura i wdrożenie
 - **Panel HR:** statusy procesów, terminy (zbliżające się i przekroczone), przypomnienia, nowy proces.
-- **[po merge]** Role demonstracyjne (przełożony / HR), eksport oceny do JSON, dokumentacja API (OpenAPI).
+- Role demonstracyjne (przełożony / HR), eksport oceny do JSON, dokumentacja API (OpenAPI).
 - Architektura: Next.js 16, moduły funkcji, reguły oceny w osobnym module, API z walidacją, wymienna warstwa AI, model i baza wiedzy generowane skryptami z plików źródłowych.
 - Przed wdrożeniem: logowanie przez system urzędu, baza w infrastrukturze urzędu, model AI w infrastrukturze lub z umową powierzenia, integracje EZD i systemy kadrowe (np. QNT).
 
