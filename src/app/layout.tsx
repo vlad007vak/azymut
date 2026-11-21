@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { UwagaKomputer } from "@/components/uwaga-komputer";
 import { APP_CONFIG } from "@/config/app";
 
 import "./globals.css";
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           >
             Przejdź do treści
           </a>
+          <UwagaKomputer />
           <SiteHeader />
           <main id="tresc" className="flex-1">
             {children}

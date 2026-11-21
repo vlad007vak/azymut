@@ -28,8 +28,9 @@ A tool that guides a civil-service **supervisor** step by step through an employ
   `src/lib/ocena/store.ts` (`useOceny`, `useOcena`, `zapiszOcene`…), seeded with fictional demo data `src/data/demo.ts`.
 - **Data minimisation:** never send first name / surname to any AI endpoint – only position, criteria, observations.
 - AI assistant must answer from the knowledge base, **cite the source**, and say clearly when the base has no answer.
-- Target is the **desktop browser** (the task says the system is not meant for smartphones – exact handling of phones
-  is being confirmed with mentors; until then: layout must work from 1024 px, don't spend time on phone layouts).
+- Target is the **desktop browser** – confirmed by the MC mentor (21.11): a web app for the computer; blocking phones
+  is optional. Layout must work from 1024 px, don't spend time on phone layouts. Only sheets **B and C** (no sheet A).
+- Mentor answers (21.11) are recorded in issue #3.
 
 ### Who owns what (feature folders)
 | Owner | Area | Files |

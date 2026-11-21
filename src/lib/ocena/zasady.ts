@@ -70,9 +70,10 @@ export interface Sugestia {
 
 /**
  * Sugerowany poziom kompetencji z wybranych zachowań.
- * PROPOZYCJA ZESPOŁU (do potwierdzenia u mentorów): każde wybrane zachowanie zamieniamy na punkty
- * z tej samej skali co oceny cząstkowe (1/3/5/7/9), liczymy średnią z wskaźników z obserwacją
- * i stosujemy przedziały z § 11 ust. 1 pkt 2. „Brak podstaw do oceny” nie wchodzi do średniej.
+ * Potwierdzone przez mentorkę MC (21.11.2026): wskaźniki mają równe wagi, sugerowany poziom to średnia
+ * z ocen wskaźników. Każde wybrane zachowanie zamieniamy na punkty z tej samej skali co oceny cząstkowe
+ * (1/3/5/7/9), liczymy średnią z wskaźników z obserwacją i stosujemy przedziały z § 11 ust. 1 pkt 2.
+ * „Brak podstaw do oceny” nie wchodzi do średniej.
  * To tylko podpowiedź – ostateczny poziom zawsze wybiera przełożony.
  */
 export function sugerowanyPoziom(obserwacje: Obserwacja[]): Sugestia {
@@ -85,7 +86,8 @@ export function sugerowanyPoziom(obserwacje: Obserwacja[]): Sugestia {
 
 /**
  * Pierwsza ocena ma skalę 3 / 5 / 7 pkt (§ 9 ust. 1) = poziomy 2 / 3 / 4 modelu.
- * PROPOZYCJA ZESPOŁU (do potwierdzenia u mentorów): sugestię 1 traktujemy jak 2, a 5 jak 4.
+ * Potwierdzone przez mentorkę MC (21.11.2026): sugestię 1 traktujemy jak 2 (3 pkt), a 5 jak 4 (7 pkt);
+ * „na poziomie oczekiwań” = 5 pkt.
  */
 export function doSkaliPierwszejOceny(p: PoziomId): 2 | 3 | 4 {
   if (p <= 2) return 2;
