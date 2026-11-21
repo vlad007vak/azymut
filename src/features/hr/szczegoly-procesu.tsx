@@ -79,7 +79,7 @@ function Tresc({
   return (
     <>
       <SheetHeader>
-        <SheetTitle ref={tytulRef} tabIndex={-1} className="outline-none">
+        <SheetTitle ref={tytulRef} tabIndex={-1} className="text-xl font-bold outline-none">
           {p ? `${p.imie} ${p.nazwisko}` : "Nieznany pracownik"}
         </SheetTitle>
         <SheetDescription>
@@ -89,7 +89,7 @@ function Tresc({
 
       <div className="grid gap-6 px-4 text-sm">
         <section aria-labelledby="hr-sz-dane">
-          <h3 id="hr-sz-dane" className="mb-1 font-medium">
+          <h3 id="hr-sz-dane" className="mb-1 text-base font-semibold">
             Proces
           </h3>
           <dl className="divide-y">
@@ -118,7 +118,7 @@ function Tresc({
         </section>
 
         <section aria-labelledby="hr-sz-etapy">
-          <h3 id="hr-sz-etapy" className="mb-2 font-medium">
+          <h3 id="hr-sz-etapy" className="mb-2 text-base font-semibold">
             Przebieg
           </h3>
           <ol className="grid gap-1.5">
@@ -164,7 +164,7 @@ function Tresc({
         </section>
 
         <section aria-labelledby="hr-sz-historia">
-          <h3 id="hr-sz-historia" className="mb-2 font-medium">
+          <h3 id="hr-sz-historia" className="mb-2 text-base font-semibold">
             Historia przypomnień ({historia.length})
           </h3>
           {historia.length === 0 ? (
@@ -172,7 +172,7 @@ function Tresc({
           ) : (
             <ul className="grid gap-3">
               {historia.map((h, i) => (
-                <li key={`${h.data}-${i}`} className="rounded-lg border p-3">
+                <li key={`${h.data}-${i}`} className="rounded-lg border bg-muted/40 p-3">
                   <p className="mb-1 text-xs text-muted-foreground">
                     <time dateTime={h.data}>{formatujDateCzas(h.data)}</time> · wysłano (symulacja)
                   </p>
@@ -184,7 +184,7 @@ function Tresc({
         </section>
       </div>
 
-      <SheetFooter className="flex-row justify-end gap-2">
+      <SheetFooter className="flex-row justify-end gap-2 border-t">
         <Button
           variant="outline"
           disabled={!moznaPrzypomniec(ocena)}

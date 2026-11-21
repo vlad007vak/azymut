@@ -129,7 +129,8 @@ export function NowyProcesDialog({ oceny }: { oceny: Ocena[] }) {
         if (!o) setBledy({});
       }}
     >
-      <DialogTrigger render={<Button />}>
+      {/* Czerwony przycisk – jedyne główne działanie na ekranie panelu HR. */}
+      <DialogTrigger render={<Button variant="brand" />}>
         <PlusIcon data-icon="inline-start" aria-hidden />
         Nowy proces
       </DialogTrigger>
