@@ -38,7 +38,7 @@ export function KrokPrzygotowanie({ ocena, zmien, przejdz }: KrokProps) {
       {ocena.rodzaj === "okresowa" ? <ArkuszIKryteria ocena={ocena} zmien={zmien} /> : <PierwszaWstep ocena={ocena} zmien={zmien} />}
       <DoborWskaznikow ocena={ocena} zmien={zmien} />
       <div className="flex justify-end">
-        <Button size="lg" onClick={zatwierdz}>
+        <Button variant="brand" size="lg" onClick={zatwierdz}>
           Zatwierdź i przejdź do oceny wskaźników <ArrowRightIcon data-icon="inline-end" />
         </Button>
       </div>

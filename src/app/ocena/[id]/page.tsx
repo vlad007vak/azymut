@@ -15,10 +15,8 @@ async function Kreator({ params }: { params: Promise<{ id: string }> }) {
 
 export default function OcenaPage({ params }: PageProps<"/ocena/[id]">) {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <Suspense fallback={<LadowanieKreatora />}>
-        <Kreator params={params} />
-      </Suspense>
-    </div>
+    <Suspense fallback={<LadowanieKreatora />}>
+      <Kreator params={params} />
+    </Suspense>
   );
 }

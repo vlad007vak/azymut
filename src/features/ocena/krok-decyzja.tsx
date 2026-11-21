@@ -182,7 +182,7 @@ export function KrokDecyzja({ ocena, zmien, przejdz }: KrokProps) {
             <FileCheckIcon data-icon="inline-start" /> Przejdź do dokumentu
           </Button>
         ) : (
-          <Button size="lg" onClick={sporzadz} disabled={!wynik || brakSprawozdania || brakUzasadnienia}>
+          <Button variant="brand" size="lg" onClick={sporzadz} disabled={!wynik || brakSprawozdania || brakUzasadnienia}>
             <FileCheckIcon data-icon="inline-start" /> Sporządź ocenę na piśmie
           </Button>
         )}
