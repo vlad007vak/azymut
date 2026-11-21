@@ -3,8 +3,13 @@
 import {
   AlertTriangleIcon,
   ClipboardCopyIcon,
+  ClipboardListIcon,
   InfoIcon,
+  ListChecksIcon,
   Loader2Icon,
+  type LucideIcon,
+  MessagesSquareIcon,
+  NotebookPenIcon,
   PrinterIcon,
   RefreshCwIcon,
   SaveIcon,
@@ -49,6 +54,16 @@ const BLAD_OGOLNY = "Nie udało się przygotować planu rozmowy. Spróbuj ponown
 
 /** Widoczny fokus dla zwykłych linków tekstowych (przyciski mają go z komponentu). */
 const FOKUS_LINKU ="rounded-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50";
+
+/** Nagłówek sekcji w karcie: ikona + <h2> (redesign 21.11). */
+function TytulKarty({ ikona: Ikona, children }: { ikona: LucideIcon; children: React.ReactNode }) {
+  return (
+    <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+      <Ikona className="size-5 shrink-0 text-primary" strokeWidth={1.5} aria-hidden />
+      <h2>{children}</h2>
+    </CardTitle>
+  );
+}
 
 /** false na serwerze i podczas hydracji, true po zamontowaniu w przeglądarce. */
 function usePoHydracji(): boolean {
@@ -229,7 +244,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
             <Badge>{nazwaRodzaju(ocena)}</Badge>
             <Badge variant="secondary">Etap: {nazwaEtapu(ocena.etap)}</Badge>
           </div>
-          <CardTitle className="text-xl">
+          <CardTitle className="text-xl font-semibold">
             <h2>{osoba ? `${osoba.imie} ${osoba.nazwisko}` : "Pracownik spoza listy"}</h2>
           </CardTitle>
           <CardDescription>
@@ -273,9 +288,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>
-              <h2>Podsumowanie kryteriów</h2>
-            </CardTitle>
+            <TytulKarty ikona={ListChecksIcon}>Podsumowanie kryteriów</TytulKarty>
             <CardDescription>
               Wskaźniki, wybrane zachowania i przykłady. Sugerowany poziom to tylko podpowiedź systemu.
             </CardDescription>
@@ -287,9 +300,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
 
         <Card className="self-start">
           <CardHeader>
-            <CardTitle>
-              <h2>Co omówić – lista kontrolna</h2>
-            </CardTitle>
+            <TytulKarty ikona={ClipboardListIcon}>Co omówić – lista kontrolna</TytulKarty>
             <CardDescription>Zakres rozmowy oceniającej według rozporządzenia.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -305,9 +316,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
       {/* Plan rozmowy (AI) */}
       <Card>
         <CardHeader>
-          <CardTitle>
-            <h2>Plan rozmowy</h2>
-          </CardTitle>
+          <TytulKarty ikona={MessagesSquareIcon}>Plan rozmowy</TytulKarty>
           <CardDescription>
             {szkic.plan
               ? `Przygotowano ${new Date(szkic.plan.wygenerowano).toLocaleString("pl-PL")}. Zaznacz, co wykorzystasz – możesz też edytować i dodawać punkty.`
@@ -356,7 +365,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
               <Button
                 onClick={przygotujRozmowe}
                 disabled={stanAi.typ === "ladowanie"}
-                variant={szkic.plan ? "outline" : "default"}
+                variant={szkic.plan ? "outline" : "brand"}
                 size="lg"
               >
                 {stanAi.typ === "ladowanie" ? (
@@ -385,9 +394,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
       {/* Zapis w ocenie */}
       <Card>
         <CardHeader>
-          <CardTitle>
-            <h2>Notatki do oceny</h2>
-          </CardTitle>
+          <TytulKarty ikona={NotebookPenIcon}>Notatki do oceny</TytulKarty>
           <CardDescription>
             Zapiszemy zaznaczone punkty planu w notatkach z rozmowy, a propozycje rozwoju – we wnioskach
             rozwojowych oceny.
@@ -421,7 +428,12 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
           </div>
         </CardContent>
         <CardFooter className="flex flex-wrap items-center gap-3 print:hidden">
-          <Button onClick={zapiszWOcenie} disabled={!notatki && !wnioski}>
+          {/* Czerwony jest zawsze tylko jeden: „Przygotuj rozmowę” przed planem, „Zapisz w ocenie” po nim. */}
+          <Button
+            onClick={zapiszWOcenie}
+            disabled={!notatki && !wnioski}
+            variant={szkic.plan ? "brand" : "default"}
+          >
             <SaveIcon data-icon="inline-start" /> Zapisz w ocenie
           </Button>
           <Button variant="outline" onClick={kopiujPlan}>

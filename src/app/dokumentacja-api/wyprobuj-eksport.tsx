@@ -37,7 +37,7 @@ export function WyprobujEksport() {
   if (!ocena) return <p className="text-sm text-muted-foreground">Brak ocen zapisanych w tej przeglądarce.</p>;
 
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <div className="flex flex-wrap items-end gap-3">
         <div className="grid min-w-0 flex-1 gap-1.5">
           <Label htmlFor={idPola}>Ocena</Label>
@@ -56,7 +56,7 @@ export function WyprobujEksport() {
         </div>
         <PrzyciskEksportu ocena={ocena} />
       </div>
-      <details className="grid gap-2" onToggle={(e) => setOtwarty(e.currentTarget.open)}>
+      <details className="grid grid-cols-1 gap-2" onToggle={(e) => setOtwarty(e.currentTarget.open)}>
         <summary className="cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground">
           Podgląd pliku dla oceny {ocena.id}
         </summary>

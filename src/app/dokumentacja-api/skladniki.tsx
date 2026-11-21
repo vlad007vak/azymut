@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 
 import { type Endpoint, type Media, nazwaRef, pola, przyklady, rozwinOdpowiedz, type Schemat } from "./spec";
 
+/** Metody HTTP w kolorach motywu (kody odpowiedzi niżej zostają w kolorach stanów). */
 const KOLOR_METODY: Record<string, string> = {
-  get: "bg-emerald-600/10 text-emerald-800 dark:text-emerald-300",
-  post: "bg-sky-600/10 text-sky-800 dark:text-sky-300",
+  get: "border-border bg-secondary text-secondary-foreground",
+  post: "border-primary/20 bg-primary/10 text-primary",
 };
 
 export function MetodaBadge({ metoda }: { metoda: string }) {
@@ -76,7 +77,7 @@ export function TabelaPol({ schemat, podpis }: { schemat: Schemat; podpis: strin
 
 function Przyklady({ media, otwarte, kontekst }: { media: Media; otwarte: boolean; kontekst: string }) {
   return przyklady(media).map((p, i) => (
-    <details key={i} open={otwarte && i === 0} className="group grid gap-2">
+    <details key={i} open={otwarte && i === 0} className="group grid grid-cols-1 gap-2">
       <summary className="cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground">
         {p.nazwa}
       </summary>
@@ -111,13 +112,13 @@ export function KartaEndpointu({ endpoint }: { endpoint: Endpoint }) {
             </Badge>
           ))}
         </div>
-        <CardTitle>
+        <CardTitle className="text-lg font-semibold">
           <h3>{operacja.summary}</h3>
         </CardTitle>
         {operacja.description && <CardDescription className="max-w-4xl">{operacja.description}</CardDescription>}
       </CardHeader>
-      <CardContent className="grid gap-6">
-        <section className="grid gap-3" aria-label={`Żądanie ${nazwa}`}>
+      <CardContent className="grid grid-cols-1 gap-6">
+        <section className="grid grid-cols-1 gap-3" aria-label={`Żądanie ${nazwa}`}>
           <h4 className="text-sm font-semibold">Żądanie</h4>
           {zadanie ? (
             <>
@@ -133,14 +134,14 @@ export function KartaEndpointu({ endpoint }: { endpoint: Endpoint }) {
           )}
         </section>
 
-        <section className="grid gap-3" aria-label={`Odpowiedzi ${nazwa}`}>
+        <section className="grid grid-cols-1 gap-3" aria-label={`Odpowiedzi ${nazwa}`}>
           <h4 className="text-sm font-semibold">Odpowiedzi</h4>
-          <ul className="grid gap-3">
+          <ul className="grid grid-cols-1 gap-3">
             {Object.entries(operacja.responses).map(([kod, o]) => {
               const odp = rozwinOdpowiedz(o);
               const naglowki = Object.keys(odp.headers ?? {});
               return (
-                <li key={kod} className="grid gap-2 rounded-md border p-3">
+                <li key={kod} className="grid grid-cols-1 gap-2 rounded-md border p-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <KodBadge kod={kod} />
                     <span className="text-sm">{odp.description}</span>
@@ -157,7 +158,7 @@ export function KartaEndpointu({ endpoint }: { endpoint: Endpoint }) {
                     </p>
                   )}
                   {Object.entries(odp.content ?? {}).map(([typ, media]) => (
-                    <div key={typ} className="grid gap-2">
+                    <div key={typ} className="grid grid-cols-1 gap-2">
                       <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         Treść <code className="font-mono">{typ}</code>
                         <NazwaSchematu schemat={media.schema} />
