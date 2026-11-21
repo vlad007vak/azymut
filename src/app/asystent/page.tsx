@@ -8,7 +8,7 @@ import { DOKUMENTY_BAZY, FRAGMENTY } from "@/features/asystent/baza";
 export const metadata: Metadata = {
   title: "Asystent formalny",
   description:
-    "Zapytaj o zasady pierwszej oceny i oceny okresowej w służbie cywilnej. Odpowiedzi na podstawie rozporządzeń, poradników KPRM i modelu kompetencji – zawsze ze źródłem.",
+    "Zapytaj o zasady pierwszej oceny i oceny okresowej w służbie cywilnej. Odpowiedzi na podstawie ustawy o służbie cywilnej, rozporządzeń, poradników KPRM i modelu kompetencji – zawsze ze źródłem.",
 };
 
 const JAK_DZIALA = [

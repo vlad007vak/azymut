@@ -11,7 +11,7 @@ import type { OdpowiedzAsystenta, ZrodloAsystenta } from "./typy";
 import { bezPolskichZnakow, tokeny } from "./wyszukiwanie";
 
 export const BRAK_INFORMACJI =
-  "Nie znalazłem odpowiedzi na to pytanie w bazie wiedzy asystenta (rozporządzenia o pierwszej ocenie i o ocenach okresowych, poradniki KPRM, model kompetencji), więc nie będę zgadywać. Spróbuj zadać pytanie inaczej albo skontaktuj się z komórką kadr.";
+  "Nie znalazłem odpowiedzi na to pytanie w bazie wiedzy asystenta (przepisy o ocenach z ustawy o służbie cywilnej, rozporządzenia o pierwszej ocenie i o ocenach okresowych, poradniki KPRM, model kompetencji), więc nie będę zgadywać. Spróbuj zadać pytanie inaczej albo skontaktuj się z komórką kadr.";
 
 /** Poniżej tego pokrycia słów pytania nie pytamy nawet modelu – to pytanie spoza bazy. */
 const MIN_POKRYCIE = 0.4;
@@ -23,7 +23,7 @@ Odpowiadasz na pytania o pierwszą ocenę i ocenę okresową WYŁĄCZNIE na pods
 Zasady:
 1. Nie korzystaj z wiedzy spoza fragmentów i nie zgaduj. Jeśli fragmenty nie odpowiadają na pytanie, ustaw "brakInformacji": true.
 2. Po każdym zdaniu z faktem (termin, liczba, warunek, obowiązek) wstaw numer fragmentu, np. [F2].
-3. Pisz po polsku, zwięźle: 2–6 zdań albo krótka lista. Podawaj konkretne terminy, liczby i paragrafy z fragmentów.
+3. Pisz po polsku, zwięźle: 2–6 zdań albo krótka lista. Podawaj konkretne terminy, liczby, artykuły i paragrafy z fragmentów.
 4. Nie oceniasz pracowników i nie proponujesz poziomu oceny – decyzję zawsze podejmuje przełożony.
 5. W "zrodla" wypisz wykorzystane fragmenty: numer i krótki cytat (do 200 znaków) przepisany DOSŁOWNIE z fragmentu.
 Zwróć JSON: {"odpowiedz": "…", "brakInformacji": false, "zrodla": [{"fragment": 1, "cytat": "…"}]}`;

@@ -12,7 +12,8 @@
  *  - rozporządzenia: jeden fragment = paragraf (§) albo grupa ustępów, miejsce „§ 11 ust. 1–2”;
  *  - załącznik nr 1 do rozporządzeń: opisy elementów / kryteriów oceny (sprawdzane co do słowa
  *    z treścią PDF i z modelem kompetencji);
- *  - poradniki KPRM: fragmenty ~800–1400 znaków z numerem strony i rozdziałem.
+ *  - poradniki KPRM: fragmenty ~800–1400 znaków z numerem strony i rozdziałem;
+ *  - ustawa o służbie cywilnej: tylko art. 38 i 81–83, jeden fragment = jeden ustęp, miejsce „art. 81 ust. 4”.
  * Model kompetencji (src/data/model-kompetencji.json) dokładany jest w locie przez src/features/asystent.
  */
 import { execFileSync } from "node:child_process";
@@ -61,6 +62,16 @@ const DOKUMENTY = [
     plik: "Poradnik - oceny okresowe w służbie cywilnej (2).pdf",
     typ: "poradnik",
     strony: [3, 35],
+  },
+  {
+    id: "ustawa-sc",
+    nazwa: "Ustawa z dnia 21 listopada 2008 r. o służbie cywilnej (t.j. Dz.U. 2026 poz. 590)",
+    krotko: "Ustawa o służbie cywilnej",
+    rodzaj: "wspolne",
+    plik: "ustawa-o-sluzbie-cywilnej-tj-DzU-2026-590.pdf",
+    typ: "ustawa",
+    // Tylko przepisy o ocenach: art. 38 – pierwsza ocena, art. 81–83 – ocena okresowa i sprzeciw.
+    artykuly: { 38: "pierwsza", 81: "okresowa", 82: "okresowa", 83: "okresowa" },
   },
 ];
 
@@ -292,6 +303,76 @@ function zalacznik1(dok, annexRaw) {
   return out;
 }
 
+// ── ustawa ──────────────────────────────────────────────────────────────────
+/** Słowa kluczowe do indeksu dla ustępów ustawy („art.ust”) – jak TEMATY dla rozporządzeń. */
+const TEMATY_USTAWY = {
+  "38.1": "termin pierwszej oceny najwcześniej najpóźniej kiedy dokonać 8 miesięcy miesiąc przed końcem umowy na czas określony nowy pracownik",
+  "38.2": "kto dokonuje pierwszej oceny bezpośredni przełożony kierujący komórką co bierze się pod uwagę egzamin sprawozdanie",
+  "38.3": "skutki pierwszej oceny pozytywna negatywna umowa na czas nieokreślony rozwiązanie umowy wniosek dyrektor generalny",
+  "38.4": "rozporządzenie podstawa prawna pierwszej oceny obiektywizm ocen",
+  "81.1": "kto podlega ocenie okresowej urzędnik pracownik umowa na czas nieokreślony kto ocenia bezpośredni przełożony",
+  "81.3": "czego dotyczy ocena okresowa obowiązki z opisu stanowiska pracy na piśmie zapoznanie",
+  "81.4": "jak często co ile miesięcy termin oceny okresowej 24 miesiące dwa lata",
+  "81.5": "IPRZ indywidualny program rozwoju zawodowego wnioski",
+  "81.6": "zmiana stanowiska zakres obowiązków 6 miesięcy ocena po raz pierwszy",
+  "81.7": "nieobecność choroba urlop przedłużenie terminu oceny",
+  "81.8": "zmiana terminu oceny zmiana oceniającego nieobecność wniosek ocenianego",
+  "81.9": "ocena negatywna ponowna ocena 6 miesięcy",
+  82: "rozporządzenie podstawa prawna oceny okresowej kryteria arkusz skala obiektywizm",
+  "83.1": "sprzeciw odwołanie od oceny okresowej 7 dni dyrektor generalny",
+  "83.3": "rozpatrzenie sprzeciwu termin 14 dni",
+  "83.4": "uwzględnienie sprzeciwu zmiana oceny ocena po raz drugi",
+  "83.5": "sąd pracy odwołanie 14 dni nieuwzględnienie sprzeciwu",
+};
+
+/**
+ * Warstwa tekstowa PDF Dziennika Ustaw skleja „nie” z przysłówkiem przy justowaniu
+ * („niewcześniej niż”, „niepóźniej niż”) – rozdzielamy tylko te znane przypadki.
+ */
+const rozklejNie = (s) => s.replace(/(?<!\p{L})nie(wcześniej|później|dłużej|krócej)(?!\p{L})/gu, "nie $1");
+
+function ustawa(dok) {
+  const linie = clean(pdfText(dok.plik))
+    .split(/\n|\f/)
+    .map((l) => l.trim())
+    .filter((l) => l && !/^(Dziennik Ustaw|– \d+ –|Poz\. \d+)$/.test(l));
+  const tekst = linie.join("\n");
+
+  const fragmenty = [];
+  for (const [nr, rodzaj] of Object.entries(dok.artykuly)) {
+    // Treść artykułu: od „Art. 81.” na początku linii do następnego „Art. …”.
+    const start = tekst.search(new RegExp(`^Art\\. ${nr}\\. `, "m"));
+    if (start < 0) throw new Error(`${dok.id}: nie znaleziono art. ${nr}`);
+    const reszta = tekst.slice(start);
+    const koniec = reszta.slice(1).search(/^Art\. \d+[a-z]*\. /m);
+    let art = reszta.slice(0, koniec < 0 ? undefined : koniec + 1).replace(/^Art\. \d+\.\s*/, "");
+
+    const ustepy = [];
+    if (/^1\. /.test(art)) {
+      art = art.replace(/^1\.\s*/, "");
+      for (let n = 1; ; n++) {
+        const m = art.match(new RegExp(`\\n${n + 1}\\. `));
+        ustepy.push({ nr: n, tekst: oneLine(m ? art.slice(0, m.index) : art) });
+        if (!m) break;
+        art = art.slice(m.index + m[0].length);
+      }
+    } else {
+      ustepy.push({ nr: 0, tekst: oneLine(art) });
+    }
+
+    for (const u of ustepy) {
+      if (/^\(uchylony\)$/.test(u.tekst)) continue;
+      const miejsce = u.nr ? `art. ${nr} ust. ${u.nr}` : `art. ${nr}`;
+      const f = frag(dok, miejsce, `${u.nr ? `Art. ${nr} ust. ${u.nr}` : `Art. ${nr}`}. ${rozklejNie(u.tekst)}`);
+      f.rodzaj = rodzaj;
+      const slowa = TEMATY_USTAWY[u.nr ? `${nr}.${u.nr}` : nr];
+      if (slowa) f.slowa = slowa;
+      fragmenty.push(f);
+    }
+  }
+  return fragmenty;
+}
+
 // ── poradniki ───────────────────────────────────────────────────────────────
 function poradnik(dok) {
   const pages = clean(pdfText(dok.plik)).split("\f");
@@ -361,7 +442,7 @@ function frag(dok, miejsce, tekst, sekcja) {
 
 const fragmenty = [];
 for (const dok of DOKUMENTY) {
-  const f = dok.typ === "rozporzadzenie" ? rozporzadzenie(dok) : poradnik(dok);
+  const f = dok.typ === "rozporzadzenie" ? rozporzadzenie(dok) : dok.typ === "ustawa" ? ustawa(dok) : poradnik(dok);
   const dl = f.map((x) => x.tekst.length);
   console.log(
     `${dok.id}: ${f.length} fragmentów (długość ${Math.min(...dl)}–${Math.max(...dl)}, śr. ${Math.round(dl.reduce((a, b) => a + b, 0) / dl.length)})`,
@@ -375,7 +456,7 @@ writeFileSync(
   JSON.stringify(
     {
       opis: "Baza wiedzy asystenta formalnego – generowana przez scripts/baza-wiedzy/zbuduj.mjs z materiałów organizatora. Nie edytuj ręcznie.",
-      dokumenty: DOKUMENTY.map(({ id, nazwa, krotko, rodzaj }) => ({ id, nazwa, krotko, rodzaj })),
+      dokumenty: DOKUMENTY.map(({ id, nazwa, krotko, rodzaj, typ }) => ({ id, nazwa, krotko, rodzaj, typ })),
       fragmenty,
     },
     null,
