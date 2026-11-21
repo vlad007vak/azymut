@@ -9,12 +9,38 @@ Roles:
 - **Lead AI** = the Claude Code on Vlad's laptop: sets these rules, designs contracts, splits work
   into GitHub Issues (task cards), reviews PRs. Its issues/comments appear under Vlad's GitHub account.
 - **Maks**, **Andrey** and **Dima** – developers, each with their own Claude Code, each owns their own feature folders.
-- **Diana** – testing and test reports: checks every Vercel preview (desktop + phone) and reports bugs
+- **Diana** – testing and test reports: checks every Vercel preview (desktop browser) and reports bugs
   as GitHub Issues labelled `bug`.
 
 If you are Maks's, Andrey's or Dima's Claude: you execute task cards from the lead AI. You don't redesign the
 architecture, don't change these rules and don't create tasks for others – propose changes in your PR/issue instead.
 The jury opens the **deployed app on Vercel** and tests it themselves, so `main` must always build and work.
+
+## The project: Azymut – "Kompas kompetencji" (task of Ministerstwo Cyfryzacji)
+A tool that guides a civil-service **supervisor** step by step through an employee assessment; secondary user = **HR**.
+- Two paths: **pierwsza ocena** (5 elements, 3/5/7 pts) and **ocena okresowa** (job-description analysis →
+  sheet B or C → mandatory criteria + max 3 additional → 1/3/5/7/9 pts). Rules are implemented ONLY in
+  `src/lib/ocena/zasady.ts` – never re-implement scoring elsewhere.
+- **Competency model** (organizer's, 14 competencies / 49 behavioural indicators / 5 levels): `src/data/model-kompetencji.json`,
+  read it through `src/lib/ocena/model.ts`. The supervisor picks the behaviour that best matches what they observed,
+  the system SUGGESTS a level (`sugerowanyPoziom`), **the supervisor always makes the final decision** – AI never sets a level.
+- Shared types: `src/types/ocena.ts` (domain), `src/types/api.ts` (API shapes). Assessments live in the browser:
+  `src/lib/ocena/store.ts` (`useOceny`, `useOcena`, `zapiszOcene`…), seeded with fictional demo data `src/data/demo.ts`.
+- **Data minimisation:** never send first name / surname to any AI endpoint – only position, criteria, observations.
+- AI assistant must answer from the knowledge base, **cite the source**, and say clearly when the base has no answer.
+- Target is the **desktop browser** (the task says the system is not meant for smartphones – exact handling of phones
+  is being confirmed with mentors; until then: layout must work from 1024 px, don't spend time on phone layouts).
+
+### Who owns what (feature folders)
+| Owner | Area | Files |
+|---|---|---|
+| Vlad / lead AI | shared files, start page, assessment wizard (both paths), suggested level UI, PDF documents, roles | `src/app/page.tsx`, `src/app/ocena/**`, `src/features/ocena/**`, `src/features/dokumenty/**` + all shared files |
+| Maks | AI formal assistant over the knowledge base (with sources) | `src/app/asystent/**`, `src/app/api/asystent/**`, `src/features/asystent/**`, `src/data/baza-wiedzy/**` |
+| Andrey | HR / admin panel: process statuses, deadlines, reminders | `src/app/hr/**`, `src/app/api/hr/**`, `src/features/hr/**` |
+| Dima | Conversation assistant + job-description (OSP) analysis | `src/app/rozmowa/**`, `src/app/api/rozmowa/**`, `src/app/api/osp/**`, `src/features/rozmowa/**`, `src/features/osp/**` |
+
+Integration points: each feature folder exports its public components from `src/features/<name>/index.ts`;
+Vlad embeds them in the wizard and adds header links. Don't import another person's internal files.
 
 ## Language
 - All user-facing text (UI, errors, metadata, AI prompts' output) is **Polish**. Use correct Polish diacritics.
@@ -80,7 +106,7 @@ The jury opens the **deployed app on Vercel** and tests it themselves, so `main`
 ## Quality bar (what the jury sees)
 - Works end-to-end on the deployed URL; no dead buttons, no English leftovers, no console errors.
 - Loading and error states for every async action (Polish messages, `toast` from `sonner`).
-- Mobile-friendly, accessible (labels, `aria-*`, keyboard), clear disclaimer where AI may be wrong.
+- Desktop-first (≥ 1024 px), accessible (labels, `aria-*`, keyboard), clear disclaimer where AI may be wrong.
 - Don't invent facts about public services/law in code or prompts – take them from sources the team provides and cite them.
 
 ## Commands
