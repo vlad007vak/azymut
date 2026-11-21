@@ -50,7 +50,7 @@ Schemat (jak na grafice organizatora):
 - Uzasadnienie wymagane przy ocenie negatywnej; arkusz do wydruku / PDF.
 
 ## Slajd 7 – Asystent formalny AI (zrzut ekranu odpowiedzi ze źródłem)
-- Odpowiada **wyłącznie z bazy wiedzy**: rozporządzenia, poradniki KPRM, model kompetencji (183 fragmenty).
+- Odpowiada **wyłącznie z bazy wiedzy**: ustawa, rozporządzenia, poradniki KPRM, model kompetencji (264 fragmenty).
 - Przy każdej odpowiedzi: dokument, paragraf / strona i **dosłowny cytat**.
 - Gdy w bazie brak odpowiedzi – **„Brak informacji”** zamiast zgadywania.
 - Źródła buduje serwer – model nie może „wymyślić” cytatu.
