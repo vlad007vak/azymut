@@ -1,52 +1,52 @@
-name: Ошибка (bug)
-description: Нашёл, что что-то не работает — опиши здесь
+name: Błąd (bug)
+description: Coś nie działa – opisz to tutaj
 title: "[Bug] "
 labels: [bug]
 body:
   - type: input
     id: gdzie
     attributes:
-      label: Где
-      description: Ссылка на страницу (preview или production) и экран
-      placeholder: https://...vercel.app/ocena — кнопка «Oblicz»
+      label: Gdzie
+      description: Link do strony (podgląd lub produkcja) i ekran
+      placeholder: https://...vercel.app/ocena — przycisk „Oblicz”
     validations:
       required: true
   - type: textarea
     id: kroki
     attributes:
-      label: Что делал (шаги)
+      label: Kroki
       placeholder: |
-        1. Открыл ...
-        2. Нажал ...
+        1. Otworzyłem/am ...
+        2. Kliknąłem/am ...
     validations:
       required: true
   - type: textarea
     id: oczekiwane
     attributes:
-      label: Что ожидал / что получилось
+      label: Oczekiwane / faktyczne
     validations:
       required: true
   - type: dropdown
     id: urzadzenie
     attributes:
-      label: Устройство
+      label: Urządzenie
       options:
-        - Компьютер
-        - Телефон
-        - Оба
+        - Komputer
+        - Telefon
+        - Oba
     validations:
       required: true
   - type: dropdown
     id: waznosc
     attributes:
-      label: Насколько важно
+      label: Ważność
       options:
-        - Блокирует демо
-        - Мешает, но можно обойти
-        - Косметика / текст
+        - Blokuje demo
+        - Przeszkadza, ale da się obejść
+        - Kosmetyka / tekst
     validations:
       required: true
   - type: textarea
     id: zrzut
     attributes:
-      label: Скриншот (перетащи сюда)
+      label: Zrzut ekranu (przeciągnij tutaj)

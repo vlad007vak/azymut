@@ -1,109 +1,76 @@
-# Как работаем: 4 программиста + тестировщица
+# Jak pracujemy: 4 programistów + testerka
 
-Четыре программиста, у каждого свой Claude Code, **один репозиторий на GitHub**.
-Главная идея: **делим работу по папкам-фичам**, а не по файлам. Тогда четыре Claude почти никогда не правят одно и то же.
+Czterech programistów, każdy z własnym asystentem Claude Code, **jedno publiczne repozytorium na GitHubie**.
+Zasada główna: **pracę dzielimy według folderów funkcji**, a nie według plików – dzięki temu cztery osoby prawie nigdy
+nie edytują tego samego pliku.
 
 ```
-GitHub (один публичный репозиторий)
- ├── main ──────────────► Vercel production (ссылка для жюри, всегда рабочая)
- ├── vlad/<фича>   ─┐
- ├── maks/<фича>   ─┤
- ├── andrey/<фича> ─┼──► PR ──► Vercel preview-ссылка ──► Диана проверяет ──► merge в main
- └── dima/<фича>   ─┘
+GitHub (publiczne repozytorium)
+ ├── main ──────────────► Vercel – produkcja (link dla jury, zawsze działa)
+ ├── vlad/<funkcja>   ─┐
+ ├── maks/<funkcja>   ─┤
+ ├── andrey/<funkcja> ─┼──► PR ──► CI (lint + build) + podgląd Vercel ──► testy Diany ──► merge do main
+ └── dima/<funkcja>   ─┘
 ```
 
-## Роли
-| Кто | Отвечает за | Папки / инструменты |
+## Role
+| Kto | Odpowiada za | Pliki / narzędzia |
 |---|---|---|
-| **Влад — главный программист** | решения, свои фичи, мерджи, Vercel и переменные окружения | **владеет общими файлами**: `layout.tsx`, `globals.css`, `config/app.ts`, `lib/**`, `types/**`, `components/ui/**`, `package.json`, `.github/**` |
-| **Главный ИИ** (Claude Code Влада) | правила (`CLAUDE.md`), архитектура и контракт, раскладка работы на задачи (GitHub Issues), ревью PR | пишет задачи и комментарии от аккаунта Влада |
-| **Макс** | свой блок фич (Claude Code) | `src/features/<свои>/`, свои страницы и API |
-| **Андрей** | свой блок фич (Claude Code) | `src/features/<свои>/`, свои страницы и API |
-| **Дима** | свой блок фич (Claude Code) | `src/features/<свои>/`, свои страницы и API |
-| **Диана — тесты и отчёты** | проверка каждой preview-ссылки (ПК + телефон), баги → GitHub Issues (форма «Ошибка»), демо-данные; итоговый отчёт — одна закреплённая задача «Raport z testów» (чек-лист, обновлять в Сб ~20:00 и Вс ~09:00) | GitHub Issues |
-| **Сдача и питч** | слайды, HackTribe, видео — **Влад**; питч — **Андрей**; README — **главный ИИ**; менторы партнёра — **Макс**; польские тексты вычитываем все вместе | Google Slides / Canva, HackTribe |
+| **Vlad – główny programista, integrator** | decyzje, kreator oceny (obie ścieżki), łączenie zmian, Vercel | **pliki wspólne**: `layout.tsx`, `globals.css`, `config/app.ts`, `lib/**`, `types/**`, `components/ui/**`, `package.json`, `.github/**` |
+| **Główny asystent AI** (Claude Code Vlada) | zasady (`CLAUDE.md`), architektura i kontrakt typów, podział pracy na zadania (GitHub Issues), przegląd PR | zadania i komentarze z konta Vlada |
+| **Maks** | asystent formalny AI i baza wiedzy, kontakt z mentorką | `src/features/asystent/`, `src/data/baza-wiedzy/` |
+| **Andrey** | panel HR, role, pitch (`docs/PITCH.md`) | `src/features/hr/`, `src/features/role/` |
+| **Dima** | asystent rozmowy, analiza opisu stanowiska (OSP), eksport JSON i API | `src/features/rozmowa/`, `src/features/osp/`, `src/features/eksport/` |
+| **Diana – testy i raporty** | sprawdzenie każdego podglądu Vercel na komputerze, błędy jako GitHub Issues (formularz „Błąd”), raport końcowy w jednym przypiętym zgłoszeniu „Raport z testów” | GitHub Issues |
+| **Zgłoszenie i pitch** | slajdy, HackTribe, wideo – Vlad; pitch – Andrey; README – główny asystent AI; teksty po polsku czytamy wspólnie | HackTribe |
 
-Общие файлы меняет **только Влад / главный ИИ**. Нужна правка в общем файле → комментарий в задаче с `ZMIANA WSPÓLNA:`.
+Pliki wspólne zmienia **tylko Vlad / główny asystent AI**. Potrzebna zmiana we wspólnym pliku → komentarz w zadaniu
+zaczynający się od `ZMIANA WSPÓLNA:`.
 
-## Как раздаются задачи
+## Jak przydzielane są zadania
 ```
-Главный ИИ ──создаёт задачу #12 (метка maks)──► GitHub Issues
-Влад ──говорит Максу: «возьми задачу #12»──► Макс ──► его Claude Code
-Claude Макса: читает #12 → ветка maks/12-... → код → PR (описание = отчёт, Closes #12)
-CI (lint + build) ──► зелёный?
-   ├─ маленький PR в своих папках → Макс мёрджит сам
-   └─ общие файлы / большой PR → метка review-needed → главный ИИ ревьюит → Влад мёрджит
+Główny asystent AI ──tworzy zadanie #12 (etykieta maks)──► GitHub Issues
+Vlad ──„weź zadanie #12”──► Maks ──► jego Claude Code
+Claude Maksa: czyta #12 → gałąź maks/12-... → kod → PR (opis = raport, Closes #12)
+CI (lint + build) ──► zielone?
+   ├─ mały PR tylko we własnych folderach → autor łączy sam
+   └─ pliki wspólne / duży PR → etykieta review-needed → przegląd głównego asystenta AI → merge
 ```
-- Готовые промпты для Макса, Андрея и Димы: [docs/PROMPTS.md](PROMPTS.md).
-- Вопрос по задаче → комментарий `PYTANIE:` в задаче + сказать Владу.
-- Новый репозиторий из шаблона → один раз `bash scripts/setup-repo.sh` (создаёт метки).
+- Pytanie do zadania → komentarz `PYTANIE:` w zadaniu i informacja dla Vlada.
+- Szczegółowy protokół pracy (gałęzie, PR, zasady łączenia) jest w `CLAUDE.md`.
 
-## Первые 60 минут (11:00–12:00) — все вместе
-1. Читаем задание **и критерии оценки с весами**. Выписываем их в чек-лист (Issue «Kryteria jury»).
-2. Список фич: MVP + «если успеем». Главный ИИ делит их на **4 блока** (Влад / Макс / Андрей / Дима), Влад утверждает.
-3. **Контракт:** общие типы в `src/types/` и список API (`POST /api/... → {...}`). Влад с главным ИИ коммитят это **первым**, остальные начинают от этого коммита.
-4. Влад: **публичный** репозиторий из шаблона → `bash scripts/setup-repo.sh` → добавить всех → Vercel (проверено на пробном прогоне).
-   Приватный нельзя: бесплатный Vercel (Hobby) не деплоит коммиты Макса, Андрея и Димы из приватного репозитория — ни preview, ни вручную.
-   ```bash
-   gh repo create <имя> --template vlad007vak/hacknation-starter --public --clone
-   # если GitHub не даст сразу public: gh repo edit vlad007vak/<имя> --visibility public --accept-visibility-change-consequences
-   vercel link --yes --project <имя>                    # создаёт проект и подключает GitHub
-   git checkout .gitignore                              # vercel link дописывает .env* и ломает !.env.example
-   vercel project protection disable <имя> --sso        # иначе preview-ссылки открываются только после входа в Vercel
-   # ключи ИИ (значение вводится в ответ на запрос / через stdin; ключи всех четверых через запятую):
-   vercel env add GROQ_API_KEY --environment production --sensitive   # и то же для preview
-   vercel env add GEMINI_API_KEY --environment production --sensitive # и то же для preview
-   ```
-   Модели по умолчанию уже в коде (`qwen/qwen3.8-27b`, `gemini-3.5-flash-lite`). После добавления переменных — передеплой: `vercel redeploy https://<имя>.vercel.app`.
-5. Главный ИИ создаёт задачи в GitHub Issues (метки `zadanie` + имя исполнителя).
-6. Макс идёт к менторам партнёра задания и проверяет идею.
-
-## Цикл программиста (каждые 30–60 минут)
+## Cykl pracy programisty
 ```bash
-git switch -c maks/12-kreator         # новая ветка на задачу #12
-# ... работа с Claude Code, маленькие коммиты ...
-git pull --rebase origin main         # подтянуть чужие изменения
-npm run lint; npm run build           # должно пройти!
+git switch -c maks/12-kreator         # nowa gałąź dla zadania #12
+# ... praca z Claude Code, małe commity ...
+git pull --rebase origin main         # zmiany innych osób
+npm run lint; npm run build           # musi przejść
 git push -u origin HEAD
-gh pr create --fill                   # Vercel даст preview-ссылку → кинуть Диане
-gh pr merge --squash --delete-branch  # после проверки
+gh pr create --fill                   # Vercel tworzy podgląd → link dla Diany
+gh pr merge --squash --delete-branch  # po sprawdzeniu
 git switch main; git pull
 ```
-Своему Claude можно просто сказать: «закоммить, сделай pull --rebase, проверь build и смёрджи PR» — правила уже в `CLAUDE.md`.
 
-## Правила, чтобы не мешать друг другу
-- Перед установкой новой библиотеки — **сказать вслух** всем.
-- Готовы два PR одновременно → первым мёрджится меньший, второй делает `pull --rebase`.
-- Конфликт в `package-lock.json`: взять версию из `main` и заново `npm install <пакет>`.
-- Нельзя: пушить прямо в `main`, `git push --force` в `main`, коммитить `.env.local`, «причёсывать» чужой код.
-- Сломался `main` → чинит автор последнего PR, остальные **не мёрджат**, пока не исправят.
-- Своему Claude в начале сессии: «я <имя>, делаю фичи X и Y в `src/features/x`, `src/features/y`, остальное не трогай».
-- У каждого **свои** бесплатные ключи Groq и Gemini в `.env.local`. На Vercel интегратор кладёт ключи всех четверых через запятую — так в 4 раза больше лимита.
+## Zasady, żeby sobie nie przeszkadzać
+- Nowa biblioteka → najpierw prośba `ZMIANA WSPÓLNA:` (zmiana `package.json`).
+- Dwa PR gotowe jednocześnie → najpierw łączymy mniejszy, drugi robi `pull --rebase`.
+- Konflikt w `package-lock.json`: wersja z `main`, potem ponownie `npm install <pakiet>`.
+- Nie wolno: commitować prosto do `main`, `git push --force` do `main`, commitować `.env.local`, „poprawiać” cudzego kodu.
+- Zepsuty `main` → naprawia autor ostatniego PR, pozostali nie łączą, dopóki nie jest zielony.
+- Klucze darmowych API (Groq, Gemini) tylko w `.env.local` i w zmiennych środowiskowych Vercel – nigdy w repozytorium.
 
-## План на 24 часа
-| Время | 4 программиста | Диана (тесты) | Сдача: Влад (слайды, HackTribe, видео), Андрей (питч) |
+## Plan 24 godzin
+| Czas | Programiści | Diana (testy) | Zgłoszenie |
 |---|---|---|---|
-| Сб 11:00–12:00 | разбор, контракт, репо, Vercel | читает задание вместе со всеми | критерии → чек-лист, проект в HackTribe |
-| 12:00–20:00 | MVP: основной сценарий работает на Vercel | демо-данные, тест каждой preview-ссылки, баги в Issues | менторы, тексты на польском |
-| **до 20:00** | — | — | описание решения, **черновик в HackTribe** (название, команда, репо, стол, описание). После 20:00 сменить задание нельзя! |
-| 20:00–03:00 | остальные фичи, реальные данные | тесты, баги, отчёт о тестах | структура презентации |
-| 03:00–07:00 | спим по очереди (один следит за `main`) | спит | спит |
-| Вс 07:00 | **фича-фриз**: дальше только исправления | полный прогон сценария жюри | — |
-| 07:00–10:00 | баги, полировка | повторная проверка production (ПК + телефон) | презентация, репетиция питча, видео ≤ 2 мин, README, скриншоты |
-| **10:30** | — | — | **финальная загрузка в HackTribe** (не ждать 10:59!) |
-| 11:00 | конец: изменения после этого не засчитываются | — | — |
-| 14:45 / 15:15 | — | помогает с демо на сцене | финалисты → **питч** |
+| Sob 11:00–12:00 | analiza zadania, kontrakt, repozytorium, Vercel | czyta zadanie razem z zespołem | kryteria jury → lista kontrolna |
+| 12:00–20:00 | główny scenariusz działa na Vercel | testy każdego podglądu, błędy w Issues | mentorzy, teksty po polsku |
+| **do 20:00** | – | – | **szkic w HackTribe** (nazwa, zespół, repozytorium, stół, opis) |
+| 20:00–07:00 | pozostałe funkcje, poprawki jakości | testy, raport | struktura prezentacji |
+| Nd 07:00 | **zamrożenie funkcji**: dalej tylko poprawki błędów | pełny przebieg scenariusza jury na produkcji | – |
+| 07:00–10:00 | błędy, dopracowanie | ponowne sprawdzenie produkcji | prezentacja, wideo ≤ 2 min, README |
+| **10:30** | – | – | **końcowe zgłoszenie w HackTribe** |
+| 11:00 | koniec – późniejsze zmiany nie są brane pod uwagę | – | – |
 
-## Чек-лист сдачи (HackTribe, до Вс 11:00)
-- [ ] Рабочая ссылка на Vercel открывается в режиме инкогнито и на телефоне
-- [ ] Репозиторий **публичный** (или доступ выдан жюри — смотреть требования задания)
-- [ ] README заполнен: проблема, решение, как проверить, раздел «Wykorzystane zasoby»
-- [ ] Видео-демо ≤ 2 минут
-- [ ] Презентация (PDF/ссылка)
-- [ ] Все поля, которые требует регламент конкретного задания
-- [ ] Переменные окружения на Vercel заданы, ИИ отвечает на проде
-
-## Если пропал интернет
-- Раздать интернет с телефона.
-- Локально включить Ollama (`OLLAMA_MODEL` в `.env.local`) — ИИ будет работать на ноутбуке для демо.
-- Коммитить локально, пушить, когда сеть вернётся.
+## Gdy zniknie internet
+- Internet z telefonu (hotspot).
+- Commitować lokalnie, wypchnąć, gdy sieć wróci.
