@@ -152,7 +152,7 @@ issue #3 (odpowiedzi mentorki, pyt. 1).
 
 **9. Ile czasu zajmuje przełożonemu jedna ocena?** *(Andrey)*
 Nie mierzyliśmy tego z prawdziwymi przełożonymi – **DO USTALENIA z Vladem**. Na scenie: „Nie mamy pomiarów z urzędu; w demo
-kompletną ocenę okresową przechodzimy w ok. 2 minuty, ale na danych przygotowanych wcześniej.”
+kompletną ocenę okresową przechodzimy w ok. 2,5 minuty, ale na danych przygotowanych wcześniej.”
 Źródło: scenariusz powyżej (demo 0:40–3:05).
 
 **10. Czy aplikacja jest dostępna (WCAG)?** *(Andrey)*
