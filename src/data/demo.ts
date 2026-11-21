@@ -64,11 +64,96 @@ export const OCENY_DEMO: Ocena[] = [
     arkusz: "C",
     pracownikId: "p1",
     oceniajacy: PRZELOZONY_DEMO,
-    etap: "kryteria",
+    etap: "obserwacje",
     okres: { od: "2024-12-01", do: "2026-11-30" },
     terminOceny: "2026-12-15",
-    kryteria: [],
-    daty: {},
+    kryteria: [
+      {
+        kompetencjaId: "wykorzystywanie-wiedzy",
+        dodatkowe: false,
+        wskazniki: ["wykorzystywanie-wiedzy-1", "wykorzystywanie-wiedzy-3"],
+        obserwacje: {
+          "wykorzystywanie-wiedzy-1": {
+            poziom: 4,
+            przyklad:
+              "Przy opiniowaniu projektu programu wsparcia innowacji połączyła wiedzę o pomocy publicznej i o regulacjach AI; uzasadniła przyjętą metodę w notatce dla dyrektora.",
+          },
+          "wykorzystywanie-wiedzy-3": {
+            poziom: 3,
+            przyklad: "Do analizy rynku korzystała z dopuszczonych źródeł i sprawdzała aktualność danych przed przekazaniem.",
+          },
+        },
+      },
+      {
+        kompetencjaId: "rzetelnosc",
+        dodatkowe: false,
+        wskazniki: ["rzetelnosc-1", "rzetelnosc-2"],
+        obserwacje: {
+          "rzetelnosc-1": {
+            poziom: 3,
+            przyklad: "Pisma do partnerów przygotowywała zgodnie z instrukcją kancelaryjną; przed wysyłką weryfikowała załączniki.",
+          },
+          "rzetelnosc-2": {
+            poziom: 2,
+            przyklad:
+              "Dwukrotnie (marzec i wrzesień 2026) zgłosiła ryzyko opóźnienia stanowiska do konsultacji dopiero w dniu terminu.",
+          },
+        },
+      },
+      {
+        kompetencjaId: "organizacja-pracy",
+        dodatkowe: false,
+        wskazniki: ["organizacja-pracy-1", "organizacja-pracy-2", "organizacja-pracy-4"],
+        obserwacje: {
+          "organizacja-pracy-1": {
+            poziom: 3,
+            przyklad: "Dla naboru wniosków przygotowała harmonogram z etapami i terminami.",
+          },
+          "organizacja-pracy-2": { poziom: 3 },
+          "organizacja-pracy-4": { poziom: null },
+        },
+      },
+      {
+        kompetencjaId: "wspolpraca",
+        dodatkowe: false,
+        wskazniki: ["wspolpraca-2", "wspolpraca-6"],
+        obserwacje: {
+          "wspolpraca-2": {
+            poziom: 4,
+            przyklad: "Prowadziła wspólny rejestr ustaleń z departamentem prawnym, dzięki czemu nie powtarzano uzgodnień.",
+          },
+          "wspolpraca-6": {
+            poziom: 4,
+            przyklad: "Przygotowała dla zespołu krótkie szkolenie z nowych wytycznych dotyczących AI.",
+          },
+        },
+      },
+      {
+        kompetencjaId: "komunikacja",
+        dodatkowe: false,
+        wskazniki: ["komunikacja-2", "komunikacja-3"],
+        obserwacje: {
+          "komunikacja-2": { poziom: 3 },
+          "komunikacja-3": {
+            poziom: 3,
+            przyklad: "Notatki dla kierownictwa mają cel, kluczowe informacje i proponowane dalsze kroki.",
+          },
+        },
+      },
+      {
+        kompetencjaId: "myslenie-analityczne",
+        dodatkowe: true,
+        wskazniki: ["myslenie-analityczne-2", "myslenie-analityczne-3"],
+        obserwacje: {
+          "myslenie-analityczne-2": {
+            poziom: 4,
+            przyklad: "W analizie zgłoszeń do programu wskazała zależność między wielkością firmy a odsetkiem odrzuconych wniosków.",
+          },
+          "myslenie-analityczne-3": { poziom: 3 },
+        },
+      },
+    ],
+    daty: { rozmowaWstepna: "2024-12-05" },
     utworzono: T,
     zmieniono: T,
   },
