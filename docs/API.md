@@ -21,8 +21,8 @@ Zasady wspólne:
 - błąd ma zawsze postać `{ "error": "komunikat po polsku" }`;
 - treść każdego żądania jest walidowana (zod) – nieprawidłowe dane → `400`;
 - **minimalizacja danych:** do endpointów AI nie wysyłamy imion ani nazwisk – tylko stanowisko, kryteria, poziomy
-  i przykłady zachowań; asystent formalny i kontrola jakości dodatkowo usuwają imiona i nazwiska z tekstu
-  (`zanonimizowano: true`);
+  i przykłady zachowań; asystent formalny i kontrola jakości dodatkowo usuwają wykryte imiona i nazwiska z tekstu
+  przed wysłaniem do AI (`zanonimizowano: true`);
 - odpowiedzi AI są **sugestiami** – ostateczny poziom każdego kryterium wybiera przełożony;
 - odpowiedzi AI są buforowane po stronie serwera (te same dane → bez ponownego zapytania do modelu; w `/api/osp`
   i `/api/rozmowa` sygnalizuje to nagłówek `X-AI-Cache: hit`).
@@ -32,7 +32,7 @@ Zasady wspólne:
 | `POST /api/asystent` | Asystent formalny: odpowiedź z bazy wiedzy (rozporządzenia, poradniki KPRM, model kompetencji) ze źródłami i dosłownym cytatem; `brakInformacji: true`, gdy baza nie zawiera odpowiedzi | 400, 500, 503 |
 | `POST /api/osp` | Analiza opisu stanowiska pracy: sugerowany arkusz (B/C), do 3 kryteriów dodatkowych, najważniejsze wskaźniki; gdy AI niedostępne – sam arkusz odczytany z OSP (`X-AI-Status: niedostepne`) | 400, 500, 503 |
 | `POST /api/rozmowa` | Asystent rozmowy: pytania do pracownika, tematy do omówienia, argumenty per kryterium, propozycje do wniosków rozwojowych | 400, 500, 502, 503 |
-| `POST /api/jakosc` | Kontrola jakości uzasadnienia: ogólniki, brak przykładów, niespójność poziomu z zachowaniami – reguły bez AI + uwagi AI z potwierdzonym cytatem; nie zmienia poziomów; gdy AI niedostępne – `200` z samymi regułami (`aiNiedostepne: true`) | 400, 500 |
+| `POST /api/jakosc` | Kontrola jakości uzasadnienia: kryteria bez przykładu, niespójności, ogólniki, ocena osoby zamiast zachowania, ryzyko stronniczości. AI nie zwraca poziomów; uwaga AI tylko z dosłownym cytatem sprawdzonym przez serwer. Gdy AI niedostępne – `200` z `aiNiedostepne: true` i samymi uwagami z reguł | 400, 500 |
 | `GET /api/ai/status` | Lista skonfigurowanych dostawców AI (bez kluczy) | – |
 | `POST /api/ai/status` | Test połączenia z każdym dostawcą AI | – |
 

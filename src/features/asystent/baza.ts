@@ -126,7 +126,8 @@ export function szukajFragmentow(pytanie: string, rodzaj?: RodzajOceny, limit = 
 
   const wszystkie = indeks.szukaj(pytanie, { limit: 30, waga });
   // Ustępy ustawy są krótkie (zwykle 1–2 zdania), więc nie zajmują miejsca w limicie – inaczej wypychałyby
-  // szczegółowe paragrafy rozporządzeń i poradników. Dokładamy najwyżej 2, które same weszłyby do czołówki.
+  // szczegółowe paragrafy rozporządzeń i poradników. Dokładamy najwyżej 3, które same weszłyby do czołówki
+  // (pytanie „w jakim terminie i do kogo…” potrzebuje art. 83 ust. 1 obok ust. 3 i 5).
   const ustepy = wszystkie.filter((t) => t.item.typ === "ustawa");
   const reszta = wszystkie.filter((t) => t.item.typ !== "ustawa");
 
@@ -139,7 +140,7 @@ export function szukajFragmentow(pytanie: string, rodzaj?: RodzajOceny, limit = 
   const wybrane = [...glowne, ...(przepis ? [przepis] : []), ...reszta.filter((t) => !glowne.includes(t) && t !== przepis)].slice(0, limit);
 
   const progUstawy = Math.max(prog, reszta[limit - 1]?.wynik ?? 0);
-  const zUstawy = ustepy.filter((t) => t.wynik >= progUstawy).slice(0, 2);
+  const zUstawy = ustepy.filter((t) => t.wynik >= progUstawy).slice(0, 3);
   const fragmenty = [...wybrane, ...zUstawy].sort((a, b) => b.wynik - a.wynik);
 
   return {

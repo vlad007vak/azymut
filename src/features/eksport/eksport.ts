@@ -19,7 +19,7 @@ import {
 } from "./typy";
 
 export interface OpcjeEksportu {
-  /** Nazwa urzędu na arkuszu; domyślnie `APP_CONFIG.urzad`. */
+  /** Nazwa urzędu na arkuszu; domyślnie `APP_CONFIG.urzad` (ten sam co na arkuszu w kroku „Dokument”). */
   urzad?: string;
   /** Dane ocenianego; domyślnie z magazynu ocen (po `ocena.pracownikId`). */
   pracownik?: Pracownik;

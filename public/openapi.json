@@ -27,11 +27,11 @@
     },
     {
       "name": "Kontrola jakości",
-      "description": "Sprawdzenie uzasadnienia oceny: ogólniki, brak przykładów, niespójności – bez zmiany poziomów."
+      "description": "Kontrola jakości uzasadnienia oceny: ogólniki, ocena osoby zamiast zachowania, niespójności, kryteria bez przykładu, ryzyko stronniczości."
     },
     {
       "name": "Diagnostyka AI",
-      "description": "Stan dostawców modeli AI."
+      "description": "Stan i test połączenia z dostawcami modeli AI."
     },
     {
       "name": "Eksport oceny",
@@ -423,16 +423,16 @@
         ],
         "operationId": "sprawdzJakoscUzasadnienia",
         "summary": "Kontrola jakości uzasadnienia oceny",
-        "description": "Wskazuje fragmenty uzasadnienia, wniosków i przykładów do doprecyzowania: ogólniki, ocenę osoby zamiast zachowań, brak przykładów, niespójność poziomu z zaznaczonymi zachowaniami, ryzyko stronniczości. Część sprawdzeń działa regułami bez AI (zrodlo: regula); uwagi modelu są zwracane tylko z cytatem potwierdzonym w tekście przełożonego (zrodlo: ai). Nie zmienia poziomów. Nie przyjmuje imion ani nazwisk – gdy pojawią się w tekście, są usuwane przed wysłaniem do AI (zanonimizowano: true). Gdy AI jest niedostępne, zwraca 200 z samymi sprawdzeniami automatycznymi (aiNiedostepne: true).",
+        "description": "Sprawdza teksty przełożonego (przykłady zachowań przy kryteriach, uzasadnienie, wnioski rozwojowe) i wskazuje, co doprecyzować. Najpierw sprawdzenia automatyczne bez AI (kryterium bez przykładu, wybrany poziom poza zakresem zaznaczonych zachowań, typowe ogólniki), potem analiza AI. AI nie zwraca ani nie zmienia poziomów – wskazuje tylko fragmenty tekstu do poprawy; uwaga AI trafia do odpowiedzi wyłącznie z dosłownym cytatem, który serwer odnalazł w tekście przełożonego (uwaga bez takiego cytatu jest odrzucana). Żądanie nie zawiera imion ani nazwisk (aplikacja zastępuje je znacznikiem [osoba]); serwer dodatkowo usuwa wykryte imiona i nazwiska przed wysłaniem tekstu do AI (pole zanonimizowano). Gdy AI jest niedostępne (np. limit darmowych modeli), endpoint zwraca 200 z aiNiedostepne: true i samymi uwagami z reguł – nie 503. Te same dane zwracają wynik z pamięci podręcznej serwera (bez ponownego zapytania do AI).",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JakoscZapytanie"
+                "$ref": "#/components/schemas/ZapytanieJakosci"
               },
               "examples": {
-                "ocena": {
+                "okresowa": {
                   "summary": "Ocena okresowa, dwa kryteria",
                   "value": {
                     "rodzaj": "okresowa",
@@ -440,7 +440,8 @@
                     "kryteria": [
                       {
                         "kompetencjaId": "rzetelnosc",
-                        "decyzja": 2,
+                        "decyzja": 4,
+                        "sugestia": 3,
                         "wskazniki": [
                           {
                             "id": "rzetelnosc-1",
@@ -449,24 +450,28 @@
                           },
                           {
                             "id": "rzetelnosc-2",
-                            "poziom": 2
+                            "poziom": 2,
+                            "przyklad": "Dwukrotnie (marzec i wrzesień 2026) zgłosiła ryzyko opóźnienia stanowiska do konsultacji dopiero w dniu terminu."
                           }
                         ]
                       },
                       {
                         "kompetencjaId": "wspolpraca",
-                        "decyzja": 4,
+                        "sugestia": 4,
                         "wskazniki": [
                           {
                             "id": "wspolpraca-2",
-                            "poziom": 4,
-                            "przyklad": "Prowadziła wspólny rejestr ustaleń z departamentem prawnym, dzięki czemu nie powtarzano uzgodnień."
+                            "poziom": 4
+                          },
+                          {
+                            "id": "wspolpraca-6",
+                            "poziom": null
                           }
                         ]
                       }
                     ],
-                    "uzasadnienie": "Pracownica jest bardzo sumienna i ogólnie dobrze współpracuje z zespołem.",
-                    "wnioskiRozwojowe": "Szkolenie z planowania pracy."
+                    "uzasadnienie": "Pracownica dobrze sobie radzi. Ma trudny charakter, ale pisma przygotowuje zgodnie z instrukcją.",
+                    "wnioskiRozwojowe": "Szkolenie z planowania pracy i wczesnego sygnalizowania ryzyk."
                   }
                 }
               }
@@ -475,43 +480,77 @@
         },
         "responses": {
           "200": {
-            "description": "Uwagi do doprecyzowania i podsumowanie.",
+            "description": "Uwagi do doprecyzowania i podsumowanie. Pusta lista uwag – nie znaleziono problemów. Także gdy AI jest niedostępne (aiNiedostepne: true).",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WynikKontroli"
                 },
                 "examples": {
-                  "uwagi": {
-                    "summary": "Uwagi do uzasadnienia i wniosków",
+                  "wynik": {
+                    "summary": "Uwagi z reguł i z AI (wywołanie produkcyjne)",
                     "value": {
                       "uwagi": [
                         {
-                          "typ": "ogolnik",
-                          "pole": "uzasadnienie",
-                          "cytat": "jest bardzo sumienna",
-                          "sugestia": "Zamiast ogólnej cechy, opisz konkretne zachowanie, np. „w 100% terminowo realizowała zadania z zakresu X” lub „bezbłędnie przygotowywała dokumenty Y”.",
-                          "zrodlo": "ai"
+                          "typ": "niespojnosc",
+                          "kompetencjaId": "rzetelnosc",
+                          "sugestia": "Wybrany poziom „powyżej oczekiwań” jest wyższy niż wszystkie zaznaczone zachowania (najwyższe: „na poziomie oczekiwań”). Dopisz przykład, który uzasadnia ten poziom (np. z rozmowy oceniającej), albo sprawdź wybór – decyzja należy do Ciebie.",
+                          "zrodlo": "regula"
+                        },
+                        {
+                          "typ": "brak-przykladu",
+                          "kompetencjaId": "wspolpraca",
+                          "sugestia": "Przy kryterium „Współpraca” nie ma żadnego przykładu (zaznaczone zachowania: 1). Dopisz co najmniej jeden konkretny przykład z okresu oceny: sytuacja – działanie – rezultat.",
+                          "zrodlo": "regula"
                         },
                         {
                           "typ": "ogolnik",
                           "pole": "uzasadnienie",
-                          "cytat": "ogólnie dobrze współpracuje z zespołem",
-                          "sugestia": "Podaj przykład konkretnej sytuacji, w której pracownica wspierała innych, np. „udzielała wsparcia kolegom w zakresie Z” lub „aktywnie uczestniczyła w spotkaniach zespołowych, proponując rozwiązania”.",
+                          "cytat": "Pracownica dobrze sobie radzi",
+                          "sugestia": "Zastąp ogólne sformułowanie konkretnym opisem osiągnięć, np. wskazaniem liczby zrealizowanych spraw lub jakości przygotowanych dokumentów w okresie oceny.",
                           "zrodlo": "ai"
                         },
                         {
-                          "typ": "ogolnik",
-                          "pole": "wnioski",
-                          "cytat": "Szkolenie z planowania pracy",
-                          "sugestia": "Uzasadnij wniosek, wskazując na konkretny problem, np. „ze względu na opóźnienia w realizacji zadań z zakresu X, wskazane jest szkolenie z zarządzania czasem”.",
+                          "typ": "ocena-osoby",
+                          "pole": "uzasadnienie",
+                          "cytat": "Ma trudny charakter",
+                          "sugestia": "Usuń ocenę cech osobowości i opisz konkretne zachowania w pracy, które budzą zastrzeżenia, np. sposób komunikacji z przełożonym lub współpracownikami w określonych sytuacjach.",
                           "zrodlo": "ai"
                         }
                       ],
-                      "podsumowanie": "Do doprecyzowania: 3 ogólniki. Poprawki dotyczą tylko opisu – poziomy wybierasz Ty.",
+                      "podsumowanie": "Do doprecyzowania: 1 kryterium bez przykładu, 1 niespójność, 1 ogólnik, 1 ocena osoby zamiast zachowania. Poprawki dotyczą tylko opisu – poziomy wybierasz Ty.",
                       "aiNiedostepne": false,
                       "zanonimizowano": false,
-                      "dostawca": "groq"
+                      "dostawca": "groq#1"
+                    }
+                  },
+                  "bezAi": {
+                    "summary": "AI niedostępne – tylko sprawdzenia automatyczne (aiNiedostepne: true)",
+                    "value": {
+                      "uwagi": [
+                        {
+                          "typ": "niespojnosc",
+                          "kompetencjaId": "rzetelnosc",
+                          "sugestia": "Wybrany poziom „powyżej oczekiwań” jest wyższy niż wszystkie zaznaczone zachowania (najwyższe: „na poziomie oczekiwań”). Dopisz przykład, który uzasadnia ten poziom (np. z rozmowy oceniającej), albo sprawdź wybór – decyzja należy do Ciebie.",
+                          "zrodlo": "regula"
+                        },
+                        {
+                          "typ": "brak-przykladu",
+                          "kompetencjaId": "wspolpraca",
+                          "sugestia": "Przy kryterium „Współpraca” nie ma żadnego przykładu (zaznaczone zachowania: 1). Dopisz co najmniej jeden konkretny przykład z okresu oceny: sytuacja – działanie – rezultat.",
+                          "zrodlo": "regula"
+                        },
+                        {
+                          "typ": "ogolnik",
+                          "pole": "uzasadnienie",
+                          "cytat": "Pracownica dobrze sobie radzi",
+                          "sugestia": "Ogólne sformułowanie bez konkretu. Opisz zachowanie na przykładzie z okresu oceny: jaka była sytuacja, co pracownik zrobił i z jakim rezultatem.",
+                          "zrodlo": "regula"
+                        }
+                      ],
+                      "podsumowanie": "Do doprecyzowania: 1 kryterium bez przykładu, 1 niespójność, 1 ogólnik. Poprawki dotyczą tylko opisu – poziomy wybierasz Ty.",
+                      "aiNiedostepne": true,
+                      "zanonimizowano": false
                     }
                   }
                 }
@@ -519,7 +558,7 @@
             }
           },
           "400": {
-            "description": "Nieprawidłowe dane oceny (komunikat z walidacji).",
+            "description": "Nieprawidłowe dane wejściowe (komunikat z walidacji).",
             "content": {
               "application/json": {
                 "schema": {
@@ -527,21 +566,15 @@
                 },
                 "examples": {
                   "brakKryteriow": {
-                    "summary": "Brak kryteriów",
+                    "summary": "Pusta lista kryteriów",
                     "value": {
                       "error": "Ocena nie ma jeszcze kryteriów do sprawdzenia."
                     }
                   },
-                  "kompetencja": {
-                    "summary": "Nieznana kompetencja",
+                  "nieznanaKompetencja": {
+                    "summary": "Identyfikator spoza modelu kompetencji",
                     "value": {
                       "error": "Nieznana kompetencja."
-                    }
-                  },
-                  "dlugi": {
-                    "summary": "Za długi tekst",
-                    "value": {
-                      "error": "Tekst jest za długi (max 4000 znaków)."
                     }
                   },
                   "inne": {
@@ -1116,9 +1149,9 @@
           }
         }
       },
-      "JakoscZapytanie": {
+      "ZapytanieJakosci": {
         "type": "object",
-        "description": "Dane oceny do sprawdzenia – bez imion i nazwisk.",
+        "description": "Dane oceny do sprawdzenia – bez imion i nazwisk (minimalizacja danych).",
         "required": [
           "rodzaj",
           "kryteria"
@@ -1136,7 +1169,7 @@
             "type": "array",
             "minItems": 1,
             "maxItems": 10,
-            "description": "Kryteria z decyzją lub sugestią i wskaźnikami.",
+            "description": "Kryteria oceny z zaznaczonymi zachowaniami i przykładami.",
             "items": {
               "type": "object",
               "required": [
@@ -1149,7 +1182,7 @@
                 },
                 "decyzja": {
                   "$ref": "#/components/schemas/PoziomId",
-                  "description": "Ostateczny poziom wybrany przez przełożonego (jeśli już jest)."
+                  "description": "Ostateczny poziom wybrany przez przełożonego (jeśli już jest). Pierwsza ocena: 2, 3 albo 4 (3 / 5 / 7 pkt)."
                 },
                 "sugestia": {
                   "anyOf": [
@@ -1160,12 +1193,12 @@
                       "type": "null"
                     }
                   ],
-                  "description": "Sugestia systemu (gdy brak decyzji)."
+                  "description": "Sugestia systemu z zaznaczonych zachowań (gdy brak decyzji); null – brak podstaw."
                 },
                 "wskazniki": {
                   "type": "array",
                   "maxItems": 12,
-                  "description": "Wskaźniki z wybranym zachowaniem i przykładem.",
+                  "description": "Wskaźniki behawioralne kryterium.",
                   "items": {
                     "type": "object",
                     "required": [
@@ -1176,7 +1209,7 @@
                       "id": {
                         "type": "string",
                         "maxLength": 60,
-                        "description": "Identyfikator wskaźnika, np. „rzetelnosc-2”."
+                        "description": "Identyfikator wskaźnika z modelu kompetencji, np. „rzetelnosc-2”. Wskaźniki spoza kryterium serwer pomija."
                       },
                       "poziom": {
                         "anyOf": [
@@ -1187,12 +1220,12 @@
                             "type": "null"
                           }
                         ],
-                        "description": "Wybrane zachowanie; null – brak podstaw do oceny."
+                        "description": "Zaznaczone zachowanie; null – brak podstaw do oceny."
                       },
                       "przyklad": {
                         "type": "string",
                         "maxLength": 1500,
-                        "description": "Przykład z okresu oceny."
+                        "description": "Przykład zachowania zapisany przez przełożonego."
                       }
                     }
                   }
@@ -1212,8 +1245,44 @@
           }
         }
       },
+      "WynikKontroli": {
+        "type": "object",
+        "description": "Wynik kontroli jakości uzasadnienia. Nie zawiera poziomów – decyzja należy do przełożonego.",
+        "required": [
+          "uwagi",
+          "podsumowanie",
+          "aiNiedostepne",
+          "zanonimizowano"
+        ],
+        "properties": {
+          "uwagi": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UwagaJakosci"
+            },
+            "description": "Uwagi w kolejności kryteriów z żądania, potem uzasadnienie i wnioski."
+          },
+          "podsumowanie": {
+            "type": "string",
+            "description": "Jedno–dwa zdania podsumowania do pokazania przełożonemu."
+          },
+          "aiNiedostepne": {
+            "type": "boolean",
+            "description": "true – AI było niedostępne (np. limit darmowych modeli); są tylko uwagi ze sprawdzeń automatycznych."
+          },
+          "zanonimizowano": {
+            "type": "boolean",
+            "description": "true – w tekstach wykryto i usunięto imiona lub nazwiska przed wysłaniem do AI."
+          },
+          "dostawca": {
+            "type": "string",
+            "description": "Dostawca AI, który odpowiedział (np. groq#1); brak – odpowiedź bez udziału AI."
+          }
+        }
+      },
       "UwagaJakosci": {
         "type": "object",
+        "description": "Jedna uwaga do tekstu przełożonego – podpowiedź, co doprecyzować (nie ocena pracownika).",
         "required": [
           "typ",
           "sugestia",
@@ -1229,19 +1298,19 @@
               "ocena-osoby",
               "ryzyko-stronniczosci"
             ],
-            "description": "Rodzaj uwagi."
+            "description": "brak-przykladu – kryterium bez żadnego przykładu; niespojnosc – przykład albo wybrany poziom nie pasuje do zaznaczonych zachowań; ogolnik – ogólne sformułowanie bez konkretu; ocena-osoby – ocena cech osoby zamiast opisu zachowania; ryzyko-stronniczosci – odwołanie do cech niezwiązanych z pracą (wiek, płeć, zdrowie, rodzina, poglądy…)."
           },
           "kompetencjaId": {
             "$ref": "#/components/schemas/KompetencjaId",
-            "description": "Kryterium, którego dotyczy uwaga (brak – uzasadnienie lub wnioski ogólnie)."
+            "description": "Kryterium, którego dotyczy uwaga (brak – uzasadnienie lub wnioski)."
           },
           "cytat": {
             "type": "string",
-            "description": "Dosłowny fragment tekstu przełożonego – sprawdzony na serwerze."
+            "description": "Dosłowny fragment tekstu przełożonego sprawdzony przez serwer. Każda uwaga AI ma cytat."
           },
           "sugestia": {
             "type": "string",
-            "description": "Co doprecyzować – podpowiedź, nie ocena."
+            "description": "Co doprecyzować – podpowiedź po polsku."
           },
           "pole": {
             "type": "string",
@@ -1250,7 +1319,7 @@
               "uzasadnienie",
               "wnioski"
             ],
-            "description": "Gdzie w ocenie jest fragment."
+            "description": "Gdzie jest cytowany fragment."
           },
           "zrodlo": {
             "type": "string",
@@ -1259,40 +1328,6 @@
               "ai"
             ],
             "description": "regula – sprawdzenie automatyczne bez AI; ai – uwaga modelu z potwierdzonym cytatem."
-          }
-        }
-      },
-      "WynikKontroli": {
-        "type": "object",
-        "required": [
-          "uwagi",
-          "podsumowanie",
-          "aiNiedostepne",
-          "zanonimizowano"
-        ],
-        "properties": {
-          "uwagi": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UwagaJakosci"
-            },
-            "description": "Uwagi do doprecyzowania."
-          },
-          "podsumowanie": {
-            "type": "string",
-            "description": "Krótkie podsumowanie dla przełożonego."
-          },
-          "aiNiedostepne": {
-            "type": "boolean",
-            "description": "true – AI było niedostępne, zwrócono tylko sprawdzenia automatyczne."
-          },
-          "zanonimizowano": {
-            "type": "boolean",
-            "description": "true – przed wysłaniem do AI usunięto imiona lub nazwiska z tekstu."
-          },
-          "dostawca": {
-            "type": "string",
-            "description": "Dostawca AI, który odpowiedział."
           }
         }
       },
