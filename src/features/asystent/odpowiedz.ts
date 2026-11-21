@@ -2,7 +2,7 @@ import "server-only";
 
 import { z } from "zod";
 
-import { generateJson } from "@/lib/ai/client";
+import { AiUnavailableError, generateJson } from "@/lib/ai/client";
 import type { AsystentZapytanie } from "@/types/api";
 
 import { anonimizuj, ZNACZNIK_OSOBY } from "./anonimizacja";
@@ -15,6 +15,8 @@ export const BRAK_INFORMACJI =
 
 /** Poniżej tego pokrycia słów pytania nie pytamy nawet modelu – to pytanie spoza bazy. */
 const MIN_POKRYCIE = 0.4;
+/** Odstęp przed ponowną próbą, gdy wszyscy dostawcy AI odmówili (limit / przeciążenie). */
+const PONOW_PO_MS = 3500;
 
 const SYSTEM = `Jesteś asystentem formalnym w aplikacji „Azymut” dla przełożonych w służbie cywilnej.
 Odpowiadasz na pytania o pierwszą ocenę i ocenę okresową WYŁĄCZNIE na podstawie fragmentów bazy wiedzy z wiadomości użytkownika (oznaczonych [F1], [F2]…).
@@ -56,12 +58,16 @@ function doCache(klucz: string, v: OdpowiedzAsystenta) {
 }
 
 // ── cytaty ──────────────────────────────────────────────────────────────────
-const MAX_CYTAT = 260;
+const MAX_CYTAT = 320;
 
+/** Skraca cytat, najchętniej na końcu zdania albo punktu wyliczenia. */
 function przytnij(s: string, max = MAX_CYTAT): string {
   if (s.length <= max) return s;
   const cut = s.slice(0, max);
-  return `${cut.slice(0, cut.lastIndexOf(" ") > 0 ? cut.lastIndexOf(" ") : max)}…`;
+  const granica = Math.max(cut.lastIndexOf("; "), cut.lastIndexOf(". "));
+  if (granica > 120) return `${cut.slice(0, granica + 1)} […]`;
+  const spacja = cut.lastIndexOf(" ");
+  return `${cut.slice(0, spacja > 0 ? spacja : max)} […]`;
 }
 
 /**
@@ -144,15 +150,25 @@ export async function odpowiedzNaPytanie(z: AsystentZapytanie): Promise<Odpowied
     .join("\n\n");
   const sciezka = z.rodzaj ? `\nUżytkownik jest w ścieżce: ${z.rodzaj === "pierwsza" ? "pierwsza ocena" : "ocena okresowa"}.` : "";
 
-  const { data, provider } = await generateJson(odpowiedzModelu, {
+  const zapytanie = {
     system: SYSTEM,
     messages: [
       ...historia.map(({ role, content }) => ({ role, content })),
-      { role: "user", content: `Fragmenty bazy wiedzy:\n\n${kontekst}\n${sciezka}\n\nPytanie: ${pytanie.tekst}` },
+      { role: "user" as const, content: `Fragmenty bazy wiedzy:\n\n${kontekst}\n${sciezka}\n\nPytanie: ${pytanie.tekst}` },
     ],
     temperature: 0.1,
     maxTokens: 900,
-  });
+  };
+  let wynikAi;
+  try {
+    wynikAi = await generateJson(odpowiedzModelu, zapytanie);
+  } catch (err) {
+    // Darmowe limity (np. Groq: tokeny na minutę) zwalniają się po kilku sekundach – jedna ponowna próba.
+    if (!(err instanceof AiUnavailableError)) throw err;
+    await new Promise((r) => setTimeout(r, PONOW_PO_MS));
+    wynikAi = await generateJson(odpowiedzModelu, zapytanie);
+  }
+  const { data, provider } = wynikAi;
 
   if (data.brakInformacji || !data.odpowiedz.trim()) return { ...brak, dostawca: provider };
 

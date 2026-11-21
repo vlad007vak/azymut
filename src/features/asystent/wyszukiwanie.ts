@@ -15,16 +15,17 @@ const STOP = new Set(
 );
 
 // Kolejność: najdłuższe najpierw. Celowo bez „-owa/-owy” – rdzeń „okresow” ≠ „okres”.
+// Rzeczowniki odczasownikowe i bezokoliczniki („ustalenie”, „ustalić” → „ustal”).
 const KONCOWKI = [
+  "aniem", "eniem", "ania", "enia", "aniu", "eniu", "anie", "enie",
   "ami", "ach", "ego", "emu", "ich", "imi", "ymi", "ych", "owi", "iem",
-  "om", "em", "ie", "ia", "iu", "ii", "ej", "ym", "im", "ow", "ia",
+  "om", "em", "ie", "ia", "iu", "ii", "ej", "ym", "im", "ow", "ic", "ac", "ec",
   "a", "e", "i", "o", "u", "y",
 ];
 
 /** Synonimy pytań użytkowników → słownictwo dokumentów (po rdzeniowaniu). */
 const SYNONIMY: Record<string, string[]> = {
-  odwola: ["sprzec"], // odwołanie od oceny → sprzeciw
-  odwoln: ["sprzec"],
+  odwol: ["sprzec"], // odwołać się, odwołanie od oceny → sprzeciw
   zaskar: ["sprzec"],
   iprz: ["indywi", "progra", "rozwoj"],
   szef: ["przelo"],
@@ -41,7 +42,7 @@ export function bezPolskichZnakow(s: string): string {
 }
 
 /** Oboczności, których nie złapie odcinanie końcówek (miesiąc/miesięcy, dzień/dni). */
-const ALIASY: Record<string, string> = { miesie: "miesia", dzien: "dni", stopie: "stopn" };
+const ALIASY: Record<string, string> = { miesie: "miesia", miesi: "miesia", dzien: "dni", stopie: "stopn" };
 
 export function rdzen(slowo: string): string {
   let w = slowo;

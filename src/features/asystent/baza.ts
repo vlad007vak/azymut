@@ -37,8 +37,9 @@ function zPdf(): Fragment[] {
       rodzaj: d.rodzaj as RodzajOceny,
       typ: f.dokumentId.startsWith("rozp") ? "rozporzadzenie" : "poradnik",
       tekst: f.tekst,
-      // Tytuł rozdziału liczy się podwójnie – dobrze opisuje temat fragmentu.
-      indeks: `${sekcja ?? ""} ${sekcja ?? ""} ${slowa} ${f.tekst}`,
+      // Tytuł rozdziału liczy się podwójnie – dobrze opisuje temat fragmentu. Paragrafy rozporządzeń
+      // rzadko powtarzają „ocena okresowa” / „pierwsza ocena”, więc dokładamy temat z nazwy dokumentu.
+      indeks: `${sekcja ?? ""} ${sekcja ?? ""} ${f.dokumentId.startsWith("rozp") ? d.krotko : ""} ${slowa} ${f.tekst}`,
     };
   });
 }
@@ -58,6 +59,17 @@ function zModelu(): Fragment[] {
     },
   ];
   for (const k of MODEL.kompetencje) {
+    // Przegląd kompetencji: lista wszystkich wskaźników (pytania „jakie wskaźniki ma…”).
+    out.push({
+      id: `model-${k.id}`,
+      dokumentId: "model",
+      dokument: MODEL_DOKUMENT,
+      miejsce: `${k.nazwa} – wskaźniki`,
+      rodzaj: "wspolne",
+      typ: "model",
+      tekst: `Kompetencja „${k.nazwa}” – wskaźniki behawioralne (${k.wskazniki.length}): ${k.wskazniki.map((w, i) => `${i + 1}) ${w.opis}`).join(" ")}`,
+      indeks: "",
+    });
     k.wskazniki.forEach((w, i) => {
       const poziomy = MODEL.poziomy.map((p) => `${p.nazwa}: ${w.zachowania[String(p.id) as "1"]}`).join(" ");
       out.push({
@@ -104,10 +116,13 @@ export function szukajFragmentow(pytanie: string, rodzaj?: RodzajOceny, limit = 
   const waga = (f: Fragment) => (cel && f.rodzaj === cel ? 1.3 : 1) * (f.typ === "rozporzadzenie" ? 1.1 : 1);
 
   const wszystkie = indeks.szukaj(pytanie, { limit: 30, waga });
-  const glowne = wszystkie.slice(0, limit - 2);
-  const przepisy = wszystkie.filter((t) => t.item.typ === "rozporzadzenie" && !glowne.includes(t)).slice(0, 2);
-  const reszta = wszystkie.filter((t) => !glowne.includes(t) && !przepisy.includes(t));
-  const fragmenty = [...glowne, ...przepisy, ...reszta].slice(0, limit);
+  const glowne = wszystkie.slice(0, limit - 1);
+  // Jedno miejsce rezerwujemy dla najlepszego paragrafu rozporządzenia, jeśli jest choć w połowie tak trafny.
+  const prog = (wszystkie[0]?.wynik ?? 0) * 0.5;
+  const przepis = glowne.some((t) => t.item.typ === "rozporzadzenie")
+    ? undefined
+    : wszystkie.find((t) => t.item.typ === "rozporzadzenie" && !glowne.includes(t) && t.wynik >= prog);
+  const fragmenty = [...glowne, ...(przepis ? [przepis] : []), ...wszystkie.filter((t) => !glowne.includes(t) && t !== przepis)].slice(0, limit);
 
   return {
     fragmenty,

@@ -19,7 +19,10 @@ function Zrodlo({ zrodlo, nr }: { zrodlo: ZrodloAsystenta; nr: number }) {
           <span className="font-mono text-muted-foreground">[{nr}]</span>
           <span className="min-w-0">
             <span className="font-medium">{zrodlo.dokument}</span>
-            {zrodlo.miejsce && <span className="text-muted-foreground"> – {zrodlo.miejsce}</span>}
+            {zrodlo.miejsce && (
+              // Twarde spacje: „§ 10” i „s. 21” nie rozdzielają się na dwie linie.
+              <span className="text-muted-foreground"> –&nbsp;{zrodlo.miejsce.replace(/(§|s\.|ust\.|pkt) /g, "$1 ")}</span>
+            )}
           </span>
         </summary>
         <div className="space-y-2 px-2.5 pb-2.5 pl-8 text-xs">
