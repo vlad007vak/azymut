@@ -10,26 +10,30 @@ na scenie: „Tego nie sprawdzaliśmy w prototypie – to element planu wdrożen
 
 ## 0. Przygotowanie (15 min przed wejściem)
 
-- [ ] Zamknąć **wszystkie** okna incognito (w Chrome okna incognito współdzielą dane), otworzyć nowe → demo.
-      Świeże dane demo = Anna Kowalczyk w kroku „Ocena wskaźników”. Zły stan danych → Panel HR → „Resetuj dane demo”.
-- [ ] Okno przeglądarki ok. 1440 px (min. 1024 px), ukryte zakładki i powiadomienia systemowe.
+- [ ] Na pendrivie: slajdy w PDF i wideo 2 min (mp4) + zapasowa kopia. Slajdy i wideo pokazujemy z komputera na scenie.
+- [ ] Komputer na scenie: zamknąć **wszystkie** okna incognito (w Chrome okna incognito współdzielą dane), otworzyć nowe okno
+      incognito z https://azymut-bubylda.vercel.app. Świeże dane demo = Anna Kowalczyk w kroku „Ocena wskaźników”.
+      Zły stan danych → Panel HR → „Resetuj dane demo”.
+- [ ] Komputer na scenie: sprawdzić szerokość ekranu i okna przeglądarki – **min. 1024 px** (najlepiej ok. 1440 px);
+      ukryte zakładki i powiadomienia systemowe.
 - [ ] Test AI w **drugiej przeglądarce** (nie w oknie demo): asystent formalny → „Ile kryteriów dodatkowych można wybrać
       w ocenie okresowej?”. Odpowiedź ze źródłem = AI działa. Asystent ma pamięć podręczną po stronie serwera
       (`src/features/asystent/odpowiedz.ts`), więc to samo pytanie na scenie może przyjść szybciej (bez gwarancji – Vercel może użyć innej instancji).
 - [ ] W schowku tekst do kroku „Uzasadnienie”: `Pracuje dobrze i jest zaangażowana. Ma trudny charakter.`
-- [ ] Slajdy otwarte w drugim oknie; wideo 2 min i zrzuty ekranu z demo zapisane **lokalnie** (plan B).
-- [ ] Telefon z hotspotem gotowy (plan B).
+- [ ] Slajdy (PDF z pendrive'a) otwarte na komputerze na scenie obok okna demo.
+- [ ] Diana: telefon z hotspotem i laptop zapasowy z wideo 2 min gotowe (plan B).
 
 ---
 
 ## 1. Scenariusz 5:00
 
 Tempo planu: ok. 130 słów/min. Plan kończy się na **4:35** – 25 s rezerwy na odpowiedzi AI i przejścia.
-Na scenie: **Andrey** mówi, **laptop z demo obsługuje Vlad** *(propozycja – DO USTALENIA z Vladem)*.
+Na scenie: **Andrey** mówi, **Vlad** przy komputerze na scenie klika demo według scenariusza, **Diana** – telefon z hotspotem
+i laptop zapasowy z wideo.
 
 | Czas | Kto mówi | Na ekranie | Tekst |
 |---|---|---|---|
-| 0:00–0:20 | Andrey | Slajd 1 → slajd 2 (Problem) | „Dzień dobry, jesteśmy zespół Bubylda. Przełożony w służbie cywilnej ocenia swoich pracowników: nowych w pierwszej ocenie, pozostałych co dwa lata. Musi połączyć ustawę, dwa rozporządzenia, formularz i model kompetencji. Łatwo ocenić »na wrażenie«, a różni przełożeni różnie rozumieją te same kryteria.” |
+| 0:00–0:20 | Andrey | Slajd 1 → slajd 2 (Problem) | „Dzień dobry, jesteśmy zespół Azymut. Przełożony w służbie cywilnej ocenia swoich pracowników: nowych w pierwszej ocenie, pozostałych co dwa lata. Musi połączyć ustawę, dwa rozporządzenia, formularz i model kompetencji. Łatwo ocenić »na wrażenie«, a różni przełożeni różnie rozumieją te same kryteria.” |
 | 0:20–0:40 | Andrey | Slajd 3 (Rozwiązanie) | „Azymut prowadzi przełożonego krok po kroku przez obie ścieżki – zgodnie z rozporządzeniami. Ocena opiera się na obserwowalnych zachowaniach z modelu kompetencji. System podpowiada poziom, pilnuje reguł i przygotowuje arkusz. AI doradza, decyzję podejmuje przełożony. Pokażę to na żywo.” |
 | 0:40–0:50 | Andrey | **Demo:** strona główna → blok „Ocena okresowa” → **Anna Kowalczyk** | „To Anna Kowalczyk, radca, arkusz C – dane są fikcyjne. Jesteśmy w kroku »Ocena wskaźników«.” |
 | 0:50–1:20 | Andrey | **Demo:** kryterium **Rzetelność** (średnia 4 pkt, „Poniżej oczekiwań”) → przy wskaźniku „Dotrzymywanie zobowiązań…” klik **„Na poziomie oczekiwań”** → sugestia zmienia się na „Na poziomie oczekiwań (5 pkt)” | „Przełożony nie wpisuje cyfry. Przy każdym wskaźniku wybiera zachowanie, które naprawdę obserwował, i zapisuje przykład. Rzetelność: średnia 4 punkty, czyli »poniżej oczekiwań«. Zmieniam jedno zachowanie – terminy dotrzymane z wyprzedzeniem – i sugestia od razu rośnie do »na poziomie oczekiwań«. Liczy ją prosta reguła oparta na przedziałach z rozporządzenia – nie AI.” |
@@ -63,15 +67,14 @@ Na scenie: **Andrey** mówi, **laptop z demo obsługuje Vlad** *(propozycja – 
 
 ## 2. Plan B
 
-Kto przełącza: **Vlad** (przy laptopie z demo) decyduje i przełącza, **Andrey mówi dalej** bez przerwy;
-**Diana** trzyma telefon z hotspotem i laptop zapasowy z wideo i zrzutami (w `docs/WORKFLOW.md` Diana „pomaga z demo na scenie”).
-*Podział ról – propozycja, DO USTALENIA z Vladem.*
+Kto przełącza: **Vlad** (przy komputerze na scenie) decyduje i przełącza, **Andrey mówi dalej** bez przerwy;
+**Diana** trzyma telefon z hotspotem i laptop zapasowy z wideo.
 
 | Sytuacja | Po czym poznać | Co robimy |
 |---|---|---|
 | AI odpowiada wolno | Po 5 s nadal „Szukam w bazie wiedzy…” / brak uwag | Andrey mówi dalej tekst z tabeli. Po 10 s Vlad przechodzi do kroku „Decyzja” (nie potrzebuje AI), Andrey: „Odpowiedź z przykładem źródła jest na slajdzie 7” – pokazujemy slajd 7 na końcu. |
 | Limit darmowych modeli | Czerwony komunikat „Asystent AI jest chwilowo niedostępny (limit darmowych modeli). Spróbuj ponownie za chwilę.” | Pokazujemy slajd 7 (zrzut odpowiedzi ze źródłem). Kontrola jakości przy limicie pokazuje żółty komunikat i same sprawdzenia automatyczne – mówimy: „reguły działają także bez AI”. Ocena, sugestia, wynik i arkusz **nie korzystają z AI** – demo idzie dalej. |
-| Brak internetu | Strona się nie ładuje | 1) hotspot z telefonu (Diana); 2) jeśli nie działa w 20 s – **wideo 2 min z dysku** + slajdy PDF offline, Andrey komentuje wideo tekstem z tabeli. Demo lokalne z Ollamą tylko, jeśli ktoś ma je przygotowane i sprawdzone (DO USTALENIA z Vladem). |
+| Brak internetu | Strona się nie ładuje | 1) hotspot z telefonu (Diana); 2) jeśli nie działa w 20 s – **wideo 2 min z pendrive'a** na komputerze na scenie (albo z laptopa zapasowego Diany); slajdy PDF działają bez internetu. Andrey komentuje wideo tekstem z tabeli. |
 | Zły stan danych demo | Anna nie jest w kroku „Ocena wskaźników” | Nowe okno incognito (po zamknięciu wszystkich) albo Panel HR → „Resetuj dane demo”. |
 | Błąd strony / pusty ekran | Biała strona, komunikat błędu | Odświeżyć raz (dane zostają w przeglądarce). Nie pomogło → wideo 2 min. |
 
@@ -180,13 +183,13 @@ Odpowiedzi AI są buforowane, żeby nie zużywać limitów.
 **15. Jak sprawdzaliście poprawność asystenta?** *(Maks / Diana)*
 Mamy zestaw 30 pytań z oczekiwanymi odpowiedziami i źródłami – w tym 2 spoza bazy i 6 tych samych faktów zadanych innymi słowami,
 tak jak pyta jury (po zgłoszeniu #26) – oraz skrypt, który zadaje je automatycznie.
-Wynik ostatniego przebiegu nie jest zapisany w repo – **DO USTALENIA z Vladem** (raport Diany, issue #9).
-Źródło: `docs/test-asystenta.md`; `scripts/baza-wiedzy/test-asystenta.mjs`.
+Ostatni przebieg z prawdziwym AI (Groq / Gemini): **30/30**, a pytania spoza bazy nadal kończą się „brak informacji” (Maks, PR #33).
+Źródło: `docs/test-asystenta.md`; `scripts/baza-wiedzy/test-asystenta.mjs`; opis PR #33 (wynik testu).
 
 **16. Co jest w bazie wiedzy?** *(Maks)*
 Pięć dokumentów: ustawa o służbie cywilnej (art. 38 i 81–83), rozporządzenia o pierwszej ocenie i o ocenach okresowych, dwa poradniki
 KPRM – razem 200 fragmentów z PDF – oraz model kompetencji (64 fragmenty), czyli **264 fragmenty**. Wyszukiwanie BM25 napisaliśmy sami,
-bez zewnętrznych bibliotek. *(Uwaga: README i slajd 7 podają jeszcze „183 fragmenty” – stan sprzed dodania ustawy, zgłoszone w #30.)*
+bez zewnętrznych bibliotek.
 Źródło: `src/data/baza-wiedzy/fragmenty.json`, `src/features/asystent/baza.ts` (`FRAGMENTY`); `README.md` → „Wykorzystane zasoby”.
 
 ### Innowacyjność i jakość rozwiązania (20%)
@@ -258,10 +261,13 @@ Czasy mówione w scenariuszu są liczone z liczby słów (ok. 130 słów/min) �
 
 ## 6. DO USTALENIA z Vladem
 
-1. Kto obsługuje laptop z demo i kto przełącza na plan B (propozycja: Vlad – laptop, Diana – hotspot i wideo).
-2. Odpowiedzi mentorów z issue #3: metoda sugerowanego poziomu (pyt. 4), skala pierwszej oceny (pyt. 5), arkusz A (pyt. 7), smartfony (pyt. 1).
-3. Wynik ostatniego automatycznego testu asystenta (`scripts/baza-wiedzy/test-asystenta.mjs`).
+1. **Ustalone:** Vlad – komputer na scenie (klika demo według scenariusza), Andrey – mówi, Diana – telefon z hotspotem i laptop
+   zapasowy z wideo.
+2. Odpowiedzi mentorów z issue #3: metoda sugerowanego poziomu (pyt. 4), skala pierwszej oceny (pyt. 5), arkusz A (pyt. 7), smartfony (pyt. 1)
+   – czekamy, prześle Maks.
+3. **Ustalone:** automatyczny test asystenta (`scripts/baza-wiedzy/test-asystenta.mjs`) – **30/30** z prawdziwym AI (Maks, PR #33).
 4. Koszty wdrożenia, liczba urzędów, harmonogram – brak w repo, na scenie nie podajemy liczb.
 5. Czy ktoś testował aplikację z prawdziwymi przełożonymi / HR.
-6. Czy na scenie jest internet i czy można wcześniej sprawdzić rzutnik; czy mamy przygotowane demo lokalne z Ollamą.
+6. **Ustalone:** internet na scenie będzie; slajdy (PDF) i wideo (mp4) pokazujemy z pendrive'a na komputerze na scenie;
+   demo lokalnego z Ollamą nie robimy (decyzja zespołu).
 7. Linki do wideo i prezentacji (w `README.md` jeszcze „https://…”).
