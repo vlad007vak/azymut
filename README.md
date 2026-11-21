@@ -33,7 +33,8 @@ Azymut prowadzi przełożonego przez cały proces w jednym miejscu, a decyzja za
    każdą podpowiedź przełożony przyjmuje albo odrzuca.
 6. **Asystent rozmowy (AI)** – plan rozmowy oceniającej: pytania do pracownika, kwestie do omówienia,
    argumenty uzasadniające ocenę i propozycje rozwoju, plus lista kontrolna z rozporządzenia.
-7. **Dokument** – arkusz według wzoru z rozporządzenia, do wydruku lub zapisu jako PDF.
+7. **Dokument** – arkusz według wzoru z rozporządzenia, do wydruku lub zapisu jako PDF, oraz **eksport oceny do JSON**
+   (format `azymut.ocena` v1) – podstawa wymiany danych z systemem kadrowym i EZD.
 8. **Panel HR** – statusy wszystkich procesów, terminy (zbliżające się i przekroczone), nowy proces,
    przypomnienia dla oceniających.
 9. **Role** – przełożony i HR (w prototypie role demonstracyjne; Panel HR tylko dla roli HR).
@@ -93,6 +94,8 @@ flowchart LR
   baza wiedzy generowana z PDF skryptem `scripts/baza-wiedzy/zbuduj.mjs` – po zmianie przepisów wystarczy
   przebudować pliki.
 - **Walidacja:** każde żądanie API sprawdzane schematem zod; klucze AI tylko po stronie serwera.
+- **Udokumentowane API:** specyfikacja OpenAPI 3.1 (`public/openapi.json`) i strona `/dokumentacja-api`;
+  opis integracji i wymagań bezpieczeństwa w `docs/API.md`.
 
 ## Bezpieczeństwo i ochrona danych
 - **Minimalizacja danych:** do modeli AI nie trafiają imiona ani nazwiska – tylko stanowisko, kryteria
