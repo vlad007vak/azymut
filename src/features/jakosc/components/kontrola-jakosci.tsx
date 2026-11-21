@@ -89,16 +89,18 @@ export function KontrolaJakosci({ ocena, className }: KontrolaJakosciProps) {
 
   return (
     <Card className={className}>
-      <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3">
-        <div className="grid max-w-2xl gap-1">
-          <CardTitle className="flex items-center gap-2">
-            <ClipboardCheckIcon className="size-5" aria-hidden />
-            Kontrola jakości uzasadnienia
-          </CardTitle>
-          <CardDescription>
-            Przed sporządzeniem oceny sprawdź przykłady i uzasadnienie: ogólniki bez konkretów, oceny osoby zamiast zachowań,
-            rozbieżności z wybranym poziomem, kryteria bez przykładów i sformułowania mogące świadczyć o stronniczości.
-          </CardDescription>
+      <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-4">
+        <div className="flex max-w-2xl items-start gap-3">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden>
+            <ClipboardCheckIcon className="size-5" strokeWidth={1.5} />
+          </span>
+          <div className="grid gap-1">
+            <CardTitle className="text-lg font-semibold">Kontrola jakości uzasadnienia</CardTitle>
+            <CardDescription>
+              Przed sporządzeniem oceny sprawdź przykłady i uzasadnienie: ogólniki bez konkretów, oceny osoby zamiast zachowań,
+              rozbieżności z wybranym poziomem, kryteria bez przykładów i sformułowania mogące świadczyć o stronniczości.
+            </CardDescription>
+          </div>
         </div>
         <Button onClick={sprawdz} disabled={laduje} variant={wynik && !nieaktualny ? "outline" : "default"}>
           {laduje ? (
@@ -113,7 +115,7 @@ export function KontrolaJakosci({ ocena, className }: KontrolaJakosciProps) {
       </CardHeader>
 
       <CardContent className="grid gap-4">
-        <p className="flex items-start gap-2 text-xs text-muted-foreground">
+        <p className="flex items-start gap-2 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
           <ShieldCheckIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           <span>
             <strong className="font-medium text-foreground">AI podpowiada – nie ocenia.</strong> Nie zmienia poziomów ani treści
@@ -158,7 +160,7 @@ function Wyniki({ dane, ocena, nieaktualny }: { dane: WynikKontroli; ocena: Ocen
         </p>
       )}
       {dane.aiNiedostepne && (
-        <div className="flex gap-2.5 rounded-md border border-amber-300 bg-amber-50 p-2.5 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
+        <div className="flex gap-2.5 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
           <AlertTriangleIcon className="mt-0.5 size-4 shrink-0" aria-hidden />
           <p>
             Analiza AI jest chwilowo niedostępna (limit darmowych modeli) – pokazuję tylko sprawdzenia automatyczne. Spróbuj
@@ -170,7 +172,7 @@ function Wyniki({ dane, ocena, nieaktualny }: { dane: WynikKontroli; ocena: Ocen
       {dane.uwagi.length === 0 ? (
         <div
           role="status"
-          className="flex gap-2.5 rounded-md border border-emerald-300 bg-emerald-50 p-3 text-sm text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-100"
+          className="flex gap-2.5 rounded-lg border border-emerald-300 bg-emerald-50 p-3 text-sm text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-100"
         >
           <CheckCircle2Icon className="mt-0.5 size-4 shrink-0" aria-hidden />
           <div>
@@ -183,13 +185,13 @@ function Wyniki({ dane, ocena, nieaktualny }: { dane: WynikKontroli; ocena: Ocen
           <p role="status" className="text-sm font-medium">
             {dane.podsumowanie}
           </p>
-          <div className={cn("grid gap-4", nieaktualny && "opacity-60")}>
+          <div className={cn("grid gap-6", nieaktualny && "opacity-60")}>
             {grupy.map((g) => (
-              <section key={g.id} aria-label={g.tytul} className="grid gap-2">
+              <section key={g.id} aria-label={g.tytul} className="grid gap-2.5">
                 <h4 className="text-sm font-semibold">
                   {g.tytul} <span className="font-normal text-muted-foreground">({g.uwagi.length})</span>
                 </h4>
-                <ul className="grid gap-2">
+                <ul className="grid gap-2.5">
                   {g.uwagi.map((u, i) => (
                     <Uwaga key={`${u.typ}-${u.cytat ?? ""}-${i}`} uwaga={u} />
                   ))}
@@ -197,7 +199,7 @@ function Wyniki({ dane, ocena, nieaktualny }: { dane: WynikKontroli; ocena: Ocen
               </section>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">Wskazówka z modelu kompetencji: {WSKAZOWKA}</p>
+          <p className="rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">Wskazówka z modelu kompetencji: {WSKAZOWKA}</p>
         </>
       )}
       {dane.zanonimizowano && (
@@ -209,14 +211,21 @@ function Wyniki({ dane, ocena, nieaktualny }: { dane: WynikKontroli; ocena: Ocen
 
 function Uwaga({ uwaga }: { uwaga: UwagaJakosci }) {
   return (
-    <li className="grid gap-1.5 rounded-md border p-3 text-sm">
+    <li
+      className={cn(
+        "grid gap-2 rounded-lg border border-l-4 bg-card p-4 text-sm shadow-xs",
+        uwaga.typ === "ryzyko-stronniczosci" ? "border-l-destructive" : "border-l-primary/40",
+      )}
+    >
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant={uwaga.typ === "ryzyko-stronniczosci" ? "destructive" : "secondary"}>{ETYKIETA[uwaga.typ]}</Badge>
         {uwaga.pole && uwaga.cytat && <span className="text-xs text-muted-foreground">{GDZIE[uwaga.pole]}</span>}
         <span className="ml-auto text-xs text-muted-foreground">{uwaga.zrodlo === "ai" ? "podpowiedź AI" : "sprawdzenie automatyczne"}</span>
       </div>
       {uwaga.cytat && (
-        <blockquote className="border-l-2 border-primary/60 pl-2.5 leading-relaxed text-foreground">„{uwaga.cytat}”</blockquote>
+        <blockquote className="rounded-r-md border-l-2 border-primary bg-muted/50 py-1.5 pr-2.5 pl-3 leading-relaxed text-foreground">
+          „{uwaga.cytat}”
+        </blockquote>
       )}
       <p className="leading-relaxed text-muted-foreground">{uwaga.sugestia}</p>
     </li>

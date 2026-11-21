@@ -1,6 +1,6 @@
 "use client";
 
-import { InfoIcon, Loader2Icon, RotateCcwIcon, SendIcon } from "lucide-react";
+import { BookOpenTextIcon, InfoIcon, Loader2Icon, RotateCcwIcon, SendIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -23,12 +23,29 @@ export interface AsystentPanelProps {
   rodzaj?: RodzajOceny;
   /** Klasy obszaru wiadomości (np. wysokość przy osadzeniu w kreatorze). */
   className?: string;
+  /**
+   * Czerwony przycisk „Wyślij pytanie” – tylko gdy asystent jest głównym działaniem ekranu (strona /asystent).
+   * W kreatorze zostaje granatowy, bo główne działanie kroku ma tam inny przycisk.
+   */
+  glownyPrzycisk?: boolean;
 }
 
 const MAX_DLUGOSC = 1000;
 
+/** Awatar asystenta obok jego dymków. */
+function AwatarAsystenta() {
+  return (
+    <span
+      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm"
+      aria-hidden
+    >
+      <BookOpenTextIcon className="size-4" strokeWidth={1.5} />
+    </span>
+  );
+}
+
 /** Asystent formalny: odpowiedzi z bazy wiedzy (rozporządzenia, poradniki KPRM, model kompetencji) ze źródłami. */
-export function AsystentPanel({ rodzaj, className }: AsystentPanelProps) {
+export function AsystentPanel({ rodzaj, className, glownyPrzycisk = false }: AsystentPanelProps) {
   const [wiadomosci, setWiadomosci] = useState<Wiadomosc[]>([]);
   const [input, setInput] = useState("");
   const [laduje, setLaduje] = useState(false);
@@ -95,10 +112,10 @@ export function AsystentPanel({ rodzaj, className }: AsystentPanelProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div
         className={cn(
-          "flex max-h-[34rem] min-h-64 flex-col gap-3 overflow-y-auto rounded-lg border bg-muted/30 p-3",
+          "flex max-h-[34rem] min-h-64 flex-col gap-4 overflow-y-auto rounded-xl border bg-muted/50 p-4",
           className,
         )}
         aria-live="polite"
@@ -106,7 +123,13 @@ export function AsystentPanel({ rodzaj, className }: AsystentPanelProps) {
         aria-label="Rozmowa z asystentem formalnym"
       >
         {wiadomosci.length === 0 && !laduje ? (
-          <div className="m-auto flex max-w-xl flex-col items-center gap-3 py-4 text-center">
+          <div className="m-auto flex max-w-xl flex-col items-center gap-4 py-6 text-center">
+            <span
+              className="flex size-12 items-center justify-center rounded-full bg-card text-primary shadow-sm ring-1 ring-foreground/10"
+              aria-hidden
+            >
+              <BookOpenTextIcon className="size-6" strokeWidth={1.5} />
+            </span>
             <p className="text-sm text-muted-foreground">
               Zapytaj o zasady {rodzaj === "pierwsza" ? "pierwszej oceny" : rodzaj === "okresowa" ? "oceny okresowej" : "pierwszej oceny lub oceny okresowej"}.
               Odpowiem na podstawie przepisów i poradników KPRM oraz wskażę źródło.
@@ -117,7 +140,7 @@ export function AsystentPanel({ rodzaj, className }: AsystentPanelProps) {
                   key={p}
                   variant="outline"
                   size="sm"
-                  className="h-auto py-1.5 text-left whitespace-normal"
+                  className="h-auto rounded-full bg-card px-3 py-1.5 text-left whitespace-normal"
                   onClick={() => wyslij(p)}
                 >
                   {p}
@@ -128,20 +151,29 @@ export function AsystentPanel({ rodzaj, className }: AsystentPanelProps) {
         ) : (
           wiadomosci.map((m, i) =>
             m.role === "user" ? (
-              <div key={i} className="max-w-[85%] self-end rounded-lg bg-primary px-3 py-2 text-primary-foreground">
+              <div
+                key={i}
+                className="max-w-[80%] self-end rounded-2xl rounded-br-sm bg-primary px-4 py-2.5 text-primary-foreground shadow-sm"
+              >
                 <p className="text-sm whitespace-pre-wrap">{m.content}</p>
               </div>
             ) : (
-              <div key={i} className="w-full max-w-[92%] self-start rounded-lg border bg-background px-3 py-2.5">
-                <OdpowiedzAsystentaWidok odp={m.odp} />
+              <div key={i} className="flex w-full max-w-[92%] items-start gap-3 self-start">
+                <AwatarAsystenta />
+                <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm border bg-card px-4 py-3 shadow-sm">
+                  <OdpowiedzAsystentaWidok odp={m.odp} />
+                </div>
               </div>
             ),
           )
         )}
         {laduje && (
-          <div className="flex items-center gap-2 self-start rounded-lg border bg-background px-3 py-2 text-sm text-muted-foreground">
-            <Loader2Icon className="size-4 animate-spin" aria-hidden />
-            Szukam w bazie wiedzy i przygotowuję odpowiedź…
+          <div className="flex items-start gap-3 self-start">
+            <AwatarAsystenta />
+            <div className="flex items-center gap-2 rounded-2xl rounded-tl-sm border bg-card px-4 py-2.5 text-sm text-muted-foreground shadow-sm">
+              <Loader2Icon className="size-4 animate-spin" aria-hidden />
+              Szukam w bazie wiedzy i przygotowuję odpowiedź…
+            </div>
           </div>
         )}
         <div ref={koniecRef} />
@@ -170,21 +202,35 @@ export function AsystentPanel({ rodzaj, className }: AsystentPanelProps) {
             }
           }}
           placeholder="Np. Ile kryteriów dodatkowych mogę wybrać? (Enter – wyślij, Shift+Enter – nowa linia)"
-          className="max-h-40 min-h-11"
+          className="max-h-40 min-h-11 rounded-xl px-3.5 py-3"
           disabled={laduje}
           aria-describedby={`${inputId}-opis`}
         />
-        <Button type="submit" size="icon-lg" disabled={laduje || input.trim().length < 3} aria-label="Wyślij pytanie">
-          {laduje ? <Loader2Icon className="animate-spin" /> : <SendIcon />}
+        <Button
+          type="submit"
+          variant={glownyPrzycisk ? "brand" : "default"}
+          size="icon-lg"
+          className="size-11 rounded-xl"
+          disabled={laduje || input.trim().length < 3}
+          aria-label="Wyślij pytanie"
+        >
+          {laduje ? <Loader2Icon className="animate-spin" /> : <SendIcon strokeWidth={1.5} />}
         </Button>
         {wiadomosci.length > 0 && (
-          <Button type="button" variant="outline" size="icon-lg" onClick={wyczysc} aria-label="Wyczyść rozmowę">
-            <RotateCcwIcon />
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-lg"
+            className="size-11 rounded-xl"
+            onClick={wyczysc}
+            aria-label="Wyczyść rozmowę"
+          >
+            <RotateCcwIcon strokeWidth={1.5} />
           </Button>
         )}
       </form>
 
-      <p id={`${inputId}-opis`} className="flex gap-1.5 text-xs text-muted-foreground">
+      <p id={`${inputId}-opis`} className="flex gap-2 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
         <InfoIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden />
         <span>
           <strong className="font-medium text-foreground">
