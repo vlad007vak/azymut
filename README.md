@@ -2,7 +2,7 @@
 
 > Kompas kompetencji – przełożony krok po kroku przez pierwszą ocenę i ocenę okresową w służbie cywilnej.
 
-Projekt zespołu **Bubylda** przygotowany podczas **HackNation 2026** (Bydgoszcz, 21–22.11.2026)
+Projekt zespołu **Azymut** przygotowany podczas **HackNation 2026** (Bydgoszcz, 21–22.11.2026)
 w ramach zadania **Kompas kompetencji** (Ministerstwo Cyfryzacji).
 
 - 🌐 **Demo:** https://azymut-bubylda.vercel.app (bez logowania, dane demonstracyjne są fikcyjne)
@@ -143,7 +143,7 @@ Zgodnie z zasadami HackNation informujemy o zasobach przygotowanych lub użytych
   rozporządzenie Prezesa Rady Ministrów z 23.07.2015 w sprawie pierwszej oceny (Dz.U. 2015 poz. 1144);
   ustawa o służbie cywilnej (t.j. Dz.U. 2026 poz. 590). Dane pracowników w wersji demo są fikcyjne.
 
-## Zespół Bubylda
+## Zespół Azymut
 - Vladyslav Vakula – lead programmer, integracja, kreator oceny, Vercel
 - Maksym Kerimov – asystent formalny i baza wiedzy, kontakt z mentorami
 - Andrii Zhyhailo – panel HR, role, prezentacja (pitch)
