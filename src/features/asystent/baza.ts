@@ -1,9 +1,11 @@
 import "server-only";
 
 import baza from "@/data/baza-wiedzy/fragmenty.json";
+import surowaBazaQa from "@/data/baza-wiedzy/pytania-odpowiedzi.json";
 import { MODEL } from "@/lib/ocena/model";
 import type { RodzajOceny } from "@/types/ocena";
 
+import { PLIK_QA, sprawdzBazeQa } from "./schemat-qa.mjs";
 import { Bm25, bezPolskichZnakow, type Trafienie } from "./wyszukiwanie";
 
 export interface Fragment {
@@ -13,10 +15,19 @@ export interface Fragment {
   dokument: string;
   miejsce: string;
   rodzaj: RodzajOceny | "wspolne";
-  typ: "ustawa" | "rozporzadzenie" | "poradnik" | "model";
+  /** „qa” = pozycja bazy pytań i odpowiedzi urzędu (pomocnicza, nie wiążąca). */
+  typ: "ustawa" | "rozporzadzenie" | "poradnik" | "model" | "qa";
   tekst: string;
   /** Tekst indeksowany przez wyszukiwarkę. */
   indeks: string;
+}
+
+/** Polska odmiana po liczebniku: 1 pytanie, 2–4 pytania, 5 pytań (12–14 pytań). */
+export function odmiana(n: number, [jeden, kilka, wiele]: [string, string, string]): string {
+  if (n === 1) return `${n} ${jeden}`;
+  const d = n % 10;
+  const s = n % 100;
+  return `${n} ${d >= 2 && d <= 4 && (s < 12 || s > 14) ? kilka : wiele}`;
 }
 
 const MODEL_DOKUMENT = "Model kompetencji (materiał organizatora – Ministerstwo Cyfryzacji)";
@@ -96,12 +107,59 @@ function zModelu(): Fragment[] {
   return out.map((f) => ({ ...f, indeks: `${f.miejsce} ${f.tekst}` }));
 }
 
+/**
+ * Baza pytań i odpowiedzi (Q&A) z pliku, który urząd może podmienić (docs/BAZA-WIEDZY.md).
+ * Błędny plik zatrzymuje build czytelnym komunikatem – asystent nie może działać na złych danych.
+ */
+function zBazyQa() {
+  const wynik = sprawdzBazeQa(surowaBazaQa as unknown);
+  if (!wynik.ok) {
+    throw new Error(
+      [
+        `Błędny plik bazy pytań i odpowiedzi (${PLIK_QA}):`,
+        ...wynik.bledy.map((b) => `  – ${b}`),
+        "Popraw plik według docs/BAZA-WIEDZY.md (sprawdzenie: node scripts/baza-wiedzy/qa-z-csv.mjs --sprawdz) i uruchom build ponownie.",
+      ].join("\n"),
+    );
+  }
+  const { nazwa, pozycje } = wynik.baza;
+  const dokument = `Baza pytań i odpowiedzi – ${nazwa}`;
+  const fragmenty: Fragment[] = pozycje.map((p) => ({
+    id: `qa:${p.id}`,
+    dokumentId: "qa",
+    dokument,
+    // Pytanie i podstawa prawna są widoczne w nagłówku źródła; cytat pochodzi z odpowiedzi.
+    miejsce: `${p.id}: „${p.pytanie}” – podstawa: ${p.zrodlo}`,
+    rodzaj: p.rodzaj,
+    typ: "qa",
+    tekst: p.odpowiedz,
+    // Pytanie liczy się podwójnie – to ono najlepiej opisuje, o co chodzi w pozycji.
+    indeks: `${p.pytanie} ${p.pytanie} ${p.odpowiedz}`,
+  }));
+  return { dokument, fragmenty };
+}
+
+const QA = zBazyQa();
+
+/** Fragmenty dokumentów: ustawa, rozporządzenia, poradniki, model kompetencji. */
 export const FRAGMENTY: Fragment[] = [...zPdf(), ...zModelu()];
+/** Pozycje bazy pytań i odpowiedzi – osobny indeks, żeby nie zmieniały rankingu przepisów. */
+export const FRAGMENTY_QA: Fragment[] = QA.fragmenty;
 
 /** Lista dokumentów w bazie – do wyświetlenia użytkownikowi. */
-export const DOKUMENTY_BAZY = [...baza.dokumenty.map((d) => d.nazwa), MODEL_DOKUMENT];
+export const DOKUMENTY_BAZY = [
+  ...baza.dokumenty.map((d) => d.nazwa),
+  MODEL_DOKUMENT,
+  `${QA.dokument} (${odmiana(FRAGMENTY_QA.length, ["pytanie", "pytania", "pytań"])})`,
+];
 
 const indeks = new Bm25(FRAGMENTY);
+const indeksQa = new Bm25(FRAGMENTY_QA);
+
+/** Pozycja Q&A trafia do kontekstu, gdy pokrywa co najmniej tyle istotnych słów pytania. */
+const MIN_POKRYCIE_QA = 0.6;
+/** Najwyżej tyle pozycji Q&A w kontekście – dokładane obok przepisów, nie zamiast nich. */
+const MAX_QA = 2;
 
 export interface WynikWyszukiwania {
   fragmenty: Trafienie<Fragment>[];
@@ -143,8 +201,16 @@ export function szukajFragmentow(pytanie: string, rodzaj?: RodzajOceny, limit = 
   const zUstawy = ustepy.filter((t) => t.wynik >= progUstawy).slice(0, 3);
   const fragmenty = [...wybrane, ...zUstawy].sort((a, b) => b.wynik - a.wynik);
 
+  // Baza Q&A ma własny indeks i miejsca poza limitem: nie wypiera przepisów z kontekstu, a stoi za nimi.
+  // Pozycja z innej ścieżki (pytanie o pierwszą ocenę → Q&A o okresowej) nie trafia do kontekstu.
+  // Istotność słów oceniamy na dużym indeksie dokumentów – w kilkunastu pozycjach Q&A nawet „rozmowa” byłaby „częsta”.
+  const zQa = indeksQa
+    .szukaj(pytanie, { limit: 20, waga, istotne: (t) => indeks.idf(t) > 1 })
+    .filter((t) => t.pokrycie >= MIN_POKRYCIE_QA && (!cel || t.item.rodzaj === cel || t.item.rodzaj === "wspolne"))
+    .slice(0, MAX_QA);
+
   return {
-    fragmenty,
-    pokrycie: Math.max(0, ...fragmenty.slice(0, 3).map((t) => t.pokrycie)),
+    fragmenty: [...fragmenty, ...zQa],
+    pokrycie: Math.max(0, ...fragmenty.slice(0, 3).map((t) => t.pokrycie), ...zQa.map((t) => t.pokrycie)),
   };
 }

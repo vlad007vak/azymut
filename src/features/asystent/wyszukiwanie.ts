@@ -13,7 +13,7 @@ const STOP = new Set(
     "czym czego ktorym takie jakim mam mamy ma maja trzeba nalezy powinien powinna musi " +
     // Słowa pytające i modalne – nie występują w przepisach, a zaniżały pokrycie pytania („do kogo można wnieść…”).
     "kogo komu kim czyj czyja czyje jakiego jakiemu jakimi ktorego ktoremu ktorzy ktorymi dlaczego czemu skad dokad " +
-    "wolno moga mozemy musze musza powinno powinni"
+    "wolno moga mozemy musze musza powinno powinni miec"
   ).split(" "),
 );
 
@@ -46,8 +46,11 @@ export function bezPolskichZnakow(s: string): string {
     .replace(/ł/g, "l");
 }
 
-/** Oboczności, których nie złapie odcinanie końcówek (miesiąc/miesięcy, dzień/dni). */
-const ALIASY: Record<string, string> = { miesie: "miesia", miesi: "miesia", dzien: "dni", stopie: "stopn" };
+/**
+ * Oboczności, których nie złapie odcinanie końcówek (miesiąc/miesięcy, dzień/dni),
+ * i formy ucięte za krótko („zmianie” → „zmi”, choć „zmiana”, „zmiany” → „zmian”).
+ */
+const ALIASY: Record<string, string> = { miesie: "miesia", miesi: "miesia", dzien: "dni", stopie: "stopn", zmi: "zmian" };
 
 export function rdzen(slowo: string): string {
   let w = slowo;
@@ -129,13 +132,22 @@ export class Bm25<T extends Dokumentowalny> {
     return Math.log(1 + (n - df + 0.5) / (df + 0.5));
   }
 
-  szukaj(pytanie: string, opcje: { limit?: number; waga?: (item: T) => number } = {}): Trafienie<T>[] {
+  szukaj(
+    pytanie: string,
+    opcje: {
+      limit?: number;
+      waga?: (item: T) => number;
+      /** Które słowa pytania liczą się do pokrycia; domyślnie rzadkie w tym indeksie (idf > 1). */
+      istotne?: (term: string) => boolean;
+    } = {},
+  ): Trafienie<T>[] {
     const grupy = grupyPytania(pytanie);
     const terms = [...new Set(grupy.flat())];
     if (terms.length === 0) return [];
     // Słowa obecne w prawie każdym fragmencie („ocena”, „służba”) mało mówią o pokryciu pytania.
     // Synonim nie jest osobnym wymaganiem: słowo pytania jest pokryte, gdy we fragmencie jest ono albo jego synonim.
-    const istotne = grupy.filter(([t]) => this.idf(t) > 1);
+    const czyIstotne = opcje.istotne ?? ((t: string) => this.idf(t) > 1);
+    const istotne = grupy.filter(([t]) => czyIstotne(t));
     const wynik: Trafienie<T>[] = [];
     for (const d of this.docs) {
       let s = 0;

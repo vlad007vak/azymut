@@ -11,7 +11,7 @@ import type { OdpowiedzAsystenta, ZrodloAsystenta } from "./typy";
 import { bezPolskichZnakow, tokeny } from "./wyszukiwanie";
 
 export const BRAK_INFORMACJI =
-  "Nie znalazłem odpowiedzi na to pytanie w bazie wiedzy asystenta (przepisy o ocenach z ustawy o służbie cywilnej, rozporządzenia o pierwszej ocenie i o ocenach okresowych, poradniki KPRM, model kompetencji), więc nie będę zgadywać. Spróbuj zadać pytanie inaczej albo skontaktuj się z komórką kadr.";
+  "Nie znalazłem odpowiedzi na to pytanie w bazie wiedzy asystenta (przepisy o ocenach z ustawy o służbie cywilnej, rozporządzenia o pierwszej ocenie i o ocenach okresowych, poradniki KPRM, model kompetencji, baza pytań i odpowiedzi), więc nie będę zgadywać. Spróbuj zadać pytanie inaczej albo skontaktuj się z komórką kadr.";
 
 /** Poniżej tego pokrycia słów pytania nie pytamy nawet modelu – to pytanie spoza bazy. */
 const MIN_POKRYCIE = 0.4;
@@ -26,6 +26,7 @@ Zasady:
 3. Pisz po polsku, zwięźle: 2–6 zdań albo krótka lista. Podawaj konkretne terminy, liczby, artykuły i paragrafy z fragmentów.
 4. Nie oceniasz pracowników i nie proponujesz poziomu oceny – decyzję zawsze podejmuje przełożony.
 5. W "zrodla" wypisz wykorzystane fragmenty: numer i krótki cytat (do 200 znaków) przepisany DOSŁOWNIE z fragmentu.
+6. Fragmenty „Baza pytań i odpowiedzi” to gotowe odpowiedzi urzędu na konkretne pytania. Jeśli taka pozycja odpowiada na pytanie, wykorzystaj ją i wskaż jej numer; jeśli ten sam fakt jest też w przepisie lub poradniku wśród fragmentów, wskaż również ten fragment. Pozycji, która dotyczy innej sprawy, nie używaj.
 Zwróć JSON: {"odpowiedz": "…", "brakInformacji": false, "zrodla": [{"fragment": 1, "cytat": "…"}]}`;
 
 const numer = z.preprocess(
