@@ -3,25 +3,12 @@ import "server-only";
 import { z } from "zod";
 
 import { generateJson } from "@/lib/ai/client";
-import type { AsystentOdpowiedz, AsystentZapytanie, ZrodloOdpowiedzi } from "@/types/api";
+import type { AsystentZapytanie } from "@/types/api";
 
 import { anonimizuj, ZNACZNIK_OSOBY } from "./anonimizacja";
 import { szukajFragmentow, type Fragment } from "./baza";
+import type { OdpowiedzAsystenta, ZrodloAsystenta } from "./typy";
 import { bezPolskichZnakow, tokeny } from "./wyszukiwanie";
-
-/** Źródło z dodatkowymi polami do podglądu w UI (pełny fragment). Zgodne z kontraktem. */
-export interface ZrodloAsystenta extends ZrodloOdpowiedzi {
-  id: string;
-  tekst: string;
-}
-
-export interface OdpowiedzAsystenta extends AsystentOdpowiedz {
-  zrodla: ZrodloAsystenta[];
-  /** true → z pytania usunięto imiona/nazwiska przed wysłaniem do AI. */
-  zanonimizowano: boolean;
-  /** Dostawca AI, który odpowiedział (brak → odpowiedź bez AI). */
-  dostawca?: string;
-}
 
 export const BRAK_INFORMACJI =
   "Nie znalazłem odpowiedzi na to pytanie w bazie wiedzy asystenta (rozporządzenia o pierwszej ocenie i o ocenach okresowych, poradniki KPRM, model kompetencji), więc nie będę zgadywać. Spróbuj zadać pytanie inaczej albo skontaktuj się z komórką kadr.";
