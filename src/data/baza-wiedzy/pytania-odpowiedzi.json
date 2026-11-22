@@ -99,6 +99,13 @@
       "odpowiedz": "Dotyczy oceny okresowej. W przypadku zmiany na stanowisku oceniającego w trakcie okresu, w którym oceniany podlega ocenie, ocena jest sporządzana na podstawie wybranych wcześniej kryteriów. Jeżeli dotychczasowy przełożony nie sporządził oceny, sporządza ją nowy oceniający w niezmienionym terminie. Zmiana na stanowisku oceniającego pozwala też oceniającemu zmienić termin oceny – wtedy niezwłocznie zawiadamia on ocenianego pisemnie o nowym terminie, a kopię pisma dołącza do arkusza. Poradnik KPRM zaleca, by przy zbliżającym się terminie ocenę sporządził jeszcze dotychczasowy przełożony, a gdy tego nie zrobi – by nowy oceniający przeprowadził z ocenianym rozmowę i ponownie omówił główne obowiązki, kryteria oceny i oczekiwania.",
       "zrodlo": "§ 9 ust. 3 i § 8 rozporządzenia w sprawie ocen okresowych (Dz.U. 2016 poz. 470); art. 81 ust. 8 pkt 1 ustawy o służbie cywilnej; poradnik KPRM „Oceny okresowe w służbie cywilnej”, s. 15 i 17",
       "rodzaj": "wspolne"
+    },
+    {
+      "id": "qa-015",
+      "pytanie": "Idę (jako przełożony – oceniający) na dłuższe zwolnienie lub urlop – czy mogę przesunąć termin oceny okresowej pracownika?",
+      "odpowiedz": "Tak. Oceniający może zmienić termin oceny okresowej w przypadku przewidywanej, dłuższej, usprawiedliwionej nieobecności w pracy oceniającego, która może utrudnić przeprowadzenie oceny (art. 81 ust. 8 pkt 3 ustawy). To samo dotyczy przewidywanej, dłuższej, usprawiedliwionej nieobecności ocenianego, która może uniemożliwić przeprowadzenie oceny (pkt 2). Decyzję o zmianie terminu podejmuje oceniający i niezwłocznie zawiadamia pisemnie ocenianego o nowym terminie sporządzenia oceny na piśmie, a kopię pisma dołącza się do arkusza.",
+      "zrodlo": "art. 81 ust. 8 pkt 2 i 3 ustawy o służbie cywilnej; § 8 rozporządzenia w sprawie ocen okresowych (Dz.U. 2016 poz. 470); poradnik KPRM „Oceny okresowe w służbie cywilnej”, s. 15",
+      "rodzaj": "okresowa"
     }
   ]
 }
