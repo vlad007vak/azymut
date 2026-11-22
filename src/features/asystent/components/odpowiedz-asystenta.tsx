@@ -87,7 +87,13 @@ export function OdpowiedzAsystentaWidok({ odp }: { odp: OdpowiedzAsystenta }) {
               Imiona i nazwiska usunięto z pytania przed wysłaniem do AI.
             </span>
           )}
-          {odp.dostawca && <span>Odpowiedź sformułowana przez AI ({odp.dostawca}) wyłącznie na podstawie źródeł.</span>}
+          {odp.dostawca && (
+            <span>
+              {odp.brakInformacji
+                ? `AI (${odp.dostawca}) sprawdziło znalezione fragmenty bazy – nie ma w nich odpowiedzi na to pytanie.`
+                : `Odpowiedź sformułowana przez AI (${odp.dostawca}) wyłącznie na podstawie źródeł.`}
+            </span>
+          )}
         </p>
       )}
     </div>
