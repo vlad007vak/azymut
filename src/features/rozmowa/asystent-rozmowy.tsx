@@ -26,6 +26,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { useUprawnieniaOceny } from "@/features/role";
 import { pobierzOcene, pracownik as znajdzPracownika, PRACOWNICY, useOcena, zapiszOcene } from "@/lib/ocena/store";
 import { nazwaEtapu } from "@/lib/ocena/zasady";
 import type { RozmowaPlan } from "@/types/api";
@@ -146,6 +147,8 @@ type StanAi = { typ: "bezczynny" } | { typ: "ladowanie" } | { typ: "blad"; komun
 function WidokRozmowy({ ocena }: { ocena: Ocena }) {
   const osoba = znajdzPracownika(ocena.pracownikId);
   const kryteria = useMemo(() => podsumujOcene(ocena), [ocena]);
+  // HR (i nie-oceniający) może przygotować plan dla siebie, ale nie zapisuje notatek ani wniosków w ocenie.
+  const { edycja, powod } = useUprawnieniaOceny(ocena);
   const [szkic, setSzkic] = useState<SzkicRozmowy>(() => wczytajSzkic(ocena.id));
   const [stanAi, setStanAi] = useState<StanAi>({ typ: "bezczynny" });
   // Blokada podwójnego kliknięcia – stan Reacta zmienia się dopiero po ponownym renderze.
@@ -200,6 +203,10 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
   }
 
   function zapiszWOcenie() {
+    if (!edycja) {
+      toast.error("Tryb podglądu – nie zapisano w ocenie.", { description: powod });
+      return;
+    }
     const aktualna = pobierzOcene(ocena.id);
     if (!aktualna) {
       toast.error("Nie znaleziono oceny – nie zapisano notatek.");
@@ -431,7 +438,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
           {/* Czerwony jest zawsze tylko jeden: „Przygotuj rozmowę” przed planem, „Zapisz w ocenie” po nim. */}
           <Button
             onClick={zapiszWOcenie}
-            disabled={!notatki && !wnioski}
+            disabled={!edycja || (!notatki && !wnioski)}
             variant={szkic.plan ? "brand" : "default"}
           >
             <SaveIcon data-icon="inline-start" /> Zapisz w ocenie
@@ -443,8 +450,12 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
             <PrinterIcon data-icon="inline-start" /> Drukuj
           </Button>
           <span className="text-xs text-muted-foreground">
-            {szkic.plan ? `Zaznaczone punkty planu: ${wybrane}.` : "Brak planu – zapiszesz tylko własne notatki."}
-            {nadpisze && " Zapis zastąpi poprzednie notatki w ocenie."}
+            {!edycja
+              ? `Tryb podglądu: ${powod}`
+              : szkic.plan
+                ? `Zaznaczone punkty planu: ${wybrane}.`
+                : "Brak planu – zapiszesz tylko własne notatki."}
+            {edycja && nadpisze && " Zapis zastąpi poprzednie notatki w ocenie."}
           </span>
         </CardFooter>
       </Card>

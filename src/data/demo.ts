@@ -50,7 +50,7 @@ export const PRACOWNICY: Pracownik[] = [
     komorka: "Departament Rozwoju i Bezpieczeństwa Sztucznej Inteligencji, Wydział Wspierania Innowacyjności",
     kierujeZespolem: false,
     urzednikSC: false,
-    dataZatrudnienia: "2026-06-01",
+    dataZatrudnienia: "2026-03-02",
   },
   {
     id: "p5",
@@ -202,7 +202,9 @@ export const OCENY_DEMO: Ocena[] = [
     pracownikId: "p4",
     oceniajacy: PRZELOZONY_DEMO,
     etap: "obserwacje",
-    okres: { od: "2026-06-01", do: "2026-11-30" },
+    // Pierwsza ocena: rozmowa wstępna ≤ 21 dni od zatrudnienia (§ 3 rozp. 2015), sprawozdanie za ≥ 7 przepracowanych
+    // miesięcy (§ 6), termin sprawozdania po upływie 8 miesięcy (§ 4 ust. 1), ocena nie wcześniej niż po 8 miesiącach (art. 38).
+    okres: { od: "2026-03-02", do: "2026-10-31" },
     terminOceny: "2026-12-10",
     kryteria: [
       {
@@ -269,9 +271,9 @@ export const OCENY_DEMO: Ocena[] = [
     pierwsza: {
       egzaminSluzbyPrzygotowawczej: "tak",
       sprawozdanieWTerminie: true,
-      terminSprawozdania: "2026-11-15",
+      terminSprawozdania: "2026-11-16",
     },
-    daty: { rozmowaWstepna: "2026-06-05" },
+    daty: { rozmowaWstepna: "2026-03-10" },
     utworzono: T,
     zmieniono: T,
   },
@@ -281,13 +283,13 @@ export const OCENY_DEMO: Ocena[] = [
     pracownikId: "p5",
     oceniajacy: PRZELOZONY_DEMO,
     etap: "kryteria",
-    okres: { od: "2026-09-01", do: "2027-02-28" },
-    terminOceny: "2027-03-10",
+    okres: { od: "2026-09-01", do: "2027-04-30" },
+    terminOceny: "2027-06-30",
     kryteria: [],
     pierwsza: {
       egzaminSluzbyPrzygotowawczej: "tak",
       sprawozdanieWTerminie: null,
-      terminSprawozdania: "2027-02-20",
+      terminSprawozdania: "2027-05-14",
     },
     daty: { rozmowaWstepna: "2026-09-04" },
     utworzono: T,

@@ -27,11 +27,33 @@ function read(): Ocena[] {
   if (raw === cacheRaw) return cache;
   cacheRaw = raw;
   try {
-    cache = raw ? (JSON.parse(raw) as Ocena[]) : OCENY_DEMO;
+    cache = raw ? poprawDatyDemo(JSON.parse(raw) as Ocena[]) : OCENY_DEMO;
   } catch {
     cache = OCENY_DEMO;
   }
   return cache;
+}
+
+/**
+ * Daty pierwszej oceny w danych demo (o4, o5) poprawiono 22.11.2026 – były niezgodne z art. 38 ustawy i § 4, § 6
+ * rozporządzenia o pierwszej ocenie. Kto otworzył demo wcześniej, ma stare daty w localStorage – podmieniamy je,
+ * ale tylko gdy okres jest dokładnie stary (zmian użytkownika nie ruszamy).
+ */
+const STARE_OKRESY_DEMO: Record<string, string> = { o4: "2026-06-01|2026-11-30", o5: "2026-09-01|2027-02-28" };
+
+function poprawDatyDemo(oceny: Ocena[]): Ocena[] {
+  return oceny.map((o) => {
+    if (STARE_OKRESY_DEMO[o.id] !== `${o.okres?.od}|${o.okres?.do}`) return o;
+    const wzor = OCENY_DEMO.find((d) => d.id === o.id);
+    if (!wzor) return o;
+    return {
+      ...o,
+      okres: wzor.okres,
+      terminOceny: wzor.terminOceny,
+      daty: { ...o.daty, rozmowaWstepna: wzor.daty.rozmowaWstepna },
+      pierwsza: o.pierwsza && wzor.pierwsza ? { ...o.pierwsza, terminSprawozdania: wzor.pierwsza.terminSprawozdania } : o.pierwsza,
+    };
+  });
 }
 
 function write(oceny: Ocena[]) {

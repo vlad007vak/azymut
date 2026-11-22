@@ -5,16 +5,19 @@ import {
   ArrowLeftIcon,
   CalendarDaysIcon,
   CheckIcon,
+  EyeIcon,
   LockIcon,
   UserRoundCheckIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { toast } from "sonner";
 
 import { NaglowekStrony } from "@/components/naglowek-strony";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUprawnieniaOceny } from "@/features/role";
 import { pracownik as znajdzPracownika, useOcena, zapiszOcene } from "@/lib/ocena/store";
 import { nazwaEtapu } from "@/lib/ocena/zasady";
 import { cn } from "@/lib/utils";
@@ -32,6 +35,8 @@ export interface KrokProps {
   /** Zmiana oceny – zapis od razu w magazynie (localStorage). */
   zmien: (fn: (o: Ocena) => Ocena) => void;
   przejdz: (k: KrokId) => void;
+  /** true = rola bez prawa zmian (np. HR) – krok tylko do odczytu. */
+  tylkoPodglad: boolean;
 }
 
 const pusta = () => () => {};
@@ -85,20 +90,32 @@ export function KreatorOceny({ ocenaId }: { ocenaId: string }) {
 function Kreator({ ocena }: { ocena: Ocena }) {
   const [krok, setKrok] = useState<KrokId>(() => krokStartowy(ocena.etap));
   const osoba = znajdzPracownika(ocena.pracownikId);
+  const { edycja, powod } = useUprawnieniaOceny(ocena);
 
-  // Proces z Panelu HR może nie mieć kryteriów / danych pierwszej oceny – uzupełniamy raz.
+  // Proces z Panelu HR może nie mieć kryteriów / danych pierwszej oceny – uzupełniamy raz (tylko z prawem edycji).
   useEffect(() => {
+    if (!edycja) return;
     const uzup = uzupelnijOcene(ocena);
     if (uzup) zapiszOcene(uzup);
-  }, [ocena]);
+  }, [ocena, edycja]);
 
-  const zmien = (fn: (o: Ocena) => Ocena) => zapiszOcene(fn(ocena));
+  // W trybie podglądu uzupełnienie tylko pokazujemy – nic nie zapisujemy.
+  const widok = edycja ? ocena : (uzupelnijOcene(ocena) ?? ocena);
+  // Jedyna droga zapisu z kroków kreatora – sprawdza uprawnienia także wtedy, gdy ktoś obejdzie zablokowane pola.
+  const zmien = (fn: (o: Ocena) => Ocena) => {
+    if (!edycja) {
+      toast.error("Tryb podglądu – zmiana nie została zapisana.", { description: powod });
+      return;
+    }
+    zapiszOcene(fn(ocena));
+  };
   const przejdz = (k: KrokId) => {
     setKrok(k);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const props: KrokProps = { ocena, zmien, przejdz };
+  const props: KrokProps = { ocena: widok, zmien, przejdz, tylkoPodglad: !edycja };
   const nrAktywnego = KROKI.findIndex((x) => x.id === krok);
+  const krokEdycji = krok === "przygotowanie" || krok === "obserwacje" || krok === "decyzja";
 
   return (
     <>
@@ -193,10 +210,24 @@ function Kreator({ ocena }: { ocena: Ocena }) {
           </ol>
         </nav>
 
-        {krok === "przygotowanie" && <KrokPrzygotowanie {...props} />}
-        {krok === "obserwacje" && <KrokObserwacje {...props} />}
+        {!edycja && (
+          <Alert className="print:hidden">
+            <EyeIcon />
+            <AlertTitle>Tryb podglądu – bez możliwości zmian</AlertTitle>
+            <AlertDescription>{powod}</AlertDescription>
+          </Alert>
+        )}
+
+        {krokEdycji && (
+          // Wyłączony fieldset blokuje wszystkie pola i przyciski kroku (wybór zachowań, przykłady, poziomy, przejścia dalej).
+          <fieldset disabled={!edycja} className="m-0 grid min-w-0 gap-6 border-0 p-0">
+            <legend className="sr-only">{edycja ? "Treść oceny" : "Treść oceny – tylko do odczytu"}</legend>
+            {krok === "przygotowanie" && <KrokPrzygotowanie {...props} />}
+            {krok === "obserwacje" && <KrokObserwacje {...props} />}
+            {krok === "decyzja" && <KrokDecyzja {...props} />}
+          </fieldset>
+        )}
         {krok === "rozmowa" && <KrokRozmowa {...props} />}
-        {krok === "decyzja" && <KrokDecyzja {...props} />}
         {krok === "dokument" && <KrokDokument {...props} />}
       </div>
     </>
