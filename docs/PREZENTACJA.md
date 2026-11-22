@@ -88,7 +88,7 @@ Schemat (jak na grafice organizatora):
 | 0:30–0:55 | Anna Kowalczyk → Ocena wskaźników → zmiana zachowania → sugestia się zmienia | „Ocena opiera się na obserwowalnych zachowaniach z modelu kompetencji. Przełożony wybiera opis zachowania i zapisuje przykład, a system pokazuje sugerowany poziom z wyjaśnieniem.” |
 | 0:55–1:15 | Rozmowa → asystent formalny: pytanie o kryteria dodatkowe → rozwinięte źródło | „Asystent formalny odpowiada tylko na podstawie przepisów i poradników KPRM – zawsze ze źródłem i cytatem. Gdy nie zna odpowiedzi, mówi to wprost.” |
 | 1:15–1:30 | Asystent rozmowy → „Przygotuj rozmowę” | „Asystent rozmowy przygotowuje pytania, kwestie do omówienia i argumenty – na podstawie zapisanych przykładów.” |
-| 1:30–1:45 | Decyzja → Przyjmij sugestie → wynik → Sporządź → arkusz | „Ostateczny poziom wybiera przełożony. Wynik jest liczony dokładnie według rozporządzenia, a arkusz gotowy do wydruku i PDF.” |
+| 1:30–1:45 | Decyzja → Przyjmij sugestie → wynik → uzasadnienie → „Sprawdź uzasadnienie” (uwagi z cytatem) → Sporządź → arkusz | „Ostateczny poziom wybiera przełożony. Wynik jest liczony dokładnie według rozporządzenia, AI wskazuje ogólniki w uzasadnieniu, a arkusz jest gotowy do wydruku i PDF.” |
 | 1:45–2:00 | Panel HR (po wyborze roli HR) → logo / link | „HR monitoruje terminy i wysyła przypomnienia. Azymut – AI doradza, decyzję podejmuje przełożony.” |
 
 Przed nagraniem: tryb incognito (świeże dane demo), okno 1440 px, ukryte zakładki i powiadomienia; przy pytaniach do AI odczekać, aż odpowiedź się pojawi (limit darmowych modeli – najlepiej nagrywać fragmenty osobno i skleić).

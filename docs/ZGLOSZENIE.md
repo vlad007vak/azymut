@@ -8,7 +8,20 @@ Szkic do **soboty 20:00** (po 20:00 nie można utworzyć projektu ani zmienić z
 - **Zadanie:** Kompas kompetencji (Ministerstwo Cyfryzacji)
 - **Repozytorium:** https://github.com/vlad007vak/azymut
 - **Demo:** https://azymut-bubylda.vercel.app
-- **Numer stołu:** … (uzupełnia Vlad)
+- **Numer stołu:** 11B
+
+## Dotychczasowy postęp (pole „What's done so far and goal of your project”)
+Przed wydarzeniem: tylko ogólny szablon startowy (Next.js, Tailwind CSS, shadcn/ui, warstwa AI z darmowymi dostawcami), bez kodu
+związanego z zadaniem – opisany w README w sekcji „Wykorzystane zasoby”.
+
+Podczas hackathonu: obie ścieżki oceny (pierwsza i okresowa) z sugerowanym poziomem i wynikiem według rozporządzeń, asystent formalny AI
+ze źródłami i własną bazą pytań i odpowiedzi do podmiany przez urząd, analiza opisu stanowiska, asystent rozmowy, kontrola jakości
+uzasadnienia, arkusz do wydruku i PDF, eksport JSON z dokumentacją API (OpenAPI), panel HR ze statusami, terminami i przypomnieniami,
+role demonstracyjne. Aplikacja jest wdrożona i gotowa do samodzielnego testu przez jury bez zakładania konta:
+https://azymut-bubylda.vercel.app
+
+## Instrukcja dla jury (pole „Instrukcje jak otworzyć projekt”)
+Tekst z `README.md` → sekcja „Jak przetestować (dla jury)”.
 
 ## Krótki opis (1–2 zdania)
 Azymut prowadzi przełożonego w służbie cywilnej krok po kroku przez pierwszą ocenę i ocenę okresową: od doboru
