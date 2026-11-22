@@ -66,7 +66,7 @@
   --muted-foreground: #5a6478;
   --accent: #e6ecf6;
   --accent-foreground: #14254a;
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #c1121f; /* ciemniejsza czerwień błędu: tekst na tle bg-destructive/10 ≥ 4,5:1 (WCAG AA) */
   --border: #dfe4ec;
   --input: #d3dae5;
   --ring: #3b63b0;

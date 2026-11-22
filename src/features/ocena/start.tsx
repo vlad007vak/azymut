@@ -153,7 +153,7 @@ export function StartOcen() {
                             <span
                               className={cn(
                                 "hidden shrink-0 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap sm:inline",
-                                termin.pilne ? "bg-brand/10 text-brand" : "bg-muted text-muted-foreground",
+                                termin.pilne ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground",
                               )}
                             >
                               {termin.tekst}

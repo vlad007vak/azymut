@@ -22,11 +22,20 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Pełne adresy dla podglądu linku (Open Graph) – obrazek z src/app/opengraph-image.png.
+  metadataBase: new URL("https://azymut-bubylda.vercel.app"),
   title: {
     default: APP_CONFIG.name,
     template: `%s · ${APP_CONFIG.name}`,
   },
   description: APP_CONFIG.description,
+  openGraph: {
+    type: "website",
+    locale: "pl_PL",
+    siteName: APP_CONFIG.name,
+    title: `${APP_CONFIG.name} – ocena kompetencji krok po kroku`,
+    description: APP_CONFIG.tagline,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
