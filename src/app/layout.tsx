@@ -58,7 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <SiteFooter />
-          <Toaster richColors position="top-center" />
+          <Toaster richColors position="top-center" containerAriaLabel="Powiadomienia" />
         </TooltipProvider>
       </body>
     </html>

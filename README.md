@@ -60,14 +60,15 @@ i zapisują się tylko w Twojej przeglądarce (przycisk „Resetuj dane demo” 
    zmienia się od razu (np. rzetelność: średnia 4 pkt → „poniżej oczekiwań”).
 3. **„Przejdź do rozmowy oceniającej”** → zadaj pytanie asystentowi formalnemu (np. „Ile kryteriów
    dodatkowych może wybrać oceniający?”) i rozwiń źródła; otwórz **„Przygotuj rozmowę”** (asystent rozmowy).
-4. **„Rozmowa przeprowadzona – przejdź do decyzji”** → „Przyjmij sugestie” → wynik: średnia 5 pkt,
-   **ocena pozytywna**. Dla sprawdzenia reguł ustaw jednemu kryterium **1 pkt** → ocena negatywna
+4. **„Rozmowa przeprowadzona – przejdź do decyzji”** → **„Przyjmij sugestie dla kryteriów bez decyzji”** → wynik:
+   **ocena pozytywna** (średnia ok. 5 pkt – zależnie od zmian w kroku 2). Dla sprawdzenia reguł ustaw jednemu kryterium **1 pkt** → ocena negatywna
    (§ 11 ust. 1 pkt 4), bez uzasadnienia nie da się jej sporządzić.
 5. W polu „Uzasadnienie oceny” wpisz np. „Pracuje dobrze i jest zaangażowana. Ma trudny charakter.” →
    **„Sprawdź uzasadnienie”** → uwagi „Ogólnik” i „Ocena osoby zamiast zachowania” z cytatami (AI nie zmienia poziomów).
 6. **„Sporządź ocenę na piśmie”** → podgląd arkusza → **„Drukuj / zapisz PDF”**.
-7. Nowa ocena: strona główna → „Ocena okresowa” → **Rozpocznij ocenę** → w kroku 1 wybierz przykładowy opis
-   stanowiska „Naczelnik wydziału” → **Analizuj** (arkusz B, kryteria dodatkowe z uzasadnieniem) → **Zastosuj**.
+7. Nowa ocena: strona główna → „Ocena okresowa” → **Rozpocznij ocenę** → w oknie wybierz pracownika, okres oceny
+   i termin → **„Utwórz i przejdź do kreatora”** → w kroku 1 wybierz przykładowy opis stanowiska „Naczelnik wydziału”
+   → **„Analizuj opis stanowiska”** (arkusz B, kryteria dodatkowe z uzasadnieniem) → **Zastosuj**.
 8. Pierwsza ocena: **Julia Mazur** – skala 3/5/7 pkt i warunki z § 10 rozporządzenia o pierwszej ocenie.
 9. **Asystent formalny** (`/asystent`): pytania o terminy, kryteria i skalę; pytanie spoza tematu
    (np. o urlop) → komunikat „Brak informacji”. Pytanie z bazy pytań i odpowiedzi, np. „Co się dzieje z oryginałem
