@@ -51,7 +51,9 @@ export function AsystentPanel({ rodzaj, className, glownyPrzycisk = false }: Asy
   const [laduje, setLaduje] = useState(false);
   const koniecRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const poprzednioLaduje = useRef(false);
   const przyklady = przykladyDla(rodzaj);
   const inputId = `asystent-pytanie-${rodzaj ?? "wszystkie"}`;
 
@@ -60,6 +62,17 @@ export function AsystentPanel({ rodzaj, className, glownyPrzycisk = false }: Asy
   }, [wiadomosci, laduje]);
 
   useEffect(() => () => abortRef.current?.abort(), []);
+
+  // Po odpowiedzi (albo błędzie) fokus wraca do pola pytania. W trakcie ładowania pole i przycisk są zablokowane,
+  // więc przeglądarka gubi fokus (trafia na <body>) – focus() w `finally` nie działał, bo pole było jeszcze disabled.
+  // Nie zabieramy fokusu, jeśli użytkownik w tym czasie przeszedł do innego pola poza panelem.
+  useEffect(() => {
+    if (poprzednioLaduje.current && !laduje) {
+      const aktywny = document.activeElement;
+      if (!aktywny || aktywny === document.body || panelRef.current?.contains(aktywny)) inputRef.current?.focus();
+    }
+    poprzednioLaduje.current = laduje;
+  }, [laduje]);
 
   async function wyslij(tekst: string) {
     const pytanie = tekst.trim();
@@ -100,7 +113,6 @@ export function AsystentPanel({ rodzaj, className, glownyPrzycisk = false }: Asy
     } finally {
       setLaduje(false);
       abortRef.current = null;
-      inputRef.current?.focus();
     }
   }
 
@@ -112,7 +124,7 @@ export function AsystentPanel({ rodzaj, className, glownyPrzycisk = false }: Asy
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div ref={panelRef} className="flex flex-col gap-4">
       <div
         className={cn(
           "flex max-h-[34rem] min-h-64 flex-col gap-4 overflow-y-auto rounded-xl border bg-muted/50 p-4",

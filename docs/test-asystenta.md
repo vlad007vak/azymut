@@ -11,7 +11,7 @@ baza pytań i odpowiedzi (`src/data/baza-wiedzy/pytania-odpowiedzi.json`, opis: 
 **Ręcznie (Diana):** otwórz `/asystent`, wpisz pytanie z tabeli i sprawdź:
 1. odpowiedź zawiera fakty z kolumny „Oczekiwana odpowiedź” (pogrubione = muszą wystąpić),
 2. pod odpowiedzią jest źródło z kolumny „Źródło” – po kliknięciu widać dokument, miejsce i dosłowny cytat,
-3. pytania 18, 19 i 35 (spoza bazy) kończą się żółtym komunikatem „Brak informacji w bazie wiedzy” – bez zmyślonej odpowiedzi,
+3. pytania 18, 19, 35 i 58–62 (spoza bazy) kończą się żółtym komunikatem „Brak informacji w bazie wiedzy” – bez zmyślonej odpowiedzi,
 4. odpowiedź pojawia się zwykle w < 5 s; w trakcie widać „Szukam w bazie wiedzy…”.
 
 **Automatycznie:** przy działającej aplikacji
@@ -55,17 +55,49 @@ Skrypt robi 4 s przerwy między pytaniami (darmowe limity AI) i wypisuje ✓/✗
 | 28 | okresowa | Jak często ocenia się urzędnika w służbie cywilnej? | Co **24 miesi**ące – od dnia sporządzenia poprzedniej oceny albo od zatrudnienia na czas nieokreślony. | Ustawa `art. 81 ust. 4`, poradnik „Oceny okresowe” `s. 8` lub `s. 10` |
 | 29 | okresowa | Po jakim czasie od negatywnej oceny ocenia się pracownika ponownie? | Po upływie **6 miesi**ęcy od dnia zapoznania się z negatywną oceną. | Ustawa `art. 81 ust. 9`, poradnik „Oceny okresowe” `s. 13` lub `s. 34` |
 | 30 | okresowa | Ile czasu ma przełożony na ustalenie kryteriów po zatrudnieniu pracownika na czas nieokreślony? | **30 dni** od dnia zatrudnienia na czas nieokreślony (albo od sporządzenia poprzedniej oceny). | Rozporządzenie 2016 `§ 7`, poradnik `s. 20` |
-| 31 | pierwsza | Kiedy odbywa się rozmowa oceniająca z nowym pracownikiem? | **Niezwłocznie** po złożeniu **sprawozdani**a albo po upływie terminu wyznaczonego na jego złożenie. | Baza Q&A `qa-001` (+ rozporządzenie 2015 § 8) |
-| 32 | okresowa | Kiedy mogę złożyć wniosek o kolejny stopień służbowy dla urzędnika? | Przy ocenie **pozytywn**ej – umotywowany wniosek w części **III** arkusza. | Baza Q&A `qa-009` (+ rozporządzenie 2016 § 11 ust. 5) |
-| 33 | okresowa | Co się dzieje z oryginałem arkusza oceny okresowej? | Oryginał włącza się do **akt osobowych** ocenianego, a **kopi**ę oceniający doręcza ocenianemu. | Baza Q&A `qa-010` (+ rozporządzenie 2016 § 12) |
-| 34 | okresowa | Czy po zmianie stanowiska pracownik musi mieć nową ocenę okresową? | Tak, gdy zmiana wiąże się z istotną zmianą zakresu obowiązków, a od ostatniej oceny minęło ponad **6 miesi**ęcy; ocenę sporządza się nie wcześniej niż 7 dni przed zmianą i nie później niż **30 dni** od niej. | Baza Q&A `qa-011` (+ ustawa art. 81 ust. 6) |
+| 31 | pierwsza | Kiedy odbywa się rozmowa oceniająca z nowym pracownikiem? | **Niezwłocznie** po złożeniu **sprawozdani**a albo po upływie terminu wyznaczonego na jego złożenie. | Baza Q&A `qa-001` albo rozporządzenie 2015 `§ 8` |
+| 32 | okresowa | Kiedy mogę złożyć wniosek o kolejny stopień służbowy dla urzędnika? | Przy ocenie **pozytywn**ej – umotywowany wniosek w części **III** arkusza. | Baza Q&A `qa-009` albo rozporządzenie 2016 `§ 11` (ust. 5) |
+| 33 | okresowa | Co się dzieje z oryginałem arkusza oceny okresowej? | Oryginał włącza się do **akt osobowych** ocenianego, a **kopi**ę oceniający doręcza ocenianemu. | Baza Q&A `qa-010` albo rozporządzenie 2016 `§ 12` |
+| 34 | okresowa | Czy po zmianie stanowiska pracownik musi mieć nową ocenę okresową? | Tak, gdy zmiana wiąże się z istotną zmianą zakresu obowiązków, a od ostatniej oceny minęło ponad **6 miesi**ęcy; ocenę sporządza się nie wcześniej niż 7 dni przed zmianą i nie później niż **30 dni** od niej. | Baza Q&A `qa-011` albo ustawa `art. 81 ust. 6` |
 | 35 | – | Czy urzędnik może pracować zdalnie? | **brak informacji** – baza nie obejmuje pracy zdalnej. | – |
+| 36 | – | Co właściwie nowy pracownik ma opisać w sprawozdaniu? | Zadania z opisu stanowiska (i inne istotne), **problem**y i sposób ich rozwiązania, zdobyte nowe **umiejętności** i wiedzę, **wnioski** dotyczące usprawnienia wykonywania zadań. | Rozporządzenie 2015 `§ 6`, poradnik „Pierwsza ocena” `s. 22` |
+| 37 | – | A co jeśli nowy pracownik był długo na L4 i nie zdąży oddać sprawozdania w terminie? | Przełożony wyznacza **nowy termin**, przedłużając dotychczasowy o okres usprawiedliwionej nieobecności, i niezwłocznie zawiadamia ocenianego pisemnie (kopia pisma do arkusza). | Rozporządzenie 2015 `§ 5`, poradnik „Pierwsza ocena” `s. 10`, baza Q&A `qa-013` |
+| 38 | – | Czy nowy pracownik musi coś podpisać po rozmowie wstępnej? | Tak – potwierdza **podpis**em przeprowadzenie rozmowy wstępnej i zapoznanie się z terminem złożenia sprawozdania; dostaje też kopię części I i II arkusza. | Rozporządzenie 2015 `§ 4` |
+| 39 | – | jak sie liczy ocene laczna w pierwszej ocenie? | Ocena łączna to **średni**a **arytmetyczn**a z ocen cząstkowych za pięć elementów oceny. | Rozporządzenie 2015 `§ 7` |
+| 40 | – | Czy absolwent KSAP musi zdać egzamin ze służby przygotowawczej, żeby dostać pozytywną pierwszą ocenę? | Nie – warunku zaliczenia **egzamin**u nie stosuje się do absolwenta Krajowej Szkoły Administracji Publicznej, który nie złożył wniosku o mianowanie (ani do zatrudnionego na zastępstwo i na wyższym stanowisku). | Rozporządzenie 2015 `§ 10` |
+| 41 | – | Kto oprócz bezpośredniego przełożonego ma wpływ na pierwszą ocenę? | Pierwszej oceny dokonuje bezpośredni przełożony w porozumieniu z **kierując**ym komórką organizacyjną; kierujący komórką może też uczestniczyć w rozmowie oceniającej. | Ustawa `art. 38 ust. 2`, rozporządzenie 2015 `§ 8`, poradnik „Pierwsza ocena” `s. 26` |
+| 42 | – | Co pracownik dostaje po pierwszej ocenie i gdzie ląduje oryginał arkusza? | Oceniany dostaje **kopi**ę arkusza; oryginał wraz ze sprawozdaniem i pismami o zmianie terminów włącza się do **akt osobowych**. | Rozporządzenie 2015 `§ 11` |
+| 43 | – | Zatrudniam kogoś na zastępstwo – od kiedy liczę 21 dni na rozmowę wstępną? | Od dnia **ustaleni**a przez strony stosunku pracy, że oceniany będzie podlegać pierwszej ocenie. | Rozporządzenie 2015 `§ 3` |
+| 44 | – | O czym mam porozmawiać z nowym pracownikiem na rozmowie wstępnej? | Zapoznać ze sposobem dokonywania oceny, omówić główne **obowiązki** z opisu stanowiska i oczekiwania (postawa, zaangażowanie, relacje, terminowość), wyznaczyć termin złożenia **sprawozdani**a. | Rozporządzenie 2015 `§ 3` |
+| 45 | – | A co jeśli pracownik w ogóle nie odda sprawozdania – może dostać pozytywną ocenę? | Nie – złożenie sprawozdania w wyznaczonym terminie jest warunkiem pozytywnej oceny, więc przyznaje się ocenę **negatywn**ą; rozmowę oceniającą prowadzi się po upływie terminu na złożenie sprawozdania. | Rozporządzenie 2015 `§ 10` lub `§ 8` |
+| 46 | – | Jakie kryteria obowiązkowe są w arkuszu B dla kierownika zespołu? | **Zarządzanie ludźmi**, **podejmowanie decyzji** i odpowiedzialność, organizacja pracy i orientacja na osiąganie celów, współpraca, komunikacja. | Rozporządzenie 2016 `§ 4` |
+| 47 | – | Co poza punktami musi się znaleźć w ocenie okresowej? Chodzi mi o rozwój pracownika | Wnioski dotyczące **indywidualn**ego programu rozwoju zawodowego (IPRZ), wpisywane do arkusza. | Ustawa `art. 81 ust. 5`, rozporządzenie 2016 `§ 11` |
+| 48 | – | W trakcie okresu oceny zmienił się naczelnik – według jakich kryteriów oceni pracownika nowy szef? | Ocenę sporządza się na podstawie kryteriów wybranych **wcześniej**; zmiana na stanowisku oceniającego pozwala też zmienić termin oceny. | Rozporządzenie 2016 `§ 9`, ustawa `art. 81 ust. 8`, poradnik „Oceny okresowe” `s. 17`, baza Q&A `qa-014` |
+| 49 | – | Idę na dłuższe zwolnienie – czy mogę przesunąć termin oceny okresowej pracownika? | Tak – oceniający może zmienić termin przy przewidywanej dłuższej usprawiedliwionej **nieobecnoś**ci **oceniając**ego (art. 81 ust. 8 pkt 3 – nie mylić z nieobecnością ocenianego, pkt 2); o nowym terminie niezwłocznie zawiadamia ocenianego pisemnie. | Ustawa `art. 81 ust. 8`, rozporządzenie 2016 `§ 8`, baza Q&A `qa-015` |
+| 50 | – | Pracownik ma z jednego kryterium 1 pkt, ale średnia wyszła 5,4 – to ocena pozytywna czy negatywna? | **Negatywn**a – co najmniej jedna ocena cząstkowa na poziomie znacznie poniżej oczekiwań (1 pkt) daje ocenę negatywną niezależnie od średniej. | Rozporządzenie 2016 `§ 11` |
+| 51 | – | Średnia z ocen cząstkowych w ocenie okresowej wyszła 6,5 – jaki to ogólny poziom? | **Powyżej oczekiwań** (powyżej 6 do 8 punktów). | Rozporządzenie 2016 `§ 11` |
+| 52 | – | czy pracownik na umowie na czas okreslony tez podlega ocenie okresowej? | Nie – ocenie okresowej podlega urzędnik oraz pracownik zatrudniony na umowę na czas **nieokreślon**y. | Ustawa `art. 81 ust. 1` |
+| 53 | – | Czy pracownik musi podpisać ustalone kryteria oceny okresowej i co dostaje do ręki? | Tak – potwierdza **podpis**em rozmowę i zapoznanie się z kryteriami i terminem oceny; oryginał arkusza trafia do akt osobowych, a oceniany dostaje **kopi**ę części I arkusza. | Rozporządzenie 2016 `§ 6` |
+| 54 | – | Dyrektor uwzględnił sprzeciw pracownika – co się dzieje z oceną? | Ocenę zmienia się albo sporządza **po raz drugi**; od oceny sporządzonej po raz drugi znów przysługuje sprzeciw. | Ustawa `art. 83 ust. 4` |
+| 55 | – | Czy każdemu pracownikowi muszę wyznaczać cele na okres oceny? | Nie – cele wyznacza się, jeżeli ich określenie jest **uzasadnion**e charakterem obowiązków z opisu stanowiska. | Rozporządzenie 2016 `§ 5` |
+| 56 | – | A co jeśli 3 miesiące po ustaleniu kryteriów pracownik przeszedł na stanowisko z innymi obowiązkami? | W ciągu **30 dni** od zmiany stanowiska ponownie przeprowadza się rozmowę i ustala kryteria; termin sporządzenia oceny nie ulega zmianie. | Rozporządzenie 2016 `§ 9` |
+| 57 | – | Czy ocena okresowa dotyczy tylko obowiązków z opisu stanowiska? I czy musi być na piśmie? | Tak – dotyczy wykonywania obowiązków z **opisu** zajmowanego stanowiska; sporządza się ją **na piśmie** i niezwłocznie zapoznaje z nią ocenionego. | Ustawa `art. 81 ust. 3` |
+| 58 | – | Ile wynosi nagroda jubileuszowa za 20 lat pracy w urzędzie? | **brak informacji** – baza nie obejmuje nagród jubileuszowych. | – |
+| 59 | – | Jaki jest okres wypowiedzenia dla urzędnika mianowanego? | **brak informacji** – baza nie obejmuje rozwiązywania stosunku pracy. | – |
+| 60 | – | Jak rozliczyć delegację służbową pracownika? | **brak informacji** – baza nie obejmuje podróży służbowych. | – |
+| 61 | – | Ile płaci się za nadgodziny w urzędzie? | **brak informacji** – baza nie obejmuje wynagrodzeń. | – |
+| 62 | – | Jaka będzie jutro pogoda w Bydgoszczy? | **brak informacji** – pytanie spoza tematu. | – |
 
 Wiersze 31–34 trafiają w pozycje bazy pytań i odpowiedzi (zadanie #40), zadane innymi słowami niż w bazie –
-w źródłach musi być „Baza pytań i odpowiedzi – …” z podanym identyfikatorem (zwykle obok przepisu); wiersz 35 jest spoza bazy.
+w źródłach powinna być „Baza pytań i odpowiedzi – …” z podanym identyfikatorem albo przepis, na którym pozycja się opiera
+(model często woli cytować wiążący paragraf – to też poprawne źródło); wiersz 35 jest spoza bazy.
 
 Wiersze 25–30 to te same fakty co wyżej, ale sformułowane innymi słowami (jak pyta jury) – sprawdzają, że asystent
 nie odpowiada fałszywym „brak informacji” (zgłoszenie #26).
+
+Wiersze 36–62 (zadanie #61) to pytania „jak jury”: potocznie, bez polskich znaków, dwa pytania w jednym, „a co jeśli…”.
+Mają ścieżkę „–”, więc skrypt wysyła je **bez parametru `rodzaj`** – dokładnie tak jak strona `/asystent`.
+36–45 dotyczą pierwszej oceny, 46–57 oceny okresowej, 58–62 są spoza bazy.
 
 ## Dodatkowo do sprawdzenia w UI
 - Pytanie z imieniem i nazwiskiem (np. „Jak ocenić Annę Kowalczyk, która się spóźnia?”) – pod odpowiedzią informacja,
