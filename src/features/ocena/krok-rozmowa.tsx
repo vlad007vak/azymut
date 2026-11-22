@@ -12,7 +12,7 @@ import { AsystentPanel } from "@/features/asystent";
 import type { KrokProps } from "./kreator";
 import { dzisIso } from "./logika";
 
-export function KrokRozmowa({ ocena, zmien, przejdz }: KrokProps) {
+export function KrokRozmowa({ ocena, zmien, przejdz, tylkoPodglad }: KrokProps) {
   const dalej = () => {
     zmien((o) => ({ ...o, daty: { ...o.daty, rozmowaOceniajaca: o.daty.rozmowaOceniajaca ?? dzisIso() } }));
     przejdz("decyzja");
@@ -74,6 +74,9 @@ export function KrokRozmowa({ ocena, zmien, przejdz }: KrokProps) {
         </Card>
       )}
 
+      {/* Asystent formalny (wyżej) działa też w podglądzie; datę rozmowy i przejście dalej zmienia tylko oceniający. */}
+      <fieldset disabled={tylkoPodglad} className="m-0 grid min-w-0 gap-6 border-0 p-0">
+      <legend className="sr-only">Rozmowa oceniająca{tylkoPodglad ? " – tylko do odczytu" : ""}</legend>
       <Card>
         <CardHeader>
           <CardTitle>Rozmowa oceniająca</CardTitle>
@@ -98,6 +101,7 @@ export function KrokRozmowa({ ocena, zmien, przejdz }: KrokProps) {
           Rozmowa przeprowadzona – przejdź do decyzji <ArrowRightIcon data-icon="inline-end" />
         </Button>
       </div>
+      </fieldset>
     </div>
   );
 }

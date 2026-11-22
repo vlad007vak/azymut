@@ -1,7 +1,7 @@
 "use client";
 
-import { opisRoli, useRola } from "@/features/role";
-import type { Ocena, Osoba } from "@/types/ocena";
+import { useRola, useUprawnieniaOceny } from "@/features/role";
+import type { Ocena } from "@/types/ocena";
 
 export interface DostepRozmowy {
   /** Czy można przygotowywać plan i zapisywać notatki w ocenie. */
@@ -12,30 +12,24 @@ export interface DostepRozmowy {
   gotowe: boolean;
 }
 
-function taSamaOsoba(a: Osoba, b: Osoba): boolean {
-  return a.imie === b.imie && a.nazwisko === b.nazwisko && a.stanowisko === b.stanowisko;
-}
-
 /**
- * Uprawnienia roli demonstracyjnej w asystencie rozmowy: HR tylko przegląda, przełożony edytuje
- * oceny swoich pracowników, bez wybranej roli – jak przełożony demonstracyjny (jak dotąd).
- * Te same zasady proponujemy jako wspólne `dostepDoOceny` w `@/features/role` (ZMIANA WSPÓLNA w PR) –
- * po ich wdrożeniu ten hook zastąpi `useDostepDoOceny`.
+ * Uprawnienia w asystencie rozmowy – decyzja według wspólnych zasad `useUprawnieniaOceny`
+ * (`src/lib/ocena/uprawnienia.ts`: HR tylko przegląda, przełożony edytuje oceny swoich pracowników,
+ * bez wybranej roli – jak przełożony demonstracyjny). Tu dochodzi tylko komunikat dla roli HR
+ * dopasowany do tego ekranu i `gotowe` (do czasu odczytu roli nie pokazujemy pól edycji).
  * Prototyp: rola jest w cookie przeglądarki, to nie jest autoryzacja serwerowa.
  */
-export function useDostepRozmowy(ocena: Pick<Ocena, "oceniajacy">): DostepRozmowy {
+export function useDostepRozmowy(ocena: Ocena): DostepRozmowy {
   const { rola, gotowe } = useRola();
+  const { edycja, powod } = useUprawnieniaOceny(ocena);
   if (!gotowe) return { edycja: false, powod: null, gotowe: false };
-  if (rola === "hr") {
-    return {
-      edycja: false,
-      powod: "Jesteś w roli HR: widzisz kryteria, listę kontrolną i zapisane notatki, ale rozmowę przygotowuje i notatki zapisuje przełożony.",
-      gotowe: true,
-    };
-  }
-  const przelozony = opisRoli("przelozony").osoba;
-  if (przelozony && !taSamaOsoba(przelozony, ocena.oceniajacy)) {
-    return { edycja: false, powod: "To ocena pracownika innego przełożonego – możesz ją tylko przeglądać.", gotowe: true };
-  }
-  return { edycja: true, powod: null, gotowe: true };
+  if (edycja) return { edycja: true, powod: null, gotowe: true };
+  return {
+    edycja: false,
+    powod:
+      rola === "hr"
+        ? "Jesteś w roli HR: widzisz kryteria, listę kontrolną i zapisane notatki, ale rozmowę przygotowuje i notatki zapisuje przełożony."
+        : (powod ?? null),
+    gotowe: true,
+  };
 }
