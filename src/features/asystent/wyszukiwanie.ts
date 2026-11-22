@@ -167,3 +167,23 @@ export class Bm25<T extends Dokumentowalny> {
     return wynik.slice(0, opcje.limit ?? 6);
   }
 }
+
+/** Od tylu znaków pytanie traktujemy jako „opis sytuacji + właściwe pytanie”. */
+const DLUGIE_PYTANIE = 250;
+
+/**
+ * Sedno długiego pytania – warianty do osobnego wyszukania: same zdania pytające (od pierwszego z „?”)
+ * oraz te zdania razem ze zdaniem tuż przed nimi (często niesie kontekst: „zbliża się ocena okresowa…”).
+ * Bez „?” – ostatnie zdanie i dwa ostatnie. Długi opis sytuacji (pracownica, departament, projekty…)
+ * ma wiele słów spoza przepisów i rozmywa pokrycie, przez co trafne pytanie dostawało „brak informacji”.
+ * Dla krótkich pytań – pusta lista (zachowanie bez zmian).
+ */
+export function sednoPytania(tekst: string): string[] {
+  if (tekst.length < DLUGIE_PYTANIE) return [];
+  const zdania = (tekst.match(/[^.!?]+[.!?]*/g) ?? []).map((s) => s.trim()).filter(Boolean);
+  if (zdania.length < 3) return [];
+  const pierwszePytanie = zdania.findIndex((s) => s.endsWith("?"));
+  const od = pierwszePytanie >= 0 ? pierwszePytanie : zdania.length - 1;
+  const warianty = [zdania.slice(od).join(" "), zdania.slice(Math.max(0, od - 1)).join(" ")];
+  return [...new Set(warianty)].filter((w) => w.length < tekst.length);
+}

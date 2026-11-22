@@ -8,7 +8,7 @@ import type { AsystentZapytanie } from "@/types/api";
 import { anonimizuj, ZNACZNIK_OSOBY } from "./anonimizacja";
 import { szukajFragmentow, type Fragment } from "./baza";
 import type { OdpowiedzAsystenta, ZrodloAsystenta } from "./typy";
-import { bezPolskichZnakow, tokeny } from "./wyszukiwanie";
+import { bezPolskichZnakow, sednoPytania, tokeny } from "./wyszukiwanie";
 
 export const BRAK_INFORMACJI =
   "Nie znalazłem odpowiedzi na to pytanie w bazie wiedzy asystenta (przepisy o ocenach z ustawy o służbie cywilnej, rozporządzenia o pierwszej ocenie i o ocenach okresowych, poradniki KPRM, model kompetencji, baza pytań i odpowiedzi), więc nie będę zgadywać. Spróbuj zadać pytanie inaczej albo skontaktuj się z komórką kadr.";
@@ -142,7 +142,14 @@ export async function odpowiedzNaPytanie(z: AsystentZapytanie): Promise<Odpowied
     if (c) return c;
   }
 
-  const { fragmenty, pokrycie } = szukajFragmentow(doSzukania, z.rodzaj);
+  // Długie pytanie (opis sytuacji + pytanie na końcu): szukamy też po samym sednie i bierzemy lepsze pokrycie.
+  // Model i tak dostaje całe pytanie – zmienia się tylko dobór fragmentów i próg „brak informacji”.
+  let wyszukiwanie = szukajFragmentow(doSzukania, z.rodzaj);
+  for (const sedno of sednoPytania(doSzukania)) {
+    const zSedna = szukajFragmentow(sedno, z.rodzaj);
+    if (zSedna.pokrycie > wyszukiwanie.pokrycie) wyszukiwanie = zSedna;
+  }
+  const { fragmenty, pokrycie } = wyszukiwanie;
   const brak: OdpowiedzAsystenta = { odpowiedz: BRAK_INFORMACJI, zrodla: [], brakInformacji: true, zanonimizowano };
   if (fragmenty.length === 0 || pokrycie < MIN_POKRYCIE) return brak;
 
