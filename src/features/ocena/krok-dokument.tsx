@@ -14,7 +14,7 @@ import { rozstrzygnij } from "./krok-decyzja";
 import type { KrokProps } from "./kreator";
 import { data, doEtapu, dzisIso, liczba, NAZWA_URZEDU_DEMO, sugestiaKryterium } from "./logika";
 
-export function KrokDokument({ ocena, zmien }: KrokProps) {
+export function KrokDokument({ ocena, zmien, tylkoPodglad }: KrokProps) {
   const osoba = znajdzPracownika(ocena.pracownikId);
   const wynik = rozstrzygnij(ocena);
   const okresowa = ocena.rodzaj === "okresowa";
@@ -38,7 +38,8 @@ export function KrokDokument({ ocena, zmien }: KrokProps) {
             <PrinterIcon data-icon="inline-start" /> Drukuj / zapisz PDF
           </Button>
           <EksportOceny ocena={ocena} urzad={NAZWA_URZEDU_DEMO} />
-          {ocena.etap === "sporzadzona" && (
+          {/* Druk i eksport są dostępne też w podglądzie (HR: podgląd i archiwum arkusza – docs/ROLE.md). */}
+          {ocena.etap === "sporzadzona" && !tylkoPodglad && (
             <Button onClick={zapoznany}>
               <CheckIcon data-icon="inline-start" /> Pracownik zapoznał się z oceną
             </Button>
