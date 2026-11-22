@@ -6,8 +6,8 @@ Projekt zespołu **Azymut** przygotowany podczas **HackNation 2026** (Bydgoszcz,
 w ramach zadania **Kompas kompetencji** (Ministerstwo Cyfryzacji).
 
 - 🌐 **Demo:** https://azymut-bubylda.vercel.app (bez logowania, dane demonstracyjne są fikcyjne)
-- 🎬 **Wideo (do 2 min):** https://…
-- 📊 **Prezentacja:** https://…
+- 📊 **Prezentacja (PDF, 10 slajdów):** [docs/pdf/Azymut-prezentacja.pdf](docs/pdf/Azymut-prezentacja.pdf)
+- 📄 **Dokumentacja w PDF:** [docs/pdf](docs/pdf) – lista niżej, w sekcji [Dokumentacja](#dokumentacja)
 - 💻 **Kod:** https://github.com/vlad007vak/azymut
 
 ## Problem
@@ -130,6 +130,20 @@ flowchart LR
 - Integracja z systemem klasy EZD – przekazanie podpisanego arkusza do akt.
 - Rozbudowa panelu HR o raporty dla urzędu i powiadomienia e-mail.
 - Udostępnienie innym urzędom administracji – model kompetencji i baza wiedzy jako konfigurowalne pliki.
+
+## Dokumentacja
+Każdy dokument jest w repozytorium w dwóch postaciach: Markdown (źródło) i PDF (do czytania i wydruku, bez instalowania czegokolwiek).
+
+| Dokument | PDF | Źródło |
+|---|---|---|
+| Prezentacja (10 slajdów) | [Azymut-prezentacja.pdf](docs/pdf/Azymut-prezentacja.pdf) | konspekt: [docs/PREZENTACJA.md](docs/PREZENTACJA.md) |
+| Opis projektu (ten plik) | [README.pdf](docs/pdf/README.pdf) | [README.md](README.md) |
+| API i wymiana danych (OpenAPI, integracje, bezpieczeństwo) | [API.pdf](docs/pdf/API.pdf) | [docs/API.md](docs/API.md) |
+| Baza wiedzy asystenta formalnego i podmiana bazy pytań i odpowiedzi | [BAZA-WIEDZY.pdf](docs/pdf/BAZA-WIEDZY.pdf) | [docs/BAZA-WIEDZY.md](docs/BAZA-WIEDZY.md) |
+| Role i uprawnienia | [ROLE.pdf](docs/pdf/ROLE.pdf) | [docs/ROLE.md](docs/ROLE.md) |
+| Zestaw testowy asystenta formalnego (66 pytań) | [test-asystenta.pdf](docs/pdf/test-asystenta.pdf) | [docs/test-asystenta.md](docs/test-asystenta.md) |
+| Pitch finałowy – scenariusz, plan B, odpowiedzi na pytania jury | [PITCH.pdf](docs/pdf/PITCH.pdf) | [docs/PITCH.md](docs/PITCH.md) |
+| Sposób pracy zespołu (4 programistów + testerka) | [WORKFLOW.pdf](docs/pdf/WORKFLOW.pdf) | [docs/WORKFLOW.md](docs/WORKFLOW.md) |
 
 ## Uruchomienie lokalne
 ```bash

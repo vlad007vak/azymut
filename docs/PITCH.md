@@ -1,7 +1,7 @@
 # Pitch finałowy (etap II) – scenariusz, plan B i ściąga na pytania jury
 
 Etap II (top 5): niedziela **15:15**, **maks. 5 min pitchu + maks. 5 min pytań jury**; punkty z etapu I się nie liczą.
-Pitch prowadzi **Andrey**. Demo: https://azymut-bubylda.vercel.app · Slajdy: `docs/PREZENTACJA.md` (numery slajdów poniżej).
+Pitch prowadzi **Andrey**. Demo: https://azymut-bubylda.vercel.app · Slajdy: `docs/pdf/Azymut-prezentacja.pdf` (konspekt: `docs/PREZENTACJA.md`; numery slajdów poniżej).
 
 Zasada ściągi: odpowiadamy **wyłącznie faktami z repozytorium**. Czego nie ma w repo – „DO USTALENIA z Vladem”,
 na scenie: „Tego nie sprawdzaliśmy w prototypie – to element planu wdrożenia”. Nie podajemy kwot, liczby urzędów ani terminów.
@@ -10,7 +10,8 @@ na scenie: „Tego nie sprawdzaliśmy w prototypie – to element planu wdrożen
 
 ## 0. Przygotowanie (15 min przed wejściem)
 
-- [ ] Na pendrivie: slajdy w PDF i wideo 2 min (mp4) + zapasowa kopia. Slajdy i wideo pokazujemy z komputera na scenie.
+- [ ] Na pendrivie: slajdy w PDF + zapasowa kopia (także w repozytorium: `docs/pdf/Azymut-prezentacja.pdf`). Slajdy pokazujemy
+      z komputera na scenie. Wideo nie nagrywamy (decyzja zespołu, 22.11).
 - [ ] Komputer na scenie: zamknąć **wszystkie** okna incognito (w Chrome okna incognito współdzielą dane), otworzyć nowe okno
       incognito z https://azymut-bubylda.vercel.app. Świeże dane demo = Anna Kowalczyk w kroku „Ocena wskaźników”.
       Zły stan danych → Panel HR → „Resetuj dane demo”.
@@ -21,7 +22,7 @@ na scenie: „Tego nie sprawdzaliśmy w prototypie – to element planu wdrożen
       (`src/features/asystent/odpowiedz.ts`), więc to samo pytanie na scenie może przyjść szybciej (bez gwarancji – Vercel może użyć innej instancji).
 - [ ] W schowku tekst do kroku „Uzasadnienie”: `Pracuje dobrze i jest zaangażowana. Ma trudny charakter.`
 - [ ] Slajdy (PDF z pendrive'a) otwarte na komputerze na scenie obok okna demo.
-- [ ] Diana: telefon z hotspotem i laptop zapasowy z wideo 2 min gotowe (plan B).
+- [ ] Diana: telefon z hotspotem i laptop zapasowy ze slajdami PDF gotowe (plan B).
 
 ---
 
@@ -31,7 +32,7 @@ Tempo planu: ok. 130 słów/min. Plan kończy się na **4:45** – 15 s rezerwy 
 **Pełna ścieżka, której wymaga mentorka MC** (#3, odpowiedzi mentorki): rozpoczęcie procesu, stanowisko i kryteria (0:40) →
 ocena wskaźników i sugerowany poziom (1:00) → decyzja przełożonego (2:00) → arkusz (2:45).
 Na scenie: **Andrey** mówi, **Vlad** przy komputerze na scenie klika demo według scenariusza, **Diana** – telefon z hotspotem
-i laptop zapasowy z wideo.
+i laptop zapasowy ze slajdami PDF.
 
 | Czas | Kto mówi | Na ekranie | Tekst |
 |---|---|---|---|
@@ -71,15 +72,15 @@ i laptop zapasowy z wideo.
 ## 2. Plan B
 
 Kto przełącza: **Vlad** (przy komputerze na scenie) decyduje i przełącza, **Andrey mówi dalej** bez przerwy;
-**Diana** trzyma telefon z hotspotem i laptop zapasowy z wideo.
+**Diana** trzyma telefon z hotspotem i laptop zapasowy ze slajdami PDF.
 
 | Sytuacja | Po czym poznać | Co robimy |
 |---|---|---|
 | AI odpowiada wolno | Po 5 s nadal „Szukam w bazie wiedzy…” / brak uwag | Andrey mówi dalej tekst z tabeli. Po 10 s Vlad przechodzi do kroku „Decyzja” (nie potrzebuje AI), Andrey: „Odpowiedź z przykładem źródła jest na slajdzie 7” – pokazujemy slajd 7 na końcu. |
 | Limit darmowych modeli | Czerwony komunikat „Asystent AI jest chwilowo niedostępny (limit darmowych modeli). Spróbuj ponownie za chwilę.” | Pokazujemy slajd 7 (zrzut odpowiedzi ze źródłem). Kontrola jakości przy limicie pokazuje żółty komunikat i same sprawdzenia automatyczne – mówimy: „reguły działają także bez AI”. Ocena, sugestia, wynik i arkusz **nie korzystają z AI** – demo idzie dalej. |
-| Brak internetu | Strona się nie ładuje | 1) hotspot z telefonu (Diana); 2) jeśli nie działa w 20 s – **wideo 2 min z pendrive'a** na komputerze na scenie (albo z laptopa zapasowego Diany); slajdy PDF działają bez internetu. Andrey komentuje wideo tekstem z tabeli. |
+| Brak internetu | Strona się nie ładuje | 1) hotspot z telefonu (Diana); 2) jeśli nie działa w 20 s – **slajdy PDF** (działają bez internetu, są na nich zrzuty ekranu z produkcji) na komputerze na scenie albo na laptopie zapasowym Diany. Andrey opowiada demo tekstem z tabeli, pokazując zrzuty. |
 | Zły stan danych demo | Anna nie jest w kroku „Ocena wskaźników” | Nowe okno incognito (po zamknięciu wszystkich) albo Panel HR → „Resetuj dane demo”. |
-| Błąd strony / pusty ekran | Biała strona, komunikat błędu | Odświeżyć raz (dane zostają w przeglądarce). Nie pomogło → wideo 2 min. |
+| Błąd strony / pusty ekran | Biała strona, komunikat błędu | Odświeżyć raz (dane zostają w przeglądarce). Nie pomogło → slajdy PDF ze zrzutami ekranu (jak przy braku internetu). |
 
 ---
 
@@ -279,7 +280,7 @@ gdy na scenie po kontroli jakości zegar pokazuje więcej niż 3:10, pomijamy sl
 ## 6. DO USTALENIA z Vladem
 
 1. **Ustalone:** Vlad – komputer na scenie (klika demo według scenariusza), Andrey – mówi, Diana – telefon z hotspotem i laptop
-   zapasowy z wideo.
+   zapasowy ze slajdami PDF.
 2. **Ustalone** (#3, odpowiedzi mentorki MC, 21.11): sugerowany poziom – równe wagi, średnia ze wskaźników, § 11 ust. 1 pkt 2
    (ściąga pyt. 2); pierwsza ocena 3/5/7, „na poziomie oczekiwań” = 5 pkt (pyt. 3); tylko arkusze B i C (pyt. 5); aplikacja
    webowa na komputer, na ekranach < 768 px pasek bez blokady – PR #39 (pyt. 8). Wymóg do demo: co najmniej jedna kompletna
@@ -289,8 +290,8 @@ gdy na scenie po kontroli jakości zegar pokazuje więcej niż 3:10, pomijamy sl
    **62/62** (Maks, PR #64), po dodaniu długich pytań **66/66** (Maks, PR #70).
 4. Koszty wdrożenia, liczba urzędów, harmonogram – brak w repo, na scenie nie podajemy liczb.
 5. Czy ktoś testował aplikację z prawdziwymi przełożonymi / HR.
-6. **Ustalone:** internet na scenie będzie; slajdy (PDF) i wideo (mp4) pokazujemy z pendrive'a na komputerze na scenie;
-   demo lokalnego z Ollamą nie robimy (decyzja zespołu).
-7. Linki do wideo i prezentacji (w `README.md` jeszcze „https://…”).
+6. **Ustalone:** internet na scenie będzie; slajdy (PDF) pokazujemy z pendrive'a na komputerze na scenie;
+   wideo nie nagrywamy, demo lokalnego z Ollamą nie robimy (decyzje zespołu).
+7. **Ustalone:** prezentacja w `README.md` → `docs/pdf/Azymut-prezentacja.pdf`; wideo nie powstaje (decyzja zespołu, 22.11).
 8. **Ustalone (decyzja zespołu):** logowanie – role demonstracyjne, docelowo system tożsamości urzędu (SSO); przypomnienia HR
    symulowane, docelowo powiadomienia e-mail. Mentorka prosiła o doprecyzowanie pytania (#3) – jeśli odpowie inaczej, wracamy do tematu.
