@@ -250,7 +250,9 @@ const TEMATY = {
     6: "zapoznanie z kryteriami podpis kopia części I arkusza akta osobowe",
     7: "termin 30 dni 7 dni po ocenie negatywnej ustalenie kryteriów zatrudnienie na czas nieokreślony",
     8: "zmiana terminu oceny zawiadomienie pisemne",
-    9: "zmiana stanowiska zmiana oceniającego przełożonego 6 miesięcy",
+    // ust. 3 – przełożeni pytają o to słowami „przejąłem zespół po poprzedniku”, „kryteria, które wybrał poprzednik”.
+    // Bez „zespół” i „kryteria” – podbijały § 9 w pytaniach o arkusz B „dla kierownika zespołu”.
+    9: "zmiana stanowiska zmiana oceniającego przełożonego 6 miesięcy poprzednik przejął przejęła wybrał",
     10: "rozmowa oceniająca co omówić rozwój zawodowy",
     11: "skala ocen punkty 1 3 5 7 9 średnia ogólny poziom ocena pozytywna negatywna IPRZ uzasadnienie stopień służbowy",
     12: "zapoznanie z oceną akta osobowe kopia arkusza",
