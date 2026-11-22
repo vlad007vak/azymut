@@ -1,6 +1,6 @@
 /**
  * KONTRAKT API (body żądań walidujemy zod-em w route.ts; tu są kształty wymieniane między funkcjami).
- * Zmienia tylko Vlad / lead AI – prośba przez „ZMIANA WSPÓLNA:”.
+ * Zmienia tylko Vlad – prośba przez „ZMIANA WSPÓLNA:”.
  *
  * Zasada minimalizacji danych: do żadnego endpointu AI nie wysyłamy imion i nazwisk.
  */

@@ -1,5 +1,5 @@
 # Automatyczna kontrola każdego PR: lint + build.
-# Czerwony status = nie mergujemy (patrz CLAUDE.md).
+# Czerwony status = nie mergujemy.
 name: CI
 
 on:

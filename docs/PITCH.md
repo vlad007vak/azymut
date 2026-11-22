@@ -148,7 +148,7 @@ Do tego asystent formalny i plan rozmowy w tym samym miejscu.
 Zadanie mówi, że system nie ma być przeznaczony na smartfony. **Mentorka MC potwierdziła:** aplikacja webowa na komputer,
 a blokada telefonu – według uznania zespołu (#3, odpowiedzi mentorki). Projektujemy pod komputer (od 1024 px). Na ekranie
 węższym niż 768 px pokazujemy pasek „Azymut jest przeznaczony na komputer” – bez blokady; nawigacja zwija się do menu.
-Źródło: `CLAUDE.md` → „Target is the desktop browser”; `src/components/uwaga-komputer.tsx` (PR #39); `src/components/mobile-nav.tsx`;
+Źródło: `README.md` → „Jak przetestować (dla jury)”; `src/components/uwaga-komputer.tsx` (PR #39); `src/components/mobile-nav.tsx`;
 issue #3 (odpowiedzi mentorki, pyt. 1).
 
 **9. Ile czasu zajmuje przełożonemu jedna ocena?** *(Andrey)*
@@ -157,9 +157,10 @@ kompletną ocenę okresową przechodzimy w ok. 2,5 minuty, ale na danych przygot
 Źródło: scenariusz powyżej (demo 0:40–3:05).
 
 **10. Czy aplikacja jest dostępna (WCAG)?** *(Andrey)*
-Zasady projektu wymagają etykiet pól, atrybutów `aria-*` i obsługi klawiatury, ale pełnego audytu dostępności nie robiliśmy –
-testy dostępności są na liście „przed wdrożeniem produkcyjnym”.
-Źródło: `README.md` → „Bezpieczeństwo i ochrona danych” (ostatni punkt); `CLAUDE.md` → „Quality bar”.
+Pola mają etykiety, atrybuty `aria-*` i obsługę klawiatury. Zrobiliśmy automatyczny audyt axe-core (WCAG 2.1 A i AA) na 18 ekranach –
+po poprawce kontrastu **0 naruszeń** (PR #66). Testów z użytkownikami i czytnikami ekranu nie robiliśmy – pełne testy dostępności
+są na liście „przed wdrożeniem produkcyjnym”.
+Źródło: PR #66 (audyt axe-core); `README.md` → „Bezpieczeństwo i ochrona danych” (ostatni punkt).
 
 ### Jakość i użyteczność AI (20%)
 

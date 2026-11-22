@@ -19,4 +19,4 @@ Closes #<!-- numer zadania -->
 - [ ] Zmieniam (wtedy etykieta `review-needed`, nie merguję sam): <!-- co i dlaczego -->
 
 ### Pytania / problemy / co dalej
-- <!-- otwarte kwestie dla lead AI / Vlada -->
+- <!-- otwarte kwestie dla Vlada -->
