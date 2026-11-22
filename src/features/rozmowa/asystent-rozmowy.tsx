@@ -4,6 +4,7 @@ import {
   AlertTriangleIcon,
   ClipboardCopyIcon,
   ClipboardListIcon,
+  EyeIcon,
   InfoIcon,
   ListChecksIcon,
   Loader2Icon,
@@ -26,12 +27,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { useUprawnieniaOceny } from "@/features/role";
 import { pobierzOcene, pracownik as znajdzPracownika, PRACOWNICY, useOcena, zapiszOcene } from "@/lib/ocena/store";
 import { nazwaEtapu } from "@/lib/ocena/zasady";
 import type { RozmowaPlan } from "@/types/api";
 import type { Ocena } from "@/types/ocena";
 
+import { useDostepRozmowy } from "./dostep";
 import { ListaKontrolnaRozmowy } from "./lista-kontrolna";
 import { LISTA_KONTROLNA } from "./lista-kontrolna-dane";
 import { PlanRozmowy } from "./plan-rozmowy";
@@ -93,10 +94,23 @@ function kopiujAwaryjnie(tekst: string): boolean {
   }
 }
 
+/** yyyy-mm-dd → „01.04.2026” w czasie lokalnym (`new Date("2026-04-01")` to północ UTC – w strefach na zachód od UTC dawało dzień wcześniej). */
 function formatujDate(iso?: string): string {
   if (!iso) return "—";
-  const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString("pl-PL");
+  const [r, m, d] = iso.slice(0, 10).split("-").map(Number);
+  const data = new Date(r, m - 1, d);
+  return !r || !m || !d || Number.isNaN(data.getTime())
+    ? iso
+    : data.toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+/** W trybie podglądu natywny `<fieldset disabled>` wyłącza wszystkie pola i przyciski w środku. */
+function Edycja({ tylkoOdczyt, className, children }: { tylkoOdczyt: boolean; className?: string; children: React.ReactNode }) {
+  return (
+    <fieldset disabled={tylkoOdczyt} className={`min-w-0 [&:disabled_label]:cursor-default ${className ?? ""}`}>
+      {children}
+    </fieldset>
+  );
 }
 
 export function LadowanieRozmowy() {
@@ -145,10 +159,10 @@ export function AsystentRozmowy({ ocenaId }: { ocenaId: string }) {
 type StanAi = { typ: "bezczynny" } | { typ: "ladowanie" } | { typ: "blad"; komunikat: string };
 
 function WidokRozmowy({ ocena }: { ocena: Ocena }) {
+  const dostep = useDostepRozmowy(ocena);
+  const tylkoOdczyt = !dostep.edycja;
   const osoba = znajdzPracownika(ocena.pracownikId);
   const kryteria = useMemo(() => podsumujOcene(ocena), [ocena]);
-  // HR (i nie-oceniający) może przygotować plan dla siebie, ale nie zapisuje notatek ani wniosków w ocenie.
-  const { edycja, powod } = useUprawnieniaOceny(ocena);
   const [szkic, setSzkic] = useState<SzkicRozmowy>(() => wczytajSzkic(ocena.id));
   const [stanAi, setStanAi] = useState<StanAi>({ typ: "bezczynny" });
   // Blokada podwójnego kliknięcia – stan Reacta zmienia się dopiero po ponownym renderze.
@@ -164,7 +178,15 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
   const wnioski = wnioskiDoOceny(szkic.plan);
   const nadpisze = !!(ocena.notatkiRozmowy || ocena.wnioskiRozwojowe);
 
+  /** Obsługa zmian sprawdza uprawnienia niezależnie od wyłączonych przycisków (np. wejście z linku). */
+  function odmowEdycji(): boolean {
+    if (dostep.edycja) return false;
+    toast.error("Tylko podgląd – nie zapisano zmian.", { description: dostep.powod ?? undefined });
+    return true;
+  }
+
   async function przygotujRozmowe() {
+    if (odmowEdycji()) return;
     if (trwa.current) return;
     trwa.current = true;
     // Do AI: tylko stanowisko, kryteria, poziomy i przykłady – bez imion i nazwisk.
@@ -203,10 +225,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
   }
 
   function zapiszWOcenie() {
-    if (!edycja) {
-      toast.error("Tryb podglądu – nie zapisano w ocenie.", { description: powod });
-      return;
-    }
+    if (odmowEdycji()) return;
     const aktualna = pobierzOcene(ocena.id);
     if (!aktualna) {
       toast.error("Nie znaleziono oceny – nie zapisano notatek.");
@@ -242,8 +261,27 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
     }
   }
 
+  // Rola z cookie jest znana dopiero w przeglądarce – do tego czasu nie pokazujemy pól edycji.
+  if (!dostep.gotowe) return <LadowanieRozmowy />;
+
   return (
     <div className="flex flex-col gap-6">
+      {tylkoOdczyt && (
+        <Alert className="print:hidden">
+          <EyeIcon />
+          <AlertTitle>Tryb podglądu – bez możliwości zmian</AlertTitle>
+          <AlertDescription>
+            <p>{dostep.powod}</p>
+            <p>
+              Prototyp: rola demonstracyjna jest zapisana w przeglądarce, nie jest to logowanie urzędu.{" "}
+              <Link href={`/logowanie?powrot=/rozmowa/${encodeURIComponent(ocena.id)}`} className={FOKUS_LINKU}>
+                Zmień rolę
+              </Link>
+            </p>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Nagłówek oceny */}
       <Card>
         <CardHeader>
@@ -311,11 +349,13 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
             <CardDescription>Zakres rozmowy oceniającej według rozporządzenia.</CardDescription>
           </CardHeader>
           <CardContent>
-            <ListaKontrolnaRozmowy
-              ocena={ocena}
-              zaznaczone={szkic.lista}
-              onZmiana={(id, v) => setSzkic((s) => ({ ...s, lista: { ...s.lista, [id]: v } }))}
-            />
+            <Edycja tylkoOdczyt={tylkoOdczyt}>
+              <ListaKontrolnaRozmowy
+                ocena={ocena}
+                zaznaczone={szkic.lista}
+                onZmiana={(id, v) => setSzkic((s) => ({ ...s, lista: { ...s.lista, [id]: v } }))}
+              />
+            </Edycja>
           </CardContent>
         </Card>
       </div>
@@ -330,71 +370,76 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
               : "Pytania do pracownika, kwestie do omówienia, argumenty przy każdym kryterium i propozycje rozwoju."}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {!moznaGenerowac && (
-            <p className="text-sm text-muted-foreground">
-              Plan można przygotować, gdy ocena ma kryteria z obserwacjami.
-            </p>
-          )}
-
-          {stanAi.typ === "ladowanie" && (
-            <div className="flex flex-col gap-2" aria-live="polite">
-              <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2Icon className="size-4 animate-spin" aria-hidden /> Przygotowuję plan rozmowy – to może
-                potrwać kilka sekund…
+        <CardContent>
+          <Edycja tylkoOdczyt={tylkoOdczyt} className="flex flex-col gap-4">
+            {tylkoOdczyt && !szkic.plan && (
+              <p className="text-sm text-muted-foreground">Plan rozmowy przygotowuje przełożony – jeszcze go nie ma.</p>
+            )}
+            {!moznaGenerowac && (
+              <p className="text-sm text-muted-foreground">
+                Plan można przygotować, gdy ocena ma kryteria z obserwacjami.
               </p>
-              <Skeleton className="h-5 w-3/4" />
-              <Skeleton className="h-5 w-2/3" />
-              <Skeleton className="h-5 w-4/5" />
-            </div>
-          )}
+            )}
 
-          {stanAi.typ === "blad" && (
-            <Alert variant="destructive">
-              <AlertTriangleIcon />
-              <AlertTitle>Nie udało się przygotować planu</AlertTitle>
-              <AlertDescription>
-                {stanAi.komunikat} Możesz też przygotować notatki samodzielnie – zapis w ocenie działa bez AI.
-              </AlertDescription>
-            </Alert>
-          )}
+            {stanAi.typ === "ladowanie" && (
+              <div className="flex flex-col gap-2" aria-live="polite">
+                <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2Icon className="size-4 animate-spin" aria-hidden /> Przygotowuję plan rozmowy – to może
+                  potrwać kilka sekund…
+                </p>
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-5 w-4/5" />
+              </div>
+            )}
 
-          {szkic.plan && stanAi.typ !== "ladowanie" && (
-            <PlanRozmowy
-              plan={szkic.plan}
-              rodzaj={ocena.rodzaj}
-              onZmiana={(plan) => setSzkic((s) => ({ ...s, plan }))}
-            />
-          )}
+            {stanAi.typ === "blad" && (
+              <Alert variant="destructive">
+                <AlertTriangleIcon />
+                <AlertTitle>Nie udało się przygotować planu</AlertTitle>
+                <AlertDescription>
+                  {stanAi.komunikat} Możesz też przygotować notatki samodzielnie – zapis w ocenie działa bez AI.
+                </AlertDescription>
+              </Alert>
+            )}
 
-          {moznaGenerowac && (
-            <div className="flex flex-wrap items-center gap-3 print:hidden">
-              <Button
-                onClick={przygotujRozmowe}
-                disabled={stanAi.typ === "ladowanie"}
-                variant={szkic.plan ? "outline" : "brand"}
-                size="lg"
-              >
-                {stanAi.typ === "ladowanie" ? (
-                  <Loader2Icon data-icon="inline-start" className="animate-spin" />
-                ) : szkic.plan ? (
-                  <RefreshCwIcon data-icon="inline-start" />
-                ) : (
-                  <SparklesIcon data-icon="inline-start" />
+            {szkic.plan && stanAi.typ !== "ladowanie" && (
+              <PlanRozmowy
+                plan={szkic.plan}
+                rodzaj={ocena.rodzaj}
+                onZmiana={(plan) => setSzkic((s) => ({ ...s, plan }))}
+              />
+            )}
+
+            {moznaGenerowac && !tylkoOdczyt && (
+              <div className="flex flex-wrap items-center gap-3 print:hidden">
+                <Button
+                  onClick={przygotujRozmowe}
+                  disabled={stanAi.typ === "ladowanie"}
+                  variant={szkic.plan ? "outline" : "brand"}
+                  size="lg"
+                >
+                  {stanAi.typ === "ladowanie" ? (
+                    <Loader2Icon data-icon="inline-start" className="animate-spin" />
+                  ) : szkic.plan ? (
+                    <RefreshCwIcon data-icon="inline-start" />
+                  ) : (
+                    <SparklesIcon data-icon="inline-start" />
+                  )}
+                  {stanAi.typ === "ladowanie"
+                    ? "Przygotowuję…"
+                    : szkic.plan
+                      ? "Przygotuj ponownie"
+                      : "Przygotuj rozmowę"}
+                </Button>
+                {szkic.plan && (
+                  <span className="text-xs text-muted-foreground">
+                    Nowy plan zastąpi obecny razem z Twoimi zmianami.
+                  </span>
                 )}
-                {stanAi.typ === "ladowanie"
-                  ? "Przygotowuję…"
-                  : szkic.plan
-                    ? "Przygotuj ponownie"
-                    : "Przygotuj rozmowę"}
-              </Button>
-              {szkic.plan && (
-                <span className="text-xs text-muted-foreground">
-                  Nowy plan zastąpi obecny razem z Twoimi zmianami.
-                </span>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </Edycja>
         </CardContent>
       </Card>
 
@@ -408,7 +453,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
+          <Edycja tylkoOdczyt={tylkoOdczyt} className="flex flex-col gap-2">
             <Label htmlFor="wlasne-notatki">Twoje notatki (opcjonalnie)</Label>
             <Textarea
               id="wlasne-notatki"
@@ -417,7 +462,7 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
               placeholder="Np. ustalenia z rozmowy, opinia pracownika o własnej pracy, cele na kolejny okres…"
               rows={3}
             />
-          </div>
+          </Edycja>
 
           <div className="grid gap-4 text-sm md:grid-cols-2">
             <div>
@@ -438,8 +483,8 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
           {/* Czerwony jest zawsze tylko jeden: „Przygotuj rozmowę” przed planem, „Zapisz w ocenie” po nim. */}
           <Button
             onClick={zapiszWOcenie}
-            disabled={!edycja || (!notatki && !wnioski)}
-            variant={szkic.plan ? "brand" : "default"}
+            disabled={tylkoOdczyt || (!notatki && !wnioski)}
+            variant={szkic.plan && !tylkoOdczyt ? "brand" : "default"}
           >
             <SaveIcon data-icon="inline-start" /> Zapisz w ocenie
           </Button>
@@ -450,12 +495,8 @@ function WidokRozmowy({ ocena }: { ocena: Ocena }) {
             <PrinterIcon data-icon="inline-start" /> Drukuj
           </Button>
           <span className="text-xs text-muted-foreground">
-            {!edycja
-              ? `Tryb podglądu: ${powod}`
-              : szkic.plan
-                ? `Zaznaczone punkty planu: ${wybrane}.`
-                : "Brak planu – zapiszesz tylko własne notatki."}
-            {edycja && nadpisze && " Zapis zastąpi poprzednie notatki w ocenie."}
+            {szkic.plan ? `Zaznaczone punkty planu: ${wybrane}.` : "Brak planu – zapiszesz tylko własne notatki."}
+            {nadpisze && " Zapis zastąpi poprzednie notatki w ocenie."}
           </span>
         </CardFooter>
       </Card>
