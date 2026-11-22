@@ -1,5 +1,5 @@
 /**
  * Wspólny kontrakt typów między funkcjami (i między programistami).
- * Zmienia tylko Vlad / lead AI (prośba: komentarz „ZMIANA WSPÓLNA:” w zadaniu) – patrz CLAUDE.md.
+ * Zmienia tylko Vlad (prośba: komentarz „ZMIANA WSPÓLNA:” w zadaniu).
  */
 export type Id = string;

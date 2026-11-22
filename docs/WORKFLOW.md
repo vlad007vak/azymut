@@ -17,7 +17,7 @@ GitHub (publiczne repozytorium)
 | Kto | Odpowiada za | Pliki / narzędzia |
 |---|---|---|
 | **Vlad – główny programista, integrator** | decyzje, kreator oceny (obie ścieżki), łączenie zmian, Vercel | **pliki wspólne**: `layout.tsx`, `globals.css`, `config/app.ts`, `lib/**`, `types/**`, `components/ui/**`, `package.json`, `.github/**` |
-| **Główny asystent AI** (Claude Code Vlada) | zasady (`CLAUDE.md`), architektura i kontrakt typów, podział pracy na zadania (GitHub Issues), przegląd PR | zadania i komentarze z konta Vlada |
+| **Główny asystent AI** (Claude Code Vlada) | zasady pracy, architektura i kontrakt typów, podział pracy na zadania (GitHub Issues), przegląd PR | zadania i komentarze z konta Vlada |
 | **Maks** | asystent formalny AI i baza wiedzy, kontakt z mentorką | `src/features/asystent/`, `src/data/baza-wiedzy/` |
 | **Andrey** | panel HR, role, pitch (`docs/PITCH.md`) | `src/features/hr/`, `src/features/role/` |
 | **Dima** | asystent rozmowy, analiza opisu stanowiska (OSP), eksport JSON i API | `src/features/rozmowa/`, `src/features/osp/`, `src/features/eksport/` |
@@ -37,7 +37,6 @@ CI (lint + build) ──► zielone?
    └─ pliki wspólne / duży PR → etykieta review-needed → przegląd głównego asystenta AI → merge
 ```
 - Pytanie do zadania → komentarz `PYTANIE:` w zadaniu i informacja dla Vlada.
-- Szczegółowy protokół pracy (gałęzie, PR, zasady łączenia) jest w `CLAUDE.md`.
 
 ## Cykl pracy programisty
 ```bash

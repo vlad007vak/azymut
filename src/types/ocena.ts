@@ -1,6 +1,6 @@
 /**
  * KONTRAKT: model kompetencji i proces oceny (pierwsza ocena + ocena okresowa).
- * Zmienia tylko Vlad / lead AI. Potrzebujesz zmiany → komentarz „ZMIANA WSPÓLNA:” w swoim zadaniu.
+ * Zmienia tylko Vlad. Potrzebujesz zmiany → komentarz „ZMIANA WSPÓLNA:” w swoim zadaniu.
  *
  * Źródła zasad: rozporządzenie PRM z 4.04.2016 (Dz.U. 2016 poz. 470) – ocena okresowa,
  * rozporządzenie PRM z 23.07.2015 (Dz.U. 2015 poz. 1144) – pierwsza ocena,

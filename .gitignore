@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# lokalne pliki narzędzi deweloperskich – nie publikujemy
+CLAUDE.md
+AGENTS.md
+.claude/

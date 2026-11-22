@@ -1,4 +1,4 @@
-# Prezentacja (maks. 10 slajdów) i scenariusz wideo
+# Prezentacja (maks. 10 slajdów)
 
 Wymóg zadania: **maksymalnie 10 slajdów** – logika działania, kluczowe funkcjonalności, kierunek dalszego rozwoju.
 Pitch finałowy: maks. 5 min + 5 min pytań. Punkty oznaczone **[po merge]** wpisujemy tylko, jeśli funkcja jest na produkcji.
@@ -76,19 +76,3 @@ Schemat (jak na grafice organizatora):
 - Demo: azymut-bubylda.vercel.app · Kod: github.com/vlad007vak/azymut · Zespół Azymut
 
 *Notatka:* zakończyć zdaniem z slajdu 3 – „AI doradza, decyzję podejmuje przełożony”.
-
----
-
-## Scenariusz wideo (do 2 minut, nagranie ekranu + lektor)
-
-| Czas | Ekran | Lektor |
-|---|---|---|
-| 0:00–0:12 | Strona główna | „Azymut prowadzi przełożonego w służbie cywilnej przez pierwszą ocenę i ocenę okresową – od kryteriów po gotowy arkusz.” |
-| 0:12–0:30 | Nowa ocena okresowa → krok 1 → przykład „Naczelnik wydziału” → Analizuj → Zastosuj | „Na podstawie opisu stanowiska system podpowiada arkusz, kryteria dodatkowe i najważniejsze wskaźniki. Przełożony każdą podpowiedź przyjmuje albo odrzuca.” |
-| 0:30–0:55 | Anna Kowalczyk → Ocena wskaźników → zmiana zachowania → sugestia się zmienia | „Ocena opiera się na obserwowalnych zachowaniach z modelu kompetencji. Przełożony wybiera opis zachowania i zapisuje przykład, a system pokazuje sugerowany poziom z wyjaśnieniem.” |
-| 0:55–1:15 | Rozmowa → asystent formalny: pytanie o kryteria dodatkowe → rozwinięte źródło | „Asystent formalny odpowiada tylko na podstawie przepisów i poradników KPRM – zawsze ze źródłem i cytatem. Gdy nie zna odpowiedzi, mówi to wprost.” |
-| 1:15–1:30 | Asystent rozmowy → „Przygotuj rozmowę” | „Asystent rozmowy przygotowuje pytania, kwestie do omówienia i argumenty – na podstawie zapisanych przykładów.” |
-| 1:30–1:45 | Decyzja → Przyjmij sugestie → wynik → uzasadnienie → „Sprawdź uzasadnienie” (uwagi z cytatem) → Sporządź → arkusz | „Ostateczny poziom wybiera przełożony. Wynik jest liczony dokładnie według rozporządzenia, AI wskazuje ogólniki w uzasadnieniu, a arkusz jest gotowy do wydruku i PDF.” |
-| 1:45–2:00 | Panel HR (po wyborze roli HR) → logo / link | „HR monitoruje terminy i wysyła przypomnienia. Azymut – AI doradza, decyzję podejmuje przełożony.” |
-
-Przed nagraniem: tryb incognito (świeże dane demo), okno 1440 px, ukryte zakładki i powiadomienia; przy pytaniach do AI odczekać, aż odpowiedź się pojawi (limit darmowych modeli – najlepiej nagrywać fragmenty osobno i skleić).
