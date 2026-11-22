@@ -11,7 +11,7 @@ baza pytań i odpowiedzi (`src/data/baza-wiedzy/pytania-odpowiedzi.json`, opis: 
 **Ręcznie (Diana):** otwórz `/asystent`, wpisz pytanie z tabeli i sprawdź:
 1. odpowiedź zawiera fakty z kolumny „Oczekiwana odpowiedź” (pogrubione = muszą wystąpić),
 2. pod odpowiedzią jest źródło z kolumny „Źródło” – po kliknięciu widać dokument, miejsce i dosłowny cytat,
-3. pytania 18, 19, 35 i 58–62 (spoza bazy) kończą się żółtym komunikatem „Brak informacji w bazie wiedzy” – bez zmyślonej odpowiedzi,
+3. pytania 18, 19, 35, 58–62 i 66 (spoza bazy) kończą się żółtym komunikatem „Brak informacji w bazie wiedzy” – bez zmyślonej odpowiedzi,
 4. odpowiedź pojawia się zwykle w < 5 s; w trakcie widać „Szukam w bazie wiedzy…”.
 
 **Automatycznie:** przy działającej aplikacji
@@ -87,6 +87,10 @@ Skrypt robi 4 s przerwy między pytaniami (darmowe limity AI) i wypisuje ✓/✗
 | 60 | – | Jak rozliczyć delegację służbową pracownika? | **brak informacji** – baza nie obejmuje podróży służbowych. | – |
 | 61 | – | Ile płaci się za nadgodziny w urzędzie? | **brak informacji** – baza nie obejmuje wynagrodzeń. | – |
 | 62 | – | Jaka będzie jutro pogoda w Bydgoszczy? | **brak informacji** – pytanie spoza tematu. | – |
+| 63 | – | Dzień dobry, mam pytanie praktyczne. Moja pracownica od dwóch lat pracuje na stanowisku radcy, zajmuje się analizą przepisów i przygotowuje opinie prawne dla departamentu. W tym roku jej praca była bardzo dobra, ale miała kilka opóźnień przy większych projektach, głównie z powodu dużej liczby zadań. Zastanawiam się, ile kryteriów dodatkowych mogę wybrać w ocenie okresowej i czy myślenie analityczne będzie dobrym wyborem? | **Nie więcej niż 3** kryteria dodatkowe, najistotniejsze ze względu na obowiązki z opisu stanowiska (myślenie analityczne jest w wykazie kryteriów). | Rozporządzenie 2016 `§ 5`, poradnik „Oceny okresowe” `s. 22` lub `s. 21` |
+| 64 | – | Zatrudniłem nowego pracownika na umowę na czas określony. Minęło już kilka tygodni, a ja dopiero teraz dowiedziałem się, że powinienem przeprowadzić z nim jakąś rozmowę na początku. Kadry mówią, że to ważne dla pierwszej oceny. W jakim terminie powinienem był przeprowadzić rozmowę wstępną? | Rozmowę wstępną przeprowadza się w terminie **21 dni** od nawiązania stosunku pracy. | Rozporządzenie 2015 `§ 3`, poradnik „Pierwsza ocena” `s. 19` lub `s. 17` lub `s. 21` |
+| 65 | – | Jestem naczelnikiem wydziału od marca i przejąłem zespół po poprzedniku. W zespole mam pięć osób, dwie są zatrudnione na czas nieokreślony. Poprzedni naczelnik ustalił z nimi kryteria oceny w zeszłym roku, ale nie wiem, czy coś zapisał. Teraz zbliża się termin oceny okresowej jednej z pracownic. Czy muszę ustalać kryteria jeszcze raz, czy oceniam według tych, które wybrał poprzednik? | Przy zmianie na stanowisku oceniającego ocenę sporządza się na podstawie kryteriów wybranych **wcześniej**. | Rozporządzenie 2016 `§ 9`, poradnik „Oceny okresowe” `s. 15` lub `s. 17`, baza Q&A `qa-014` |
+| 66 | – | Nasz wydział często pracuje dłużej przed terminami sprawozdań i rozliczeń projektów, a kilka osób zostaje po godzinach prawie codziennie. Dyrektor prosi o zestawienie czasu pracy. Ile płaci się za nadgodziny w urzędzie i jak je rozliczyć? | **brak informacji** – baza nie obejmuje wynagrodzeń ani czasu pracy. | – |
 
 Wiersze 31–34 trafiają w pozycje bazy pytań i odpowiedzi (zadanie #40), zadane innymi słowami niż w bazie –
 w źródłach powinna być „Baza pytań i odpowiedzi – …” z podanym identyfikatorem albo przepis, na którym pozycja się opiera
@@ -98,6 +102,11 @@ nie odpowiada fałszywym „brak informacji” (zgłoszenie #26).
 Wiersze 36–62 (zadanie #61) to pytania „jak jury”: potocznie, bez polskich znaków, dwa pytania w jednym, „a co jeśli…”.
 Mają ścieżkę „–”, więc skrypt wysyła je **bez parametru `rodzaj`** – dokładnie tak jak strona `/asystent`.
 36–45 dotyczą pierwszej oceny, 46–57 oceny okresowej, 58–62 są spoza bazy.
+
+Wiersze 63–66 (zgłoszenie #69) to **długie pytania z opisem sytuacji** (kilka zdań, ponad 250 znaków) – trzy z odpowiedzią w bazie,
+jedno spoza bazy. Wcześniej opis rozmywał pokrycie słów i trafne pytania dostawały fałszywe „brak informacji”.
+Znane ograniczenie: gdy część pytania złożonego nie ma odpowiedzi w bazie (np. „…i co się stanie, jeśli tego nie zrobiłem na czas?”),
+model zwykle odpowiada „brak informacji” na całość (reguła 1 promptu) – dlatego wiersz 64 pyta tylko o termin.
 
 ## Dodatkowo do sprawdzenia w UI
 - Pytanie z imieniem i nazwiskiem (np. „Jak ocenić Annę Kowalczyk, która się spóźnia?”) – pod odpowiedzią informacja,
