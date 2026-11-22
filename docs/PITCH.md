@@ -187,17 +187,16 @@ Odpowiedzi AI są buforowane, żeby nie zużywać limitów.
 Źródło: `docs/API.md` §1 (zasady wspólne, `/api/osp`); `README.md` → tabela AI, wiersz „Kontrola jakości”.
 
 **15. Jak sprawdzaliście poprawność asystenta?** *(Maks / Diana)*
-Mamy zestaw 30 pytań z oczekiwanymi odpowiedziami i źródłami – w tym 2 spoza bazy i 6 tych samych faktów zadanych innymi słowami,
-tak jak pyta jury (po zgłoszeniu #26) – oraz skrypt, który zadaje je automatycznie.
-Przebieg z prawdziwym AI (Groq / Gemini): **30/30**, a pytania spoza bazy nadal kończą się „brak informacji” (Maks, PR #33).
-Po dodaniu bazy pytań i odpowiedzi zestaw ma 35 pytań: **34/35** w pełnym przebiegu – jedyny błąd to limit darmowych modeli
-(brak odpowiedzi, nie zła odpowiedź), po ponowieniu pytanie zaliczone (Maks, PR #45).
-Źródło: `docs/test-asystenta.md`; `scripts/baza-wiedzy/test-asystenta.mjs`; opisy PR #33 i PR #45 (wyniki testu).
+Mamy zestaw 66 pytań z oczekiwanymi odpowiedziami i źródłami oraz skrypt, który zadaje je automatycznie – m.in. 9 spoza bazy,
+6 tych samych faktów innymi słowami, 27 pytań „jak jury” (potocznie, bez polskich znaków, dwa w jednym – #61), 4 z bazy pytań
+i odpowiedzi oraz 4 długie pytania z opisem sytuacji (#69). Przebieg z prawdziwym AI na preview: **62/62** (Maks, PR #64),
+po dodaniu długich pytań **66/66** (Maks, PR #70); pytania spoza bazy kończą się „brak informacji”.
+Źródło: `docs/test-asystenta.md`; `scripts/baza-wiedzy/test-asystenta.mjs`; opisy PR #64 i PR #70 (wyniki testu).
 
 **16. Co jest w bazie wiedzy?** *(Maks)*
 Pięć dokumentów: ustawa o służbie cywilnej (art. 38 i 81–83), rozporządzenia o pierwszej ocenie i o ocenach okresowych, dwa poradniki
 KPRM – razem 200 fragmentów z PDF – oraz model kompetencji (64 fragmenty), czyli **264 fragmenty**. Wyszukiwanie BM25 napisaliśmy sami,
-bez zewnętrznych bibliotek. Do tego **baza pytań i odpowiedzi** – 12 przykładowych pozycji z podstawą prawną, którą urząd może
+bez zewnętrznych bibliotek. Do tego **baza pytań i odpowiedzi** – 15 przykładowych pozycji z podstawą prawną, którą urząd może
 podmienić na własną (plik JSON albo CSV z Excela). O taką możliwość prosiła mentorka MC (#3, odpowiedzi mentorki, pyt. 2).
 Źródło: `src/data/baza-wiedzy/fragmenty.json`, `src/data/baza-wiedzy/pytania-odpowiedzi.json`, `src/features/asystent/baza.ts`;
 `docs/BAZA-WIEDZY.md`; `README.md` → „Wykorzystane zasoby”.
@@ -286,7 +285,8 @@ gdy na scenie po kontroli jakości zegar pokazuje więcej niż 3:10, pomijamy sl
    webowa na komputer, na ekranach < 768 px pasek bez blokady – PR #39 (pyt. 8). Wymóg do demo: co najmniej jedna kompletna
    ścieżka (rozpoczęcie procesu → kryteria → ocena wskaźników → sugerowany poziom → decyzja przełożonego) – scenariusz
    ją pokazuje (sekcja 1). Najlepiej obie ścieżki pełne – w aplikacji są obie, na scenie pokazujemy okresową.
-3. **Ustalone:** automatyczny test asystenta (`scripts/baza-wiedzy/test-asystenta.mjs`) – **30/30** z prawdziwym AI (Maks, PR #33).
+3. **Ustalone:** automatyczny test asystenta (`scripts/baza-wiedzy/test-asystenta.mjs`) – zestaw 66 pytań z prawdziwym AI na preview:
+   **62/62** (Maks, PR #64), po dodaniu długich pytań **66/66** (Maks, PR #70).
 4. Koszty wdrożenia, liczba urzędów, harmonogram – brak w repo, na scenie nie podajemy liczb.
 5. Czy ktoś testował aplikację z prawdziwymi przełożonymi / HR.
 6. **Ustalone:** internet na scenie będzie; slajdy (PDF) i wideo (mp4) pokazujemy z pendrive'a na komputerze na scenie;

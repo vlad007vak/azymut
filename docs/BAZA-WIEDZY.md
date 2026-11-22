@@ -10,7 +10,7 @@ jak urząd może podmienić **bazę pytań i odpowiedzi** bez programowania i ja
 |---|---|---|---|
 | Ustawa o służbie cywilnej (t.j. Dz.U. 2026 poz. 590) – art. 38 i 81–83; rozporządzenia o pierwszej ocenie (Dz.U. 2015 poz. 1144) i o ocenach okresowych (Dz.U. 2016 poz. 470); poradniki KPRM „Pierwsza ocena…” i „Oceny okresowe…” (2016) | `src/data/baza-wiedzy/fragmenty.json` | skrypt `scripts/baza-wiedzy/zbuduj.mjs` z PDF | 200 fragmentów |
 | Model kompetencji (materiał organizatora) | `src/data/model-kompetencji.json` | dokładany w locie przez `src/features/asystent/baza.ts` | 64 fragmenty |
-| **Baza pytań i odpowiedzi (Q&A)** | `src/data/baza-wiedzy/pytania-odpowiedzi.json` | plik przygotowany przez urząd (JSON albo CSV z Excela) | 12 pozycji przykładowych |
+| **Baza pytań i odpowiedzi (Q&A)** | `src/data/baza-wiedzy/pytania-odpowiedzi.json` | plik przygotowany przez urząd (JSON albo CSV z Excela) | 15 pozycji przykładowych |
 
 Przykładowa baza Q&A zespołu powstała **wyłącznie z faktów, które już są w bazie** (przepisy, poradniki KPRM,
 model kompetencji) – przy każdej pozycji w polu `zrodlo` jest artykuł, paragraf albo strona poradnika.
