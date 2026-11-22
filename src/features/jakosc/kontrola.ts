@@ -214,6 +214,20 @@ const DOMYSLNA_SUGESTIA: Record<TypUwagi, string> = {
   "ryzyko-stronniczosci": "Usuń odwołanie do cech niezwiązanych z wykonywaniem obowiązków i oprzyj ocenę na zachowaniach w pracy.",
 };
 
+/**
+ * Znane literówki modeli w trybie rozkazującym – poprawiamy, zanim sugestia trafi do przełożonego
+ * (w nocnych testach model kilka razy napisał „Usunij ocenę cech osobowości…”).
+ */
+// Granice słowa przez \p{L} – zwykłe \b nie zna polskich liter („Usuniję” nie może dać „Usuńę”).
+const LITEROWKI: [RegExp, string][] = [
+  [/(?<!\p{L})Usunij(?!\p{L})/gu, "Usuń"],
+  [/(?<!\p{L})usunij(?!\p{L})/gu, "usuń"],
+];
+
+function poprawPisownie(tekst: string | undefined): string {
+  return LITEROWKI.reduce((t, [wzor, poprawnie]) => t.replace(wzor, poprawnie), tekst ?? "");
+}
+
 function opisDlaModelu(z: ZapytanieJakosci): string {
   const linie = [
     `Rodzaj oceny: ${z.rodzaj === "pierwsza" ? "pierwsza ocena (skala 3/5/7 pkt)" : "ocena okresowa (skala 1/3/5/7/9 pkt)"}.` +
@@ -270,7 +284,7 @@ async function uwagiAi(z: ZapytanieJakosci, wszystkie: Tekst[]): Promise<{ uwagi
       kompetencjaId: znaleziony.zrodlo.kompetencjaId,
       pole: znaleziony.zrodlo.pole,
       cytat: znaleziony.cytat,
-      sugestia: u.sugestia?.trim() || DOMYSLNA_SUGESTIA[typ],
+      sugestia: poprawPisownie(u.sugestia?.trim()) || DOMYSLNA_SUGESTIA[typ],
       zrodlo: "ai",
     });
   }
