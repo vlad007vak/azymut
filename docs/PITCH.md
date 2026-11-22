@@ -12,7 +12,8 @@ na scenie: „Tego nie sprawdzaliśmy w prototypie – to element planu wdrożen
 
 - [ ] Na pendrivie: slajdy w PDF + zapasowa kopia (także w repozytorium: `docs/pdf/Azymut-prezentacja.pdf`). Slajdy pokazujemy
       z komputera na scenie. Wideo nie nagrywamy (decyzja zespołu, 22.11).
-- [ ] Komputer na scenie: zamknąć **wszystkie** okna incognito (w Chrome okna incognito współdzielą dane), otworzyć nowe okno
+- [ ] Komputer na scenie: zamknąć **wszystkie** okna incognito (w Chrome okna incognito współdzielą dane i wybraną rolę – po próbie
+      z Panelem HR kreator otworzyłby się w trybie podglądu), otworzyć nowe okno
       incognito z https://azymut-bubylda.vercel.app. Świeże dane demo = Anna Kowalczyk w kroku „Ocena wskaźników”.
       Zły stan danych → Panel HR → „Resetuj dane demo”.
 - [ ] Komputer na scenie: sprawdzić szerokość ekranu i okna przeglądarki – **min. 1024 px** (najlepiej ok. 1440 px);
@@ -80,6 +81,7 @@ Kto przełącza: **Vlad** (przy komputerze na scenie) decyduje i przełącza, **
 | Limit darmowych modeli | Czerwony komunikat „Asystent AI jest chwilowo niedostępny (limit darmowych modeli). Spróbuj ponownie za chwilę.” | Pokazujemy slajd 7 (zrzut odpowiedzi ze źródłem). Kontrola jakości przy limicie pokazuje żółty komunikat i same sprawdzenia automatyczne – mówimy: „reguły działają także bez AI”. Ocena, sugestia, wynik i arkusz **nie korzystają z AI** – demo idzie dalej. |
 | Brak internetu | Strona się nie ładuje | 1) hotspot z telefonu (Diana); 2) jeśli nie działa w 20 s – **slajdy PDF** (działają bez internetu, są na nich zrzuty ekranu z produkcji) na komputerze na scenie albo na laptopie zapasowym Diany. Andrey opowiada demo tekstem z tabeli, pokazując zrzuty. |
 | Zły stan danych demo | Anna nie jest w kroku „Ocena wskaźników” | Nowe okno incognito (po zamknięciu wszystkich) albo Panel HR → „Resetuj dane demo”. |
+| Kreator w trybie podglądu | Baner „Tryb podglądu – bez możliwości zmian”, pola wyszarzone – w przeglądarce została rola HR (po „Wejdź jako HR”) | W nagłówku „Zmień rolę” → „Wejdź jako przełożony” albo nowe okno incognito (po zamknięciu wszystkich). Na scenie Panel HR jest na końcu demo, więc grozi to tylko po próbie. |
 | Błąd strony / pusty ekran | Biała strona, komunikat błędu | Odświeżyć raz (dane zostają w przeglądarce). Nie pomogło → slajdy PDF ze zrzutami ekranu (jak przy braku internetu). |
 
 ---
