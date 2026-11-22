@@ -130,8 +130,12 @@
   --sidebar-ring: #7f9bd1;
 }
 
-/* Wydruk (arkusz oceny): zawsze biało-czarny. */
+/* Wydruk (arkusz oceny): zawsze biało-czarny, bez powiadomień (toast „Ocena sporządzona” – #68). */
 @media print {
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+
   :root,
   .dark {
     --background: #ffffff;
