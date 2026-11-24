@@ -111,7 +111,7 @@ także błąd składni JSON (wiersz i kolumna, np. brakujący przecinek).
 
 ## Przebudowa bazy po zmianie przepisów (PDF)
 
-1. Nowe PDF-y do katalogu `materialy` obok repozytorium (nazwy plików jak w tablicy `DOKUMENTY`
+1. Nowe PDF-y do katalogu [`materialy/`](../materialy) w repozytorium (nazwy plików jak w tablicy `DOKUMENTY`
    w `scripts/baza-wiedzy/zbuduj.mjs` – tam też nazwa, rodzaj i zakres stron każdego dokumentu).
 2. `node scripts/baza-wiedzy/zbuduj.mjs [katalog-z-materiałami]` – wymaga `pdftotext`
    (w Git for Windows: `/ucrt64/bin`; ścieżkę można podać w zmiennej `PDFTOTEXT`). Wynik: `fragmenty.json`.
@@ -120,6 +120,27 @@ także błąd składni JSON (wiersz i kolumna, np. brakujący przecinek).
 4. `node scripts/baza-wiedzy/test-asystenta.mjs` – zestaw z `docs/test-asystenta.md` musi przechodzić;
    przy zmianie liczb (terminy, punkty) popraw oczekiwane odpowiedzi.
 5. Zaktualizuj liczbę fragmentów w README i materiałach (liczba jest też na stronie `/asystent`).
+
+## Sprawdzenie wyszukiwania bez AI (offline)
+
+Skrypty w `scripts/baza-wiedzy/offline/` uruchamiają tę samą logikę wyszukiwania co `/api/asystent`
+(`src/features/asystent/*.ts`), ale bez modelu AI, sieci i kluczy. Pokazują, które fragmenty trafiłyby
+do modelu i czy bramka pokrycia (0,4) przepuści pytanie. Wymagają Node 24 (uruchamia pliki `.ts` bezpośrednio);
+`rejestr.mjs` mapuje alias `@/` na `src/`, a `server-only` na pusty moduł. Uruchamiamy z katalogu repozytorium:
+
+```bash
+# jedno pytanie: pokrycie, decyzja AI/BRAK i lista fragmentów; drugi argument (opcjonalny): pierwsza | okresowa
+node --no-warnings --import ./scripts/baza-wiedzy/offline/rejestr.mjs scripts/baza-wiedzy/offline/szukaj.mjs "Kto ustala kryteria dodatkowe?" okresowa
+
+# cały zestaw z docs/test-asystenta.md → decyzja, pokrycie i ID fragmentów dla każdego wiersza
+node --no-warnings --import ./scripts/baza-wiedzy/offline/rejestr.mjs scripts/baza-wiedzy/offline/zestaw.mjs przed.json
+# ... zmiana bazy, synonimów albo progów ...
+node --no-warnings --import ./scripts/baza-wiedzy/offline/rejestr.mjs scripts/baza-wiedzy/offline/zestaw.mjs po.json
+node scripts/baza-wiedzy/offline/porownaj.mjs przed.json po.json   # tylko wiersze, które się zmieniły
+```
+
+Stan „przed” dla zmiany w bazie: `git stash` albo `git checkout main -- src/data/baza-wiedzy/fragmenty.json`,
+pomiar, potem przywrócenie nowego pliku. Inny katalog repozytorium można podać w zmiennej `REPO_ROOT`.
 
 ## Ograniczenia prototypu
 - Podmiana bazy Q&A wymaga nowego buildu i wdrożenia (plik jest częścią aplikacji). Docelowo: wgrywanie
