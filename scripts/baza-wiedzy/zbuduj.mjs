@@ -4,9 +4,9 @@
  *
  *   node scripts/baza-wiedzy/zbuduj.mjs [katalog-z-materiałami]
  *
- * Domyślny katalog: ../materialy (obok repozytorium) albo zmienna BAZA_MATERIALY.
+ * Domyślny katalog: materialy/ w repozytorium albo zmienna BAZA_MATERIALY.
  * Wymaga `pdftotext` (Poppler; jest w Git for Windows: /ucrt64/bin) – ścieżkę można podać w PDFTOTEXT.
- * Wynik: src/data/baza-wiedzy/fragmenty.json (commitujemy go – PDF-y nie trafiają do repozytorium).
+ * Wynik: src/data/baza-wiedzy/fragmenty.json (commitujemy go – aplikacja czyta tylko ten plik, nie PDF-y).
  *
  * Fragmenty:
  *  - rozporządzenia: jeden fragment = paragraf (§) albo grupa ustępów, miejsce „§ 11 ust. 1–2”;
@@ -22,7 +22,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const MATERIALY = path.resolve(process.argv[2] ?? process.env.BAZA_MATERIALY ?? path.join(ROOT, "../materialy"));
+const MATERIALY = path.resolve(process.argv[2] ?? process.env.BAZA_MATERIALY ?? path.join(ROOT, "materialy"));
 const PDFTOTEXT = process.env.PDFTOTEXT ?? "pdftotext";
 const OUT = path.join(ROOT, "src/data/baza-wiedzy/fragmenty.json");
 const MODEL = JSON.parse(readFileSync(path.join(ROOT, "src/data/model-kompetencji.json"), "utf8"));
